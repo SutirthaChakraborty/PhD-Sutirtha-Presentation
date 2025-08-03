@@ -1,0 +1,921 @@
+\chapter{Multimodal Synchronization for Human-Robot Musical Ensembles}\label{ch-6}
+
+\section{Introduction}
+
+Synchronization is a fundamental aspect of musical ensemble performance, requiring precise coordination among musicians to achieve cohesive and expressive outcomes. In the context of human-robot musical ensembles, achieving seamless synchronization poses significant challenges due to the inherent differences in perception, processing, and responsiveness between human musicians and robotic systems.
+
+In previous chapters, we have explored various approaches to address these challenges through different modalities. Chapter \ref{ch-3} introduced the Cyborg Philharmonic framework, emphasizing advanced audio-based synchronization algorithms and predictive modeling to enable robots to participate in musical ensembles more naturally. Chapter \ref{ch-4} presented the LeaderSTeM model, focusing on dynamic leader identification using audio features alone, enhancing synchronization by allowing robots to adapt to the evolving dynamics of live performances. Chapter \ref{ch-5} highlighted the importance of visual cues, demonstrating methods for extracting and utilizing musicians' body movements to improve synchronization.
+
+Despite the advancements achieved through single-modality approaches, relying solely on either audio or visual cues presents inherent limitations. Human musicians naturally integrate multiple sensory inputs—auditory, visual, and sometimes tactile—to achieve synchronization and expressiveness in ensemble settings. This multimodal perception allows for greater adaptability, anticipation of changes, and nuanced communication among ensemble members.
+
+Therefore, a multimodal approach that combines audio and visual cues holds the promise of overcoming the shortcomings of single-modality systems. By fusing information from both modalities, we can create a more robust, accurate, and expressive synchronization framework that closely mirrors the natural interactions within human ensembles.
+
+\subsection{Overview of the Chapter}
+
+In this chapter, we establish the background and motivation for multimodal synchronization in Section~\ref{sec:background}, where we discuss the limitations of single-modality approaches and emphasize the need for integrating audio and visual cues. We then present a detailed study of the Kuramoto and Swarmalator algorithms in Section~\ref{sec:comparative_kuravsSwarm}, examining their dynamics and suitability for modeling synchronization in musical ensembles. Section~\ref{sec:experimental_setup} describes the experimental setup, detailing the datasets, data preparation methods, and evaluation protocols used in our investigation. Next, Section~\ref{sec:multimodal_discussion} provides an in-depth discussion of the multimodal approach's advantages, challenges, and limitations, along with its integration into the Cyborg Philharmonic framework. At the end of this chapter, Section~\ref{sec:multimodal_conclusion} concludes with a summary of our contributions, an exploration of implications for future work, and final remarks.
+
+
+
+
+\section{Background and Motivation}\label{sec:background}
+
+\subsection{Limitations of Single-Modality Approaches}
+
+In musical ensemble performance, synchronization is achieved through a complex interplay of auditory and visual cues. Human musicians rely on auditory signals, such as tempo, rhythm, and dynamics, as well as visual cues, including gestures, body movements, and facial expressions, to coordinate their performances \cite{greb2020understanding}.
+
+While previous chapters have demonstrated the effectiveness of audio-only and visual-only approaches in achieving synchronization between human and robotic musicians, these single-modality systems have inherent limitations.
+
+\subsubsection{Audio-Only Limitations}
+
+Audio-based synchronization systems, such as the LeaderSTeM model presented in Chapter \ref{ch-4}, extract features like tempo (beats per minute), pitch, and amplitude from audio signals to identify the tempo leader and synchronize accordingly.
+
+However, audio-only approaches face several challenges:
+
+\begin{itemize}
+    \item \textbf{Acoustic Ambiguities:} In complex ensemble settings, multiple instruments produce overlapping frequencies, making it difficult to isolate individual audio sources and accurately extract features \cite{benetos2018automatic}.
+    \item \textbf{Latency in Beat Detection:} Audio cues are reactive and perceived after the sound is produced. This can introduce latency in synchronization, as the robotic musician responds to events that have already occurred \cite{bock2016joint}.
+    \item \textbf{Lack of Anticipation:} Audio-only systems may struggle to anticipate tempo changes or expressive nuances often signaled visually before they are audible \cite{fujii2019predicting}.
+    \item \textbf{Environmental Noise:} Background noise and reverberations in live performance settings can degrade the quality of audio signals, affecting feature extraction and synchronization accuracy \cite{dixon2007evaluation}.
+\end{itemize}
+
+\subsubsection{Visual-Only Limitations}
+
+Visual-based synchronization methods, as explored in Chapter \ref{ch-5}, utilize musicians' body movements and gestures to extract timing and expressive cues.
+
+Despite their advantages, visual-only approaches also have limitations:
+
+\begin{itemize}
+    \item \textbf{Computational Complexity:} Processing high-resolution video data in real-time requires significant computational resources, potentially introducing latency \cite{cao2021openpose}.
+    \item \textbf{Occlusions and Ambiguities:} Visual cues can be obscured by other performers or instruments, leading to incomplete or ambiguous data \cite{zhang2021robust}.
+    \item \textbf{Variability in Movements:} Musicians' movements vary widely based on personal style, instrument type, and performance context, making it challenging to generalize models across different settings \cite{nijs2019embodied}.
+    \item \textbf{Lighting and Environmental Conditions:} Changes in lighting, shadows, and camera angles can affect the accuracy of visual feature extraction \cite{sun2019human}.
+\end{itemize}
+
+\subsection{Need for Multimodal Synchronization}
+
+Given the limitations of single-modality approaches, there is a clear need for a synchronization framework that integrates both audio and visual cues. Multimodal synchronization can leverage the complementary strengths of each modality to overcome individual weaknesses.
+\subsubsection{Human Multimodal Perception}
+
+Humans naturally integrate multiple sensory inputs to perceive and interact with the world. Musicians rely on auditory and visual cues in musical ensembles to synchronize and communicate \cite{williamon2021musical}. Multimodal synchronization aligns the robotic system's perception with human musicians' natural modes of interaction, facilitating more intuitive and effective collaboration.
+
+\subsubsection{Complementary Information}
+
+Audio and visual modalities each contribute distinct types of information that, when combined, yield a more comprehensive understanding of a musical performance \cite{baltruvsaitis2019multimodal}. Audio signals provide precise details regarding timing, pitch, and dynamics directly related to sound production. In contrast, visual cues offer anticipatory information through observing body movements and gestures, which can be critical for predicting forthcoming events. By integrating these modalities, the system achieves enhanced robustness, as the impairment of one modality (for example, due to noise or occlusion) can be offset by the reliability of the other. Furthermore, cross-validation between the audio and visual streams improves accuracy by reducing potential errors in feature extraction and synchronization. Overall, the fusion of audible and visible aspects of a performance enables a more nuanced and expressive interpretation, which is essential for the effective synchronization in human-robot musical ensembles.
+
+
+\subsubsection{Advancements in Multimodal Machine Learning}
+
+Recent advancements in machine learning and artificial intelligence have enabled more effective processing and fusion of multimodal data \cite{tsai2019multimodal}. Techniques such as deep learning, attention mechanisms, and transformer architectures have shown promise in handling complex temporal and spatial patterns across different modalities.
+
+
+
+
+\subsection{Building on Previous Work}
+
+This chapter extends the groundwork from earlier chapters and recent advancements in multimodal research:
+
+\subsubsection{Audio-Based Synchronization}
+Chapters \ref{ch-3} and \ref{ch-4} presented the Cyborg and LeaderSTeM models, utilizing audio feature extraction and Long Short-Term Memory (LSTM) networks for dynamic tempo synchronization. These insights inform the integration of audio cues in the multimodal framework.
+
+\subsubsection{Visual Cue Integration}
+Chapter \ref{ch-5} explored visual synchronization through Motiongrams and Pose Estimation. The identified challenges, such as computational complexity and movement variability, guide the design of a robust multimodal system.
+
+
+
+
+
+\section{Comparative Analysis of Kuramoto and Swarmalator Models}\label{sec:comparative_kuravsSwarm}
+
+In this section, we present a detailed experimental comparison between the Kuramoto and Swarmalator models \cite{o2017oscillators} in the context of musical ensemble synchronization. We investigate how different variables within each model influence synchronization performance and analyze their effectiveness under various conditions. This comparative study aims to provide insights into the suitability of each model for modeling synchronization in musical ensembles.
+
+
+Synchronization in coupled oscillator systems is a fundamental phenomenon observed in various natural and engineered systems. In musical ensembles, synchronization is crucial for achieving cohesive performances. The Kuramoto and Swarmalator models are two mathematical frameworks used to study synchronization phenomena. While the Kuramoto model focuses on the phase synchronization of oscillators, the Swarmalator model extends this concept by incorporating spatial dynamics along with phase interactions.
+
+Our objective is to compare these two models experimentally by adjusting their variables and assessing their performance in synchronizing musical ensembles. We aim to understand how each model responds to different parameter settings and under what conditions one model may outperform the other.
+
+\subsection{Model Descriptions}
+
+ \subsubsection{Kuramoto Model}
+
+As previously described in Chapter \ref{ch-3}, the Kuramoto model describes a system of $N$ coupled phase oscillators, each with its own natural frequency. The dynamics of the $i$-th oscillator are given by:
+
+\begin{equation}
+\dot{\theta}_i(t) = \omega_i + \frac{K}{N} \sum_{j=1}^N \sin\left( \theta_j(t) - \theta_i(t) \right)
+\label{eq:kuramoto_model}
+\end{equation}
+
+where:
+
+\begin{itemize}
+    \item $\theta_i(t)$ is the phase of the $i$-th oscillator at time $t$,
+    \item $\omega_i$ is the natural frequency of the $i$-th oscillator,
+    \item $K$ is the global coupling strength,
+    \item $N$ is the total number of oscillators.
+\end{itemize}
+
+The model captures the tendency of oscillators to synchronize their phases due to coupling, moderated by the coupling strength $K$.
+
+\subsubsection{Swarmalator Model}
+
+The Swarmalator model extends the Kuramoto model by coupling spatial and phase dynamics, incorporating positional interactions among oscillators \cite{o2018ring}. Its equations are:
+
+\begin{align}
+\dot{\mathbf{x}}_i(t) &= \frac{1}{N} \sum_{j=1}^N \left[ \frac{\mathbf{x}_j(t) - \mathbf{x}_i(t)}{|\mathbf{x}_j(t) - \mathbf{x}_i(t)|} \left( 1 + J \cos\left( \theta_j(t) - \theta_i(t) \right) \right) - \frac{\mathbf{x}_j(t) - \mathbf{x}_i(t)}{|\mathbf{x}_j(t) - \mathbf{x}_i(t)|^2} \right] \label{eq:swarmalator_space} \\
+\dot{\theta}_i(t) &= \omega_i + \frac{K}{N} \sum_{j=1}^N \frac{\sin\left( \theta_j(t) - \theta_i(t) \right)}{|\mathbf{x}_j(t) - \mathbf{x}_i(t)|} \label{eq:swarmalator_phase}
+\end{align}
+
+Key terms:
+\begin{itemize}
+    \item $\mathbf{x}_i(t) \in \mathbb{R}^d$: Position of the $i$-th oscillator in \(d\)-dimensional space.
+    \item $J$: Spatial coupling strength, affecting positional attraction/repulsion based on phase difference.
+    \item Other terms are as previously defined in section \ref{Detailed Explanation of the Simplified Synchronization Algorithm}.
+\end{itemize}
+
+The spatial term (\( \dot{\mathbf{x}}_i(t) \)) governs positional changes, where oscillators attract or repel each other depending on the cosine of their phase difference (\(\cos(\theta_j - \theta_i)\)) weighted by \(J\). The phase term (\( \dot{\theta}_i(t) \)) modifies the phase dynamics based on spatial proximity, with closer oscillators exerting stronger influence.
+
+\subsubsection{Understanding Total Synchronization (\(R = 1\))}
+
+The synchronization metric \(R\) is defined by the relation
+\[
+R e^{i\Psi} = \frac{1}{N} \sum_{j=1}^{N} e^{i\theta_j},
+\]
+where \(R\) quantifies the phase coherence among the oscillators and \(\Psi\) represents the average phase of the system. When \(R = 1\), it implies that all oscillators are perfectly synchronized, meaning that every oscillator shares the same phase, i.e., \(\theta_i = \theta_j\) for all \(i, j\). Conversely, a value of \(R < 1\) indicates partial or incoherent synchronization. This formulation of the order parameter, as discussed in the classical study of synchronization phenomena \cite{strogatz2000kuramoto}, serves as a fundamental tool for assessing the degree of synchrony in systems of coupled oscillators.
+
+To ensure a fair comparison between the Kuramoto and Swarmalator models, both models were evaluated under identical conditions by using consistent initial parameters, namely the number of oscillators \(N\), the natural frequencies \(\omega_i\), and the coupling strength \(K\). Synchronization in both models was measured using the order parameter \(R\), thereby enabling a direct comparison of phase coherence. In the case of the Swarmalator model, experiments systematically varied the spatial coupling parameter \(J\) within the range \(-2 \leq J \leq 2\) to assess its influence on both phase and spatial dynamics. Furthermore, identical datasets (specifically, the URMP dataset as explained in Section~\ref{URMP_dataset}) were used in all experiments to ensure that external factors did not bias the synchronization results.
+
+\subsection{Experimental Setup}
+
+To compare the models, we conducted experiments where we systematically varied key parameters and observed the synchronization behaviour. The experimental procedure involved the following steps:
+
+\begin{enumerate}
+    \item \textbf{Initialization}: Set up a system of $N$ oscillators with randomly assigned natural frequencies $\omega_i$ drawn from a specified distribution.
+    \item \textbf{Parameter Variation}: Vary the coupling strength parameters $K$ (for both models) and $J$ (for the Swarmalator model) over a range of values.
+    \item \textbf{Simulation}: Run simulations for each set of parameters using numerical integration methods.
+    \item \textbf{Measurement}: Quantify the level of synchronization using appropriate order parameters.
+    \item \textbf{Comparison}: Analyze how synchronization depends on the parameters for each model.
+\end{enumerate}
+
+\subsubsection{Algorithms}
+
+We implemented the following algorithms for numerical simulation: Algorithm:\ref{Kuramoto_algo} and Algorithm:\ref{Swarmalator_algo} in In Algorithm~\ref{Kuramoto_algo}, in a total simulation time \(T\) .
+
+\begin{algorithm}[ht]
+\caption{Kuramoto Model Simulation}
+\label{Kuramoto_algo}
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+\Input{$N$, $\omega_i$, $K$, $T$, $\Delta t$}
+\Output{Phases $\theta_i(t)$ for $t \in [0, T]$}
+
+\BlankLine
+
+Initialize phases $\theta_i(0)$ randomly in $[0, 2\pi)$\;
+
+\For{$t = 0$ \KwTo $T$ $\Delta t$}{
+    \For{$i = 1$ \KwTo $N$}{
+        Compute $\dot{\theta}_i(t)$ using Equation (\ref{eq:kuramoto_model})\;
+    }
+    Update phases: $\theta_i(t + \Delta t) = \theta_i(t) + \dot{\theta}_i(t) \Delta t$\;
+}
+\Return{$\theta_i(t)$}
+\end{algorithm}
+
+
+\begin{algorithm}[ht]
+\caption{Swarmalator Model Simulation}
+\label{Swarmalator_algo}
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+\Input{$N$, $\omega_i$, $K$, $J$, $T$, $\Delta t$}
+\Output{Phases $\theta_i(t)$ and positions $\mathbf{x}_i(t)$ for $t \in [0, T]$}
+
+\BlankLine
+
+Initialize phases $\theta_i(0)$ randomly in $[0, 2\pi)$\;
+
+Initialize positions $\mathbf{x}_i(0)$ randomly(uniformly) in a bounded space\;
+
+\For{$t = 0$ \KwTo $T$ $\Delta t$}{
+    \For{$i = 1$ \KwTo $N$}{
+        Compute $\dot{\theta}_i(t)$ using Equation (\ref{eq:swarmalator_phase})\;
+        Compute $\dot{\mathbf{x}}_i(t)$ using Equation (\ref{eq:swarmalator_space})\;
+    }
+    Update phases: $\theta_i(t + \Delta t) = \theta_i(t) + \dot{\theta}_i(t) \Delta t$\;
+    Update positions: $\mathbf{x}_i(t + \Delta t) = \mathbf{x}_i(t) + \dot{\mathbf{x}}_i(t) \Delta t$\;
+}
+
+\Return{$\theta_i(t)$, $\mathbf{x}_i(t)$}
+\end{algorithm}
+
+
+
+\subsubsection{Order Parameters}
+
+To quantify synchronization, we used the complex order parameter $R(t)$ defined as:
+
+\begin{equation}
+R(t) e^{i\Psi(t)} = \frac{1}{N} \sum_{j=1}^N e^{i\theta_j(t)}
+\label{eq:order_parameter}
+\end{equation}
+
+
+where $R(t) \in [0, 1]$ represents the magnitude of the average phase vector, and $\Psi(t)$ is its argument, which denotes the mean phase of the system. The interpretation of $R(t)$ is as follows:
+
+\begin{itemize}
+    \item If $R(t) = 1$, all oscillators have identical phases, i.e., $\theta_j(t) = \theta_k(t)$ for all $j, k$. This implies complete phase synchronization, as the phase vectors align perfectly, resulting in a magnitude of 1.
+    \item If $R(t) = 0$, the phases of the oscillators are uniformly distributed over $[0, 2\pi)$, leading to complete incoherence. In this case, the sum of the phase vectors cancels out, resulting in a zero magnitude.
+\end{itemize}
+
+
+For the Swarmalator model, we also considered the spatial order parameter $S(t)$ to measure spatial clustering, defined as:
+
+\begin{equation}
+S(t) = \frac{1}{N^2} \sum_{i=1}^N \sum_{j=1}^N \cos\left( \theta_i(t) - \theta_j(t) \right) \cdot \frac{\mathbf{x}_i(t) \cdot \mathbf{x}_j(t)}{|\mathbf{x}_i(t)| |\mathbf{x}_j(t)|}
+\end{equation}
+
+\subsubsection{Parameter Settings}
+
+We conducted simulations with the following settings:
+
+The parameter ranges were chosen to comprehensively capture the dynamics of the coupled oscillator systems while ensuring numerical stability and relevance to practical scenarios. First, the number of oscillators, \(N = \{2, 5, 10, 15\}\), was selected to investigate the impact of system size on synchronization behavior. By studying small (e.g., \(N=2\)) to moderately sized (e.g., \(N=15\)) ensembles, we can observe scaling effects and assess how synchronization emerges in both minimal and more complex networks.
+
+The natural frequencies \(\omega_i\) are drawn from a normal distribution \(\mathcal{N}(\omega_0, \sigma^2)\) with a mean \(\omega_0 = 1\) and a standard deviation \(\sigma = 0.1\). This narrow distribution reflects the assumption that oscillators are nearly identical while still allowing for small heterogeneities, a common approach in studies of synchronization to model realistic imperfections among coupled units \cite{strogatz2000kuramoto}.
+
+The coupling strength \(K\) is varied from 0 to 5 in increments of 0.5. This range is selected to span the transition from incoherent to synchronized behavior, as the Kuramoto model typically exhibits a critical coupling threshold (often around \(K \approx 1\)) beyond which synchronization rapidly increases. Incrementing by 0.5 provides sufficient resolution to discern changes in the order parameter without excessive computational cost.
+
+For the Swarmalator model, the spatial coupling strength \(J\) is varied from \(-2\) to \(2\) in increments of 0.5. Physically, \(J\) modulates how phase differences influence spatial interactions among oscillators. A negative value of \(J\) introduces repulsive spatial effects, while a positive value induces attractive interactions, thereby facilitating spatial clustering. The chosen range allows for a systematic exploration of regimes from strongly repulsive to strongly attractive spatial dynamics \cite{o2017oscillators}.
+
+Finally, the simulation time \(T = 50\) units with a time step \(\Delta t = 0.05\) is chosen to ensure that the system has ample time to evolve toward its asymptotic behavior, while the small time step guarantees numerical accuracy and stability during integration. Together, these parameter settings provide a robust framework for analyzing the synchronization phenomena in both the Kuramoto and Swarmalator models.
+
+
+
+
+
+
+\subsection{Results and Analysis}
+
+\subsubsection{Kuramoto Model Results}
+
+Figure \ref{fig:kuramoto_order_parameter} shows the average order parameter $\langle R \rangle$ as a function of coupling strength $K$ for various numbers of oscillators. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/Multimodal/kuramoto_results_reduced.png}
+    \caption{Average order parameter $\langle R \rangle$ versus coupling strength $K$ for the Kuramoto model with different numbers of oscillators $N$.}
+    \label{fig:kuramoto_order_parameter}
+\end{figure}
+
+ Figure~\ref{fig:kuramoto_order_parameter} shows that the transition from incoherence to synchronization becomes sharper with increasing coupling strength \(K\). Notably, for larger system sizes (e.g., \(N=10\) and \(N=15\)), synchronization levels approach \(R=1\) at lower values of \(K\) compared to smaller systems, such as when \(N=2\). This behavior reflects the dependency of synchronization dynamics on the number of oscillators, a phenomenon that has been well documented in the literature. In particular, Strogatz \cite{strogatz2000kuramoto} observed that the critical coupling strength for the onset of synchronization tends to occur near \(K_c \approx 1\) under similar assumptions. Acebrón et al. \cite{acebron2005kuramoto} comprehensively review how system size and coupling parameters influence synchronization in coupled oscillator populations. These studies corroborate our experimental findings and theoretical predictions regarding the critical threshold and the enhanced synchronization efficiency in larger systems.
+
+
+\subsubsection{Swarmalator Model Results}
+
+Figure \ref{fig:swarmalator_order_parameter} shows the average order parameter $\langle R \rangle$ as a function of $K$ for different values of the spatial coupling strength $J$ in the Swarmalator model. The results are displayed across three panels for \( J = -2 \) (top), \( J = 0 \) (middle), and \( J = 2 \) (bottom). Each panel also depicts the synchronization behavior for different system sizes, \( N = 2, 5, 10, 15 \).
+
+The results demonstrate that the synchronization behavior in the Swarmalator model is heavily influenced by the spatial coupling strength \( J \). For \( J = -2 \) (top panel, repulsive spatial coupling), synchronization is significantly hindered, and the system remains in a state of low coherence even as \( K \) increases. The jagged behavior seen in the curves reflects the sensitivity of the Swarmalator model to noise and the interactions between spatial dynamics and phase coupling. For smaller \( N \), such as \( N = 2 \), synchronization levels fluctuate strongly with increasing \( K \), while for larger \( N \), the jagged behavior is less pronounced but coherence remains low overall.
+
+For \( J = 0 \) (middle panel, neutral spatial coupling), the behavior partially resembles that of the Kuramoto model, as synchronization increases with \( K \), though not as smoothly or consistently. The jagged curves in this panel highlight variability in the system's synchronization dynamics due to the absence of strong spatial interactions. The curves for \( N = 10 \) and \( N = 15 \) show higher synchronization levels compared to smaller systems (\( N = 2, 5 \)), but they remain far below \( R = 1 \), which is commonly achieved in the Kuramoto model.
+
+For \( J = 2 \) (bottom panel, attractive spatial coupling), synchronization occurs at lower values of \( K \), and higher synchronization levels are achieved overall. This is evident from the prominent peaks in the \( R \) values, particularly for smaller system sizes (\( N = 2, 5 \)). However, the jagged nature of the curves persists, indicating that the interactions between spatial and phase dynamics introduce variability in the synchronization behavior. Larger system sizes (\( N = 10, 15 \)) exhibit a more stable increase in \( R \), although they do not reach complete coherence (\( R = 1 \)) consistently.
+
+The jagged appearance of the curves across all panels can be attributed to the complex interplay between spatial and phase dynamics in the Swarmalator model. Unlike the Kuramoto model, which solely focuses on phase synchronization, the Swarmalator model incorporates spatial interactions, making the system highly sensitive to initial conditions, coupling parameters, and noise. This sensitivity leads to fluctuating synchronization levels, especially in smaller systems or under repulsive coupling conditions (\( J = -2 \)).
+
+These results highlight the critical role of spatial interactions in determining synchronization behavior in the Swarmalator model. While attractive spatial coupling (\( J = 2 \)) facilitates synchronization at lower \( K \), repulsive coupling (\( J = -2 \)) hinders it significantly, and neutral coupling (\( J = 0 \)) produces intermediate behavior. The observed jaggedness underscores the model's complexity and the challenges of achieving stable synchronization in systems governed by both spatial and phase dynamics.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/Multimodal/swarmalator_results_reduced.png}
+    \caption{Average order parameter $\langle R \rangle$ versus coupling strength $K$ for different values of spatial coupling $J$ in the Swarmalator model. Top panel: \( J = -2 \) (repulsive coupling), middle panel: \( J = 0 \) (neutral coupling), bottom panel: \( J = 2 \) (attractive coupling).}
+    \label{fig:swarmalator_order_parameter}
+\end{figure}
+
+
+\subsubsection{Comparison of Models}
+
+Table \ref{tab:comparison_results} summarizes the critical coupling strengths $K_c$ for synchronization in both models under different conditions.
+
+\begin{table}[ht]
+    \centering
+    \caption{Critical Coupling Strengths $K_c$ for Synchronization}
+    \label{tab:comparison_results}
+    \begin{tabular}{ccc}
+        \hline
+        Model & $J$ & $K_c$ \\
+        \hline
+        Kuramoto & N/A & $1.0$ \\
+        Swarmalator & $J = -2$ & $2.5$ \\
+        Swarmalator & $J = 0$ & $1.5$ \\
+        Swarmalator & $J = 2$ & $0.5$ \\
+        \hline
+    \end{tabular}
+\end{table}
+
+The results indicate that while the Kuramoto model consistently exhibits a critical coupling strength around $K_c = 1.0$, the Swarmalator model's synchronization threshold highly depends on the value of $J$. When $J$ is negative (repulsive), synchronization occurs only at higher values of $K$. When $J$ is positive (attractive), synchronization can occur even at low values of $K$.
+
+
+\section{Experimental Setup}\label{sec:experimental_setup}
+
+Following the theoretical analysis and simulation results discussed in the previous sections, the following experiment is designed to evaluate the practical effectiveness of our phase synchronization models—the Kuramoto and Swarmalator models—in real-world musical contexts. In particular, this experiment addresses the challenges posed by dynamic tempo changes and the integration of visual cues. Musical performances, such as those in jazz improvisation, contemporary classical compositions, and certain progressive rock pieces, often feature deliberate tempo fluctuations, rubato, and expressive timing variations. These characteristics necessitate a robust synchronization mechanism that can adapt to both gradual and abrupt changes in tempo while also incorporating non-verbal cues such as musician body sway.
+
+The experiment is divided into two primary parts. The first part focuses on adapting to tempo changes using only audio features, thereby assessing the models' ability to track and synchronize with rhythmic variations inherent in these musical styles. The second part builds on this by incorporating visual cues—specifically, the body sway of musicians—along with audio features to enhance synchronization. Each segment involves detailed data preparation, methodological implementation, and comprehensive result analysis, enabling a thorough evaluation of the models' performance under various realistic performance conditions.
+ 
+
+\subsection{Adapting to Tempo Change}
+
+The first part of our experiment focuses on the models' ability to adapt to varying tempos in musical performances using solely audio features. We designed controlled scenarios with synthetic drum loops exhibiting specific tempo change patterns to isolate the effects of tempo variability on the synchronization algorithms.
+
+\subsubsection{Data}
+
+\paragraph{Overview}
+
+We created three synthetic drum loop tracks—\textbf{Track T1}, \textbf{Track T2}, and \textbf{Track T3}—each exhibiting different magnitudes of tempo changes. The tempos ranged from 75 beats per minute (BPM) to 150 BPM. The tracks were designed to present varying levels of challenge to the synchronization algorithms:
+
+\begin{itemize}
+    \item \textbf{Track T1}: Small, gradual tempo changes.
+    \item \textbf{Track T2}: Intermediate tempo changes.
+    \item \textbf{Track T3}: Large, abrupt tempo changes.
+\end{itemize}
+
+\paragraph{Track Creation}
+
+The drum loops were synthesized using a digital audio workstation (DAW) to ensure precise control over the tempo changes and consistency in audio quality. Each track consisted of a standard 4/4 drum pattern, commonly used in rock and pop genres, to provide clear and consistent rhythmic cues \cite{biamonte2018rhythmic}.
+
+\paragraph{Tempo Change Implementation}
+
+The tempo changes were implemented programmatically within the DAW:
+
+\begin{itemize}
+    \item \textbf{Track T1}: Starting at 75 BPM, the tempo increased by 1 BPM every 8 bars (32 beats), reaching 150 BPM at the end of the track.
+    \item \textbf{Track T2}: Starting at 75 BPM, the tempo increased by 5 BPM every 8 bars, reaching 150 BPM.
+    \item \textbf{Track T3}: Starting at 75 BPM, the tempo increased by 10 BPM every 8 bars, reaching 150 BPM.
+\end{itemize}
+
+Each track had a total duration sufficient to encompass multiple tempo changes, allowing the algorithms to process and adapt to the varying tempos.
+
+\paragraph{Data Export and Format}
+
+The tracks were exported as high-fidelity audio files in WAV format with a 44.1 kHz sample rate and 16-bit depth to preserve audio integrity during analysis.
+
+\paragraph{Tempogram Analysis}
+
+We generated tempograms \cite{cemgil2000tempo} for each track using the \texttt{librosa}  library in Python \cite{mcfee2015librosa} to visualize the tempo changes over time. A tempogram represents the local tempo information of an audio signal and is calculated based on the onset strength envelope.
+
+\begin{figure}[ht]
+    \centering
+    \subfloat[Track T1]{\includegraphics[width=0.31\textwidth]{images/Multimodal/Fig2a.png}\label{fig6.2a}}
+    \hspace{0.5cm}
+    \subfloat[Track T2]{\includegraphics[width=0.31\textwidth]{images/Multimodal/Fig2b.png}\label{fig6.2b}}
+    \hspace{0.5cm}
+    \subfloat[Track T3]{\includegraphics[width=0.31\textwidth]{images/Multimodal/Fig2c.png}\label{fig6.2c}}
+    \caption{Tempograms of the drum loops: (a) Track T1, (b) Track T2, and (c) Track T3. Each tempogram illustrates the tempo changes over time for the respective track.}
+    \label{fig:6.2}
+\end{figure}
+
+Figure \ref{fig:6.2} displays the tempograms for each track, highlighting the distinct tempo change patterns.
+
+\paragraph{Data Summary}
+
+Table \ref{tab:tempo_changes} summarizes the tempo change patterns for each track.
+
+\sloppy
+\begin{table}[ht]
+    \centering
+
+    \begin{tabular}{lccc}
+        \hline
+        \textbf{Track} & \textbf{Starting Tempo (BPM)} & \textbf{Tempo Increment (BPM)} & \textbf{Type of Change} \\
+        \hline
+        T1 & 75 & +1 every 8 bars & Small, gradual \\
+        T2 & 75 & +5 every 8 bars & Intermediate \\
+        T3 & 75 & +10 every 8 bars & Large, abrupt \\
+        \hline
+    \end{tabular}
+    \caption{Summary of Tempo Changes in the Drum Loops}
+    \label{tab:tempo_changes}
+\end{table}
+\fussy
+
+\subsubsection{Methodology}
+
+\paragraph{Objective}
+
+The primary objective was to assess the Kuramoto and Swarmalator models' ability to synchronize with musical performances exhibiting time-varying tempos using only audio features.
+
+\paragraph{Audio Feature Extraction}
+
+We extracted the following audio features from the drum loops:
+
+\begin{itemize}
+    \item \textbf{Onset Detection}: Identifying the exact moments when drum hits occur using peak-picking algorithms on the onset strength envelope.
+    \item \textbf{Tempo Estimation}: Using autocorrelation methods, computing the instantaneous tempo at each onset \cite{ellis2007beat}.
+    \item \textbf{Phase Calculation}: Determining the phase $\theta(t)$ of the rhythmic cycle at each point in time.
+\end{itemize}
+
+The \texttt{librosa} library was used for onset detection and tempo estimation, ensuring consistency in feature extraction across all tracks \cite{mcfee2015librosa} .
+
+\paragraph{Synchronization Models}
+
+We implemented two phase synchronization models:
+
+\begin{enumerate}
+    \item \textbf{Kuramoto Model}: Described by Equation (\ref{eq:multi_modal_kuramoto}), which models the synchronization of coupled oscillators.
+
+    \begin{equation}
+    \dot{\theta}_i(t) = \omega_i + \frac{K}{N} \sum_{j=1}^N \sin\left( \theta_j(t) - \theta_i(t) \right)
+    \label{eq:multi_modal_kuramoto}
+    \end{equation}
+
+    \item \textbf{Swarmalator Model}: Incorporates spatial dynamics along with phase synchronization, as shown in Equations (\ref{eq:swarmalator1})--(\ref{eq:swarmalator3}).
+
+    \begin{align}
+    \dot{x}_i(t) &= v \left( \cos(\theta_i(t)) + \alpha \sum_{j=1}^N A_{ij} \left( x_j(t) - x_i(t) \right) \right) \label{eq:swarmalator1} \\
+    \dot{y}_i(t) &= v \left( \sin(\theta_i(t)) + \alpha \sum_{j=1}^N A_{ij} \left( y_j(t) - y_i(t) \right) \right) \label{eq:swarmalator2} \\
+    \dot{\theta}_i(t) &= \omega_i + \beta \sum_{j=1}^N B_{ij} \sin\left( \theta_j(t) - \theta_i(t) \right) \label{eq:swarmalator3}
+    \end{align}
+
+\end{enumerate}
+
+\paragraph{Model Initialization}
+
+\begin{itemize}
+    \item \textbf{Natural Frequencies ($\omega_i$)}: We set to match the estimated tempo of the tracks at their starting point.
+    \item \textbf{Coupling Strengths ($K$, $\alpha$, $\beta$)}: Experimented with various values to find optimal synchronization performance. Initial values were set as $K = 1$, $\alpha = 0.5$, and $\beta = 1$.
+    \item \textbf{Number of Oscillators ($N$)}: Set to 2 to simulate synchronization between the model (automated system) and the audio track (simulated musician).
+\end{itemize}
+
+\paragraph{Simulation Procedure}
+
+\sloppy
+\begin{enumerate}
+    \item \textbf{Phase Extraction}: Compute the phase $\theta_{\text{audio}}(t)$ from the drum loop.
+    \item \textbf{Model Simulation}: Run the synchronization models using the extracted phase as input.
+    \item \textbf{Synchronization Assessment}: Compare the model's phase $\theta_{\text{model}}(t)$ with $\theta_{\text{audio}}(t)$ over time.
+\end{enumerate}
+\fussy
+
+
+\paragraph{Phase Comparison}
+
+We used the phase difference $\Delta \theta(t) = \theta_{\text{audio}}(t) - \theta_{\text{model}}(t)$ to assess synchronization. A smaller $\Delta \theta(t)$ indicates better synchronization.
+
+\paragraph{Algorithm Implementation}
+
+The models were implemented in Python using numerical integration methods:
+
+\begin{itemize}
+    \item \textbf{Kuramoto Model}: Integrated using the Euler method with a time step $\Delta t = 0.01$ seconds.
+    \item \textbf{Swarmalator Model}: Integrated using a fourth-order Runge-Kutta method due to its coupled spatial and phase dynamics.
+\end{itemize}
+
+\paragraph{Parameter Tuning}
+
+We performed parameter sweeps for $K$, $\alpha$, and $\beta$ to optimize synchronization performance. The optimal parameters were selected based on minimizing the mean absolute phase difference $\langle |\Delta \theta(t)| \rangle$.
+
+\subsubsection{Results}
+
+\paragraph{Phase Tracking}
+
+Figure \ref{fig:6.3} illustrates the phase tracking performance of the Kuramoto and Swarmalator models across the three tracks.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/Multimodal/Fig3.png}
+    \caption{Phase following using phase oscillatory models. The blue line represents the audio track's phase $\theta_{\text{audio}}(t)$, the orange line represents the Kuramoto model's phase $\theta_{\text{Kuramoto}}(t)$, and the magenta line represents the Swarmalator model's phase $\theta_{\text{Swarmalator}}(t)$. The top row shows results for the Kuramoto model, and the bottom row shows results for the Swarmalator model, across Tracks T1, T2, and T3.}
+    \label{fig:6.3}
+\end{figure}
+
+\paragraph{Analysis}
+
+\begin{itemize}
+    \item \textbf{Track T1 (Small Tempo Change)}:
+        \begin{itemize}
+            \item The Kuramoto model closely follows the audio phase with minimal lag.
+            \item The Swarmalator model exhibits slight deviations due to its spatial dynamics, which are less relevant in a purely audio context.
+        \end{itemize}
+    \item \textbf{Track T2 (Intermediate Tempo Change)}:
+        \begin{itemize}
+            \item The Kuramoto model maintains synchronization but begins to show small phase lags during abrupt tempo changes.
+            \item The Swarmalator model's performance degrades slightly more due to increased complexity in adapting to tempo shifts.
+        \end{itemize}
+    \item \textbf{Track T3 (Large Tempo Change)}:
+        \begin{itemize}
+            \item The Kuramoto model experiences noticeable phase lags during abrupt tempo increases but eventually resynchronizes.
+            \item The Swarmalator model struggles to maintain synchronization, with significant phase discrepancies observed.
+        \end{itemize}
+\end{itemize}
+
+
+ 
+
+\paragraph{Quantitative Metrics}
+
+We computed the mean absolute phase difference $\langle |\Delta \theta(t)| \rangle$ for each model and track, as summarized in Table \ref{tab:phase_difference}.
+
+\sloppy
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{lccc}
+        \hline
+        \textbf{Model} & \textbf{Track T1} & \textbf{Track T2} & \textbf{Track T3} \\
+        \hline
+        Kuramoto & 0.05 & 0.10 & 0.24 \\
+        Swarmalator & 0.08 & 0.17 & 0.28 \\
+        \hline
+    \end{tabular}
+    \caption{Mean Absolute Phase Difference $\langle |\Delta \theta(t)| \rangle$ (in radians)}
+    \label{tab:phase_difference}
+\end{table}
+
+\fussy
+
+\paragraph{Interpretation}
+
+The Kuramoto model performed well on Track T1, with a minimal phase difference of 0.05 radians, indicating near-perfect synchronization with the human performers. This is likely because the tempo changes gradually, allowing the Kuramoto model's oscillator-based system to adjust its phase smoothly. As the tempo increases more rapidly in Track T2 and Track T3, the mean phase difference increases, showing that the model struggles more in environments with rapid tempo changes. By Track T3, the phase difference grows to 0.24 radians, which suggests that the system begins to experience noticeable desynchronization as the tempo changes too quickly for the Kuramoto model to adapt.
+The Swarmalator model generally exhibits higher mean phase differences compared to the Kuramoto model across all tracks. For Track T1, the phase difference is 0.08 radians, slightly larger than that of the Kuramoto model but still indicative of relatively good synchronization. However, the phase difference increases significantly in Track T2 and Track T3, reaching 0.17 radians and 0.28 radians, respectively. This indicates that the Swarmalator model is less capable of handling fast tempo changes compared to the Kuramoto model. The larger phase differences suggest that the Swarmalator model introduces greater desynchronization as the tempo changes more rapidly, particularly in Track T3, where the phase difference is substantial. Comparative analysis when comparing the two models: \textit{Kuramoto} consistently achieves better synchronization across all tracks, with lower mean absolute phase differences.\textit{Swarmalator}, while offering reasonably good performance in Track T1, shows higher phase differences in Track T2 and Track T3, highlighting its limitations in more dynamically changing environments.
+
+
+\subsection{Using Visual Cues}
+
+The second part of our experiment investigates the impact of incorporating visual cues, specifically, musicians' body sway—on the synchronization models' performance. We hypothesize that combining audio and visual information can enhance synchronization, particularly during complex musical passages or silent intervals.
+
+\subsubsection{Data}
+
+\paragraph{Dataset Selection} \label{URMP_dataset}
+
+We utilized the \textbf{University of Rochester Music Performance (URMP)} dataset \cite{li2018creating}, a high-quality multimodal collection of music performance videos featuring multiple musicians playing classical pieces.
+
+\paragraph{Dataset Characteristics}
+
+\begin{itemize}
+    \item \textbf{Instrument Diversity}: The dataset includes 14 different instruments, encompassing strings, woodwinds, and brass.
+    \item \textbf{Ensemble Sizes}: Videos feature ensembles of varying sizes—duos, trios, quartets, and quintets.
+    \item \textbf{Musical Pieces}: A total of 44 pieces from renowned composers, providing a variety of tempos and rhythmic complexities.
+\end{itemize}
+
+\paragraph{Data Selection}
+
+For our experiment, we selected 12 videos:
+
+\begin{itemize}
+    \item 3 Duos Performances
+    \item 3 Trios Performances
+    \item 3 Quartets Performances
+    \item 3 Quintets Performances
+\end{itemize}
+
+We ensured diversity in instrumentation and tempos to generalize our findings.
+
+\paragraph{Data Preparation}
+
+\begin{itemize}
+    \item \textbf{Audio Extraction}: Extracted audio tracks from the videos at a 44.1 kHz sample rate.
+    \item \textbf{Video Processing}: Processed videos at 30 frames per second (fps) for pose estimation.
+\end{itemize}
+
+\paragraph{Introducing Silent Phases}
+
+To simulate challenging synchronization scenarios, we introduced silent phases into the audio tracks:
+
+\begin{itemize}
+    \item \textbf{Silence Durations}: 5, 10, and 15 seconds.
+    \item \textbf{Insertion Point}: At the 30\textsuperscript{th} second of each video.
+\end{itemize}
+
+The silent phases allowed us to assess the models' ability to maintain synchronization using visual cues in the absence of auditory information.
+
+\paragraph{Rationale for Silence Durations}
+
+Considering an average tempo of 100 BPM, the silence durations corresponded to:
+
+\begin{itemize}
+    \item \textbf{5 seconds}: Approximately 8 beats.
+    \item \textbf{10 seconds}: Approximately 16 beats.
+    \item \textbf{15 seconds}: Approximately 24 beats.
+\end{itemize}
+
+These durations represent increasing levels of complexity for synchronization algorithms.
+
+\subsubsection{Methodology}
+
+\paragraph{Objective}
+
+To evaluate whether incorporating visual cues (body sway) improves synchronization performance during silent phases and in general.
+
+\paragraph{Visual Feature Extraction}
+
+\begin{itemize}
+    \item \textbf{Pose Estimation}: Used the \textbf{BlazePose} model \cite{bazarevsky2020blazepose} for real-time human pose estimation.
+    \item \textbf{Keypoint Detection}: Extracted 33 keypoints per musician, including landmarks on the head, torso, arms, and legs.
+    \item \textbf{Frame Processing}: Processed each video frame to detect keypoints for each musician individually.
+\end{itemize}
+
+\paragraph{Body Sway Calculation}
+
+\begin{itemize}
+    \item \textbf{Spatial Derivative}: Computed the displacement $\Delta k_i(t)$ of each keypoint $k_i$ between consecutive frames:
+
+    \begin{equation}
+    \Delta k_i(t) = k_i(t + \Delta t) - k_i(t)
+    \end{equation}
+
+    \item \textbf{Motion Magnitude}: Calculated the magnitude of displacement for each keypoint:
+
+    \begin{equation}
+    ||\Delta k_i(t)|| = \sqrt{ \left( \Delta x_i(t) \right)^2 + \left( \Delta y_i(t) \right)^2 }
+    \end{equation}
+
+    \item \textbf{Average Motion}: Computed the average motion $\mu_t$ across all keypoints for each musician:
+
+    \begin{equation}
+    \mu_t = \frac{1}{N_k} \sum_{i=1}^{N_k} ||\Delta k_i(t)||
+    \label{eq:average_motion}
+    \end{equation}
+
+    where $N_k$ is the number of keypoints.
+
+    \item \textbf{Normalization}: Normalized $\mu_t$ to obtain a motion signal with values between 0 and 1.
+\end{itemize}
+
+\paragraph{Phase Extraction from Body Sway}
+
+We treated the normalized average motion $\mu_t$ as a periodic signal and applied a Hilbert transform to extract its instantaneous phase $\theta_{\text{visual}}(t)$:
+
+\begin{itemize}
+    \item \textbf{Hilbert Transform}:
+
+    \begin{equation}
+    \theta_{\text{visual}}(t) = \arctan\left( \frac{\mathcal{H}\{\mu_t\}}{\mu_t} \right)
+    \end{equation}
+
+    where $\mathcal{H}\{\mu_t\}$ is the Hilbert transform of $\mu_t$.
+
+    \item \textbf{Phase Unwrapping}: Ensured continuity of the phase signal over time.
+\end{itemize}
+
+\paragraph{Combining Audio and Visual Phases}
+
+We integrated the audio phase $\theta_{\text{audio}}(t)$ and visual phase $\theta_{\text{visual}}(t)$:
+
+\begin{equation}
+\theta_{\text{combined}}(t) = w_{\text{audio}} \theta_{\text{audio}}(t) + w_{\text{visual}} \theta_{\text{visual}}(t)
+\end{equation}
+
+where $w_{\text{audio}}$ and $w_{\text{visual}}$ are weighting factors satisfying $w_{\text{audio}} + w_{\text{visual}} = 1$.
+
+\paragraph{Model Adaptation}
+
+We modified the synchronization models to incorporate $\theta_{\text{combined}}(t)$:
+
+\begin{itemize}
+    \item \textbf{Kuramoto Model}:
+
+    \begin{equation}
+    \dot{\theta}_i(t) = \omega_i + \frac{K}{N} \sum_{j=1}^N \sin\left( \theta_{\text{combined},j}(t) - \theta_i(t) \right)
+    \end{equation}
+
+    \item \textbf{Swarmalator Model}: Similar adaptation with $\theta_{\text{combined}}(t)$. Spatial dynamics adjusted to reflect musicians' positions.
+
+\end{itemize}
+
+\paragraph{Synchronization Assessment}
+
+We assessed synchronization during:
+
+\begin{itemize}
+    \item \textbf{Normal Phases}: When both audio and visual cues are present.
+    \item \textbf{Silent Phases}: When only visual cues are available due to audio silence.
+\end{itemize}
+
+\paragraph{Evaluation Metrics}
+
+\begin{itemize}
+    \item \textbf{F1 Score}: Calculated based on beat detection accuracy compared to ground truth.
+    \item \textbf{Mean Absolute Phase Difference}: As before, for quantitative comparison.
+\end{itemize}
+
+\subsubsection{Results}
+
+\paragraph{Synchronization Performance}
+
+Table \ref{tab:audio_visual_f1} summarizes the mean F1 scores for each model under different conditions.
+\begin{table}[H]
+    \centering
+    \caption{Key Parameters of the Integrated System}
+    \label{tab:audio_visual_f1}
+    \begin{tabular}{L{5cm}L{5cm}l}
+        \toprule
+        \textbf{Parameter} & \textbf{Description} & \textbf{Typical Values} \\
+        \midrule
+        Video Frame Rate            & Input video frame capture rate. & 25--30 fps \\
+        Pose Model Threshold (conf) & YOLO confidence threshold for keypoint detection. & 0.3--0.5 \\
+        Max Buffer Size (positions) & Buffer length (in frames) used for BPM estimation from motion. & 30 frames \\
+        Natural Frequency (osc.)    & Baseline oscillator frequency (approx. 120 BPM). & 2.0 Hz \\
+        Coupling Strength (Kuramoto)& Degree of coupling between oscillators. & 0.1--0.2 \\
+        MIDI Note On/Off Velocity   & Intensity of triggered percussive notes. & 90--110 (out of 127) \\
+        BPM Clip Range              & Allowed BPM range for tempo estimation. & 60--180 BPM \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\paragraph{Impact of Ensemble Size}
+
+As the number of musicians increased, the improvement in synchronization performance due to visual cues became more pronounced, especially in the Kuramoto model.
+
+\paragraph{Silent Phases Performance}
+
+During silent phases, the audio-only models failed to maintain synchronization, as expected. The audio-visual models, however, continued to synchronize using visual cues.
+
+\begin{figure}[ht]
+    \centering
+    \subfloat[Kuramoto Model]{\includegraphics[width=0.48\textwidth]{images/Multimodal/Fig7a.png}\label{fig:6.7a}}
+    \hspace{0.5cm}
+    \subfloat[Swarmalator Model]{\includegraphics[width=0.48\textwidth]{images/Multimodal/Fig7b.png}\label{fig:6.7b}}
+    \caption{Accuracy vs. Number of Musicians using (a) Kuramoto's Equation and (b) Swarmalator Model.}
+    \label{fig:6.7}
+\end{figure}
+
+\paragraph{Visual Analysis}
+
+Figure \ref{fig6.5} illustrates the body sway detection and average motion signals.
+
+\begin{figure}[ht]
+    \centering
+    \subfloat[Pose Estimation]{\includegraphics[width=0.45\textwidth]{images/Multimodal/Fig5.png}\label{fig:6.5a}}
+    \hspace{0.5cm}
+    \subfloat[Average Motion Signal]{\includegraphics[width=0.45\textwidth]{images/Multimodal/Fig6.png}\label{fig:6.5b}}
+    \caption{(a) Detecting body keypoints using the BlazePose Model for each musician. (b) The average motion (Equation \ref{eq:average_motion}) of spatial derivative of each musician over time.}
+    \label{fig6.5}
+\end{figure}
+
+\paragraph{Observation}
+
+The average motion signals displayed periodic patterns corresponding to the musicians' body sway, which were effectively utilized to extract phase information.
+
+\paragraph{Parameter Sensitivity}
+
+We experimented with different weighting factors $w_{\text{audio}}$ and $w_{\text{visual}}$:
+
+\begin{itemize}
+    \item \textbf{Optimal Weights}: Found $w_{\text{audio}} = 0.7$ and $w_{\text{visual}} = 0.3$ provided the best performance.
+    \item \textbf{Silent Phases}: During silence, $w_{\text{audio}}$ was set to 0, relying entirely on visual cues.
+\end{itemize}
+
+\section{Discussion}\label{sec:multimodal_discussion}
+
+In this section, we delve into an in-depth analysis of the experimental results, exploring the implications, limitations, and potential applications of our findings. The discussion is structured to address key observations from both parts of the experiment and to interpret the performance of the synchronization models in the context of musical ensemble synchronization.
+
+\subsection{Adapting to Tempo Change Using Audio Features}
+
+\subsubsection{Model Performance Analysis}
+
+\paragraph{Kuramoto Model}
+
+The Kuramoto model demonstrated robust performance in adapting to tempo changes across all tracks, with a mean absolute phase difference increasing moderately as the magnitude of tempo changes increased. This model's ability to synchronize with the varying tempo indicates its effectiveness in capturing the essential dynamics of rhythmic synchronization in musical contexts.
+
+\paragraph{Swarmalator Model}
+
+The Swarmalator model showed comparatively lower synchronization accuracy, particularly in tracks with larger tempo changes. The inclusion of spatial dynamics, which are less relevant in purely audio-based synchronization, may have introduced additional complexity, hindering its performance in this context.
+
+\subsubsection{Impact of Tempo Change Magnitude}
+
+The experimental results indicate that the synchronization accuracy of both the Kuramoto and Swarmalator models deteriorates as the magnitude of tempo changes increases. Specifically, abrupt tempo shifts lead to a noticeable decline in synchronization performance, as the models struggle to maintain phase alignment under rapidly changing conditions. This phenomenon can be attributed to two primary factors. First, sudden increases in tempo induce a transient phase lag, whereby the models experience a delay in adjusting their natural frequencies to match the new tempo. Second, the fixed coupling strength \(K\) used in the simulations may be insufficient to accommodate rapid tempo variations, suggesting that an adaptive coupling mechanism might be necessary to enhance the models' responsiveness. Together, these factors imply that while the models are well-suited for handling gradual tempo variations commonly encountered in many musical performances, they may require further refinement to manage abrupt tempo shifts effectively.
+
+
+\subsubsection{Parameter Sensitivity}
+
+The synchronization performance is sensitive to the choice of parameters, particularly the coupling strength $K$ in the Kuramoto model. Optimal parameter values may vary depending on the specific tempo change patterns, suggesting that adaptive parameter tuning could enhance synchronization in dynamic musical environments.
+
+\paragraph{Potential Solutions}
+
+\begin{itemize}
+    \item \textbf{Adaptive Coupling}: Implementing a variable coupling strength that adjusts based on the rate of tempo change.
+    \item \textbf{Predictive Mechanisms}: Incorporating predictive algorithms to anticipate tempo changes and adjust the model parameters proactively.
+\end{itemize}
+
+\subsubsection{Limitations of the Models}
+
+\paragraph{Kuramoto Model}
+
+While effective in synchronizing phase, the Kuramoto model does not account for amplitude variations or the spatial aspects of musicians' interactions.
+
+\paragraph{Swarmalator Model}
+
+The Swarmalator model's inclusion of spatial dynamics may not be directly applicable in audio-only contexts. Its performance indicates that additional modifications are necessary to tailor it to musical synchronization tasks.
+ 
+
+\subsection{Incorporating Visual Cues for Enhanced Synchronization}
+
+\subsubsection{Effectiveness of Visual Information}
+
+The integration of visual cues, specifically musicians' body sway, significantly improved synchronization performance, as evidenced by higher F1 scores and better phase alignment during silent phases. Musicians often use body movements as non-verbal communication cues to convey timing and expressive intent. Capturing this information provides valuable insights into the temporal dynamics of ensemble performance.
+
+\subsubsection{Performance During Silent Phases}
+
+The audio-visual models maintained synchronization during silent phases, whereas audio-only models failed to do so. This demonstrates the critical role of visual cues in sustaining ensemble coherence when auditory information is unavailable.
+
+\paragraph{Implications}
+
+\begin{itemize}
+    \item \textbf{Conducting Gestures}: The models could be adapted to interpret a conductor's gestures, enhancing synchronization in orchestral settings.
+    \item \textbf{Interactive Systems}: Visual cues can be leveraged in interactive music systems where participants may be temporally separated or have intermittent audio connectivity.
+\end{itemize}
+
+\subsubsection{Impact of Ensemble Size}
+
+Further investigation reveals that group synchrony is more than synchrony between fewer people. The visual sway of more musicians can give more information than few musicians (see Figure \ref{fig:Accuracy Vs Number}). The analysis indicated that group synchrony is not solely dependent on the synchronization of a smaller number of individuals; the visual sway information from a larger ensemble offers more valuable insights. When visual sway data was included, the mean accuracy of the audio-visual approach using Kuramoto's algorithm improved, suggesting a positive impact on system performance. The mean accuracy of the audio-visual model on Kuramoto's algorithm is higher when visual sway information is included, indicating a positive impact on system performance.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/Multimodal/Fig7.png}
+    \caption{Accuracy Vs Number of Musician using (a) Kuramoto's Equation and (b) Swarmlator. The y-axis represents the accuracy}
+    \label{fig:Accuracy Vs Number}
+\end{figure}
+
+\paragraph{Explanation}
+
+Multiple sources of visual cues play a crucial role in providing redundancy, which helps to mitigate the effects of variability among individual performers. By capturing overlapping information from various participants, the system ensures that a temporary loss or inconsistency in one cue does not compromise the overall synchronization. Larger ensembles tend to exhibit emergent behaviors that are best understood through the analysis of collective motion. This collective dynamic allows the system to harness coordinated movements across the group, thereby enhancing the stability and coherence of the synchronization process.
+
+\subsubsection{Future Directions}
+
+\paragraph{Advanced Visual Feature Extraction}
+
+Exploring more sophisticated motion analysis techniques, such as:
+
+\begin{itemize}
+    \item \textbf{Optical Flow}: To capture subtle movements.
+    \item \textbf{Gesture Recognition}: To interpret specific conducting patterns or expressive gestures.
+\end{itemize}
+
+\paragraph{Machine Learning Approaches}
+
+Incorporating machine learning models to learn synchronization patterns from data:
+
+\begin{itemize}
+    \item \textbf{Recurrent Neural Networks (RNNs)}: To model temporal dependencies.
+    \item \textbf{Attention Mechanisms}: To focus on relevant cues.
+\end{itemize}
+
+\paragraph{User Studies}
+
+Conducting user studies with musicians to evaluate the system's effectiveness in real-world ensemble settings and gather qualitative feedback.
+
+\subsection{Comparative Analysis of Models}
+
+\subsubsection{Kuramoto vs. Swarmalator Models}
+
+\paragraph{Performance Comparison}
+
+The Kuramoto model consistently outperformed the Swarmalator model in both audio-only and audio-visual conditions.
+
+\paragraph{Model Suitability}
+
+The Kuramoto model's simplicity and focus on phase synchronization make it more suitable for musical applications, whereas the Swarmalator model's inclusion of spatial dynamics adds complexity without significant benefits in this context.
+
+\subsubsection{Model Limitations}
+
+Both models have limitations in capturing the full complexity of musical synchronization, such as expressive timing variations, dynamics, and higher-level musical structures.
+
+\paragraph{Potential Enhancements}
+
+\begin{itemize}
+    \item \textbf{Incorporating Amplitude Dynamics}: Extending models to account for variations in loudness and articulation.
+    \item \textbf{Hierarchical Modeling}: Capturing synchronization at multiple time scales (e.g., beats, bars, phrases).
+\end{itemize}
+ 
+
+\subsection{Limitations of the Study}
+
+One limitation of our study lies in the fact that all experiments were conducted in highly controlled environments using synthetic data, such as computer-generated drum loops, and pre-recorded video sequences. These controlled settings enabled us to meticulously manage experimental variables such as lighting, audio quality, and the timing of visual cues, which in turn allowed us to focus on isolating the performance of our synchronization models. However, such an environment inherently lacks the unpredictable and dynamic elements present in live performances. In real-world settings, musicians face challenges such as ambient noise, variable acoustics, spontaneous expressive gestures, and fluctuating lighting conditions, all of which can significantly affect the performance of a synchronization system. Therefore, while the controlled environment was ideal for initial testing and validation, it does not fully capture the complexity and variability of actual live musical performances.
+
+Another important limitation is related to the generalizability of our results. Although the findings from our experiments are promising, they were derived from a specific set of musical contexts and ensemble configurations that may not represent the full spectrum of musical genres. Our study primarily focused on genres with well-defined rhythmic structures and predictable timing, which may not encompass the nuances found in more improvisational or avant-garde musical styles. Musical genres that rely on free rhythm, irregular time signatures, or those that incorporate significant spontaneous expression may introduce challenges that our current models are not equipped to handle. Consequently, further research is required to evaluate and refine the synchronization framework across a broader range of musical styles and ensemble configurations. This ensures that the model can adapt to diverse performance settings and maintain robust synchronization under varying conditions.
+
+A further limitation stems from the periodicity assumption underpinning our synchronization models. The current approach is based on the premise that musical performances inherently exhibit periodic behavior, which allows us to model synchronization using cyclic phase relationships. While this assumption is valid for many traditional forms of music that adhere to a steady metrical structure, it does not necessarily hold true for genres where timing is more fluid or intentionally non-metrical. In musical styles that embrace free-form or highly expressive timing variations, the strict periodicity assumed by our models may result in inaccuracies and reduced synchronization quality. This limitation highlights the need for developing more flexible models that can account for non-periodic or irregular rhythmic patterns, thereby better accommodating the full range of human musical expression.
+
+
+\subsection{Conclusions Drawn from the Discussion}
+
+\subsubsection{Effectiveness of Phase Synchronization Models}
+
+The Kuramoto model proves to be an effective tool for modeling synchronization in musical ensembles, particularly when enhanced with visual cues.
+
+\subsubsection{Importance of Multimodal Integration}
+
+Incorporating both auditory and visual information significantly enhances synchronization performance, highlighting the importance of multimodal integration in musical contexts.
+
+ 
+ 
+\section{Conclusion}\label{sec:multimodal_conclusion}
+
+In summary, this chapter has presented a multimodal synchronization framework that integrates audio and visual cues to enhance the coordination of human-robot musical ensembles. Our experiments demonstrate that incorporating visual information, such as a musician's body sway, significantly improves synchronization, particularly under challenging conditions like abrupt tempo changes and silent phases. The results confirm that while the Kuramoto model performs robustly with gradual tempo variations, the fusion of visual cues is essential for handling more dynamic performance scenarios.
+
+These findings provide a solid foundation for further refinement of synchronization strategies and pave the way for the next stage of our research. The following chapter extends these concepts by exploring gesture-based dynamic drumming, further enriching the natural interaction between human performers and robotic systems and integrating gesture recognition into dynamic drumming promises to offer an even more nuanced and expressive platform for human-robot collaboration, thereby pushing the boundaries of musical creativity and interactivity.
+
+\subsection{Final Remarks}
+
+The development of a multimodal synchronization framework marks a significant step forward in achieving seamless and expressive collaboration between human and robotic musicians. By aligning the robotic system's perception and actions with the natural multimodal communication of human ensemble members, we have moved closer to replicating the richness and complexity of human musical interactions.
+
+The integration of audio and visual cues addresses the inherent limitations of single-modality systems, providing a more robust and adaptable approach to synchronization. Our experimental results validate the effectiveness of this approach, demonstrating improved accuracy and responsiveness in various performance scenarios.
+
+As we look ahead, incorporating gesture-based dynamic drumming and touchless, whole-body interaction techniques—as introduced in the subsequent Chapter~\ref{ch-7}—presents exciting opportunities to enrich human-robot musical collaboration further. These methods enhance the expressiveness and intuitiveness of interactions while aligning with the principles of ubiquitous music, thereby promoting inclusivity and accessibility.
+
+The ongoing exploration of ubimus concepts emphasizes the importance of designing musical technologies that support a wide range of participants and settings. By embracing adaptive, touchless interfaces and flexible interaction metaphors, we can create engaging musical experiences for human musicians and robotic performers, setting the stage for the transformative developments detailed in the next chapter.

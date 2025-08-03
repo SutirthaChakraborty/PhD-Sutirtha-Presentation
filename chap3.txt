@@ -1,0 +1,637 @@
+\chapter{The Cyborg Philharmonic: A Framework for Human-Robot Musical Synchronization}\label{ch-3}
+ \chaptermark{Cyborg Philharmonic - Framework}
+
+\section{Introduction}
+
+The integration of robotic systems into musical ensembles is a frontier that pushes the boundaries of robotics, artificial intelligence, and human-computer interaction. It can be represented as a connected graph where each of the musicians is connected to each other as shown in Fig: \ref{fig:ensemble}. Building upon the historical evolution of automated musical systems explored in Chapter \ref{ch-1} and the detailed analysis of synchronization mechanisms in Chapter \ref{ch-2}, this chapter introduces the Cyborg Philharmonic framework. The framework aims to address the intricate challenges of achieving expressive and synchronized human-robot performances in real-time ensemble settings.
+
+Unlike static or purely algorithmic approaches, the Cyborg Philharmonic integrates dynamic learning models with classical synchronization techniques to create a responsive, adaptive, and expressive robotic musician. The goal is not only technical synchronization but also the emulation of human-like musicality—capturing the subtleties of timing, phrasing, and expression that are inherent in human performances. 
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/nature/Figure1.jpg}  
+    \caption{Interconnected network among musicians during a musical ensemble depicts each individual musician to be connected to others to synchronize their performances with the leader.}
+    \label{fig:ensemble}
+\end{figure}
+
+
+\subsection{Overview of the Chapter}
+This chapter is structured as follows: We begin by providing an overview of the Cyborg Philharmonic framework, detailing its key components, including the Mapping and Modeling Modules, which are crucial for data acquisition, synchronization, and predictive modeling. Following this, we discuss the multimodal synchronization techniques employed in the framework, highlighting the integration of audio, visual, and gestural data to achieve robust synchronization between human and robotic performers. The chapter then delves into the predictive modeling and anticipation strategies that enable robots to proactively synchronize with human musicians, adapting to tempo changes and expressive nuances. We also explore the adaptive control and feedback systems that ensure the stability and expressiveness of the performance. The datasets used for training and validating these models, MUSDB18 and URMP, are discussed in detail, followed by the experimental setup and evaluation metrics employed to assess the framework's effectiveness. Finally, the chapter concludes with a discussion on the broader implications, potential future directions, and a bridge to the next chapter, which introduces the LeaderSTeM model for dynamic leader identification in musical ensembles.
+
+\section{Ensemble Interaction Model}
+
+Figure~\ref{fig:ensemble_interaction} illustrates the complex interaction framework among musicians, instruments, listeners, and the environment within a musical ensemble. This model provides insights into the acoustic, mechanical, and visual feedback mechanisms essential for achieving cohesive performances.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/nature/Acoustic-path-of-ensemble-sound-formation-and-information-based-on-8.png}
+    \caption{A generalized feedback model within an ensemble, adapted from Thilakan et al. (2023)~\cite{thilakan2023classification}.}
+    \label{fig:ensemble_interaction}
+\end{figure}
+
+\subsection*{Explanation of the Feedback Model}
+
+In an ensemble, a musician interacts with multiple sources of feedback, creating a networked environment for synchronization and harmonization. The primary components involved are the \textbf{Musician}, \textbf{Instrument}, \textbf{Other Musicians}, \textbf{Other Instruments}, \textbf{Room}, and \textbf{Listener}. Each component communicates through specific pathways that facilitate synchronization and adaptive performance.
+
+\paragraph{1. Musician and Instrument}
+The \textbf{Musician} performs actions on the \textbf{Instrument}, often referred to as \textit{mechanical actions}. These actions result in \textit{direct sound}, which is the immediate auditory feedback the musician perceives. This direct sound allows the musician to monitor their performance in real time, making minute adjustments to ensure precision and consistency.
+
+\paragraph{2. Interaction Among Musicians and Instruments}
+Ensemble performances require coordination between \textbf{Musicians} and \textbf{Other Musicians}. Visual feedback plays a significant role here, as musicians rely on sight to maintain temporal alignment and respond to visual cues, especially in the absence of direct auditory feedback. \textit{Mechanical actions} and \textit{direct sound} link \textbf{Other Instruments} to the central musician, creating a complex web of auditory and mechanical interactions that contribute to the collective sound.
+
+\paragraph{3. Acoustic Environment (Room)}
+The \textbf{Room} modifies the sound produced by each instrument acoustically before it reaches the listener. This acoustically modified feedback allows musicians to understand how their sound interacts with the environment, which is crucial in large ensemble settings where spatial arrangement affects acoustics. The room's influence on sound can alter timbre and dynamics, impacting the ensemble’s balance and tonal quality.
+
+\paragraph{4. Listener Perception}
+The \textbf{Listener} receives sound from two primary sources: the \textit{direct sound} from the musician’s instrument and the \textit{acoustically modified sound} reflected from the room. This combination provides a richer auditory experience, allowing listeners to perceive depth and spatial nuances within the ensemble. The interaction between direct and modified sounds enhances the listener’s perception of source-level blending, a phenomenon where sounds from multiple instruments merge seamlessly.
+
+\paragraph{5. Feedback Loops and Synchronization}
+Two primary feedback loops are present in this model:
+\begin{itemize}
+    \item \textbf{Visual Feedback Loop:} Visual cues facilitate real-time synchronization among musicians. These cues allow musicians to anticipate each other’s actions, maintain timing, and enhance expressive coherence.
+    \item \textbf{Acoustic Feedback Loop:} The musician receives \textit{acoustically modified feedback} from the instrument’s sound interacting with the room. This feedback is essential for adapting dynamics and expression based on the acoustics of the performance space.
+\end{itemize}
+
+
+\subsection{Oscillators as Models for Rhythmic Synchronization}
+\label{Oscillators as Models for Rhythmic Synchronization}
+
+In the context of musical ensembles, \textbf{oscillators} serve as fundamental mathematical models that represent rhythmic timing and periodic behaviours among performers as discussed the earlier \ref{kuramoto_question} . Each oscillator is defined by its \textit{phase} and \textit{frequency}, where the phase indicates the position in the oscillation cycle (analogous to the beat in a musical phrase), and the frequency represents the natural tempo of the performer. By using oscillators to simulate individual performers' timing, we can analyze and model the synchronization process in an ensemble setting.
+
+When multiple oscillators are coupled together, they can influence each other's phase and frequency, gradually aligning to reach a synchronized state. This property of coupled oscillators makes them well-suited for representing interactions within a musical ensemble, where each musician adapts to the timing of others to achieve a cohesive performance. As stated previously, such oscillator models are particularly useful in simulating human-robot interactions in music, where the goal is to emulate natural rhythmic synchronization between humans and machines.
+ 
+
+
+
+\subsection{Implementing Role Adaptation}
+\label{Implementing Role Adaptation}
+
+
+Role adaptation is a dynamic process that allows robotic performers to adjust their synchronization behavior based on real-time cues from human performers in the ensemble. This adaptation enables the system to respond flexibly to the evolving leadership and follower roles within the group, which is achieved through parameter adjustments and continuous analysis of interaction patterns \cite{wollner2017music}. Specifically:
+
+\begin{itemize}
+    \item \textbf{Leader-Follower Dynamics:} In musical ensembles, certain performers naturally take on the role of a leader, guiding the tempo, rhythm, and expressive dynamics of the group. The algorithm detects leadership roles in real-time by analyzing visual and auditory cues, such as changes in tempo, body language, and the initiation of new musical phrases. When a human performer is identified as the leader, the robot shifts its synchronization behavior to prioritize aligning with this performer’s timing and dynamics \cite{mizumoto2012leader}. This responsive leadership detection allows the robot to follow the expressive intent of the human leader, enhancing ensemble coherence.
+
+    \item \textbf{Adaptive Coupling Coefficients:} To effectively manage leader-follower roles, the synchronization model in this framework is extended with adaptive coupling coefficients, which adjust the strength of interaction between oscillators based on the identified role. When a performer is assigned the role of a leader, the algorithm increases the coupling strength between this leader and other performers (human or robotic). This increased influence means that other oscillators will more strongly synchronize their phase and frequency to match the leader’s timing. Adaptive coupling coefficients thus allow the system to reflect and reinforce ensemble dynamics, ensuring the leader’s tempo and rhythmic intent guide the ensemble’s timing.
+
+    \item \textbf{Dynamic Feedback Control:} The system includes real-time feedback mechanisms to ensure that the robotic performer continuously adjusts its actions to match changes in tempo and dynamics set by the leader. This feedback loop uses continuous updates on the ensemble’s timing and dynamics, allowing the robot to maintain responsiveness. For instance, if the leader accelerates or decelerates, the feedback system dynamically adjusts the robot’s control parameters to match this shift, ensuring cohesive and expressive performance synchronization with the human ensemble.
+\end{itemize}
+
+Through these integrated elements of role adaptation, the robot can effectively synchronize with human performers and adjust its role in the performance as needed, whether it is following a human leader or, occasionally, taking on a leading role itself. Further details of role adaptation, including advanced models for leader-follower dynamics, are discussed in Chapter~\ref{ch-4}, “LeaderSTeM”. Having established the foundational concepts of ensemble interaction (Section~\ref{Oscillators as Models for Rhythmic Synchronization}) and examined how oscillators can effectively model rhythmic synchronization (Section~\ref{Implementing Role Adaptation}), we now introduce the overarching framework that integrates these ideas into a cohesive system for human-robot musical collaboration. Sections~\ref{Oscillators as Models for Rhythmic Synchronization} and \ref{Implementing Role Adaptation} highlighted the ways in which musicians exchange visual and acoustic information to maintain unity of performance, and demonstrated how mathematical models of coupled oscillators enable precise phase alignment and role adaptation. Building upon these insights, we present in Section~\ref{Framework Overview: The Cyborg Philharmonic} the \textit{Cyborg Philharmonic} framework, which constitutes the core contribution of this chapter. By merging the sensor-based mapping of human cues with predictive modeling of musical structure, our framework not only addresses the challenges of real-time synchronization but also allows robotic performers to anticipate shifts in tempo, dynamics, and leadership. This novel approach ensures that the robots in an ensemble can fluidly transition between following and leading roles, thereby facilitating a higher level of expressivity and spontaneity in mixed human-robot performances.
+
+
+\section{Framework Overview: The Cyborg Philharmonic}
+\label{Framework Overview: The Cyborg Philharmonic}
+The Cyborg Philharmonic framework(as shown in Fig:\ref{fig:cyborg_philharmonic_architecture}) consists of two main components: the \textbf{Mapping Module} and the \textbf{Modeling Module}. Together, they enable robots to synchronize with human musicians, anticipate future musical events, and adapt to changes during performances. The Mapping Module focuses on collecting and processing real-time data from various sensors, while the Modeling Module uses this data to predict and generate expressive musical responses.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/nature/Figure2.jpg} % Update with correct path
+    \caption{Architecture of the Cyborg Philharmonic framework, showing the interaction between the Mapping and Modeling modules for real-time synchronization and anticipation in human-robot musical ensembles.}
+    \label{fig:cyborg_philharmonic_architecture}
+\end{figure}
+
+\subsection{Mapping Module}
+
+The Mapping Module is the foundation for data acquisition and synchronization control within the Cyborg Philharmonic framework. It focuses on capturing and processing multimodal data—such as audio, visual, and gestural inputs—to enable the robot to interpret the musical environment accurately. The module includes the following components:
+
+\begin{itemize}
+    \item \textbf{Sensor Acquisition and Processing:} This component employs an array of sensors, including microphones and cameras, to capture real-time multimodal data. Microphones capture audio signals, cameras monitor visual cues (such as gestures and facial expressions), and a pose detection algorithm is used to estimate the subtle body movements.
+    
+    \item \textbf{Feature Extraction:} Signal processing algorithms are used to extract relevant features from the acquired data. Auditory features include beat, tempo, and dynamics, while visual features focus on gestures and body movements(discussed in detail in Chapter \ref{ch-5}). 
+    
+    \item \textbf{Synchronization Algorithms:} The core of the Mapping Module is its synchronization algorithms, which use mathematical models like the Kuramoto model of coupled oscillators chosen based on the literature survey(section \ref{kuramoto_question}). These models achieve phase synchronization between human and robotic performers by adjusting the robot's internal timing to align with that of the human musicians. The Kuramoto model, extended with time delays and variable coupling strengths, is particularly effective for maintaining robust synchronization in dynamic environments \cite{kuramoto1975self, acebron2005kuramoto}.
+    
+    \item \textbf{Control Interface:} A real-time control interface translates synchronization parameters into actionable control signals for the robotic performers. These signals adjust the robot's actions based on the synchronized output, ensuring that the robot remains in sync with the ensemble at all times.
+\end{itemize}
+
+\subsection{Modeling Module}
+
+The Modeling Module builds on the data processed by the Mapping Module to enable predictive modeling, role adaptation, and expressive performance generation. This module focuses on higher-level cognitive functions that allow the robot to anticipate changes in the musical environment and adapt its behavior dynamically.
+
+\begin{itemize}
+    \item \textbf{Predictive Modeling:} This component utilizes deep learning architectures, particularly Recurrent Neural Networks (RNNs) and Long Short-Term Memory (LSTM) networks, to model temporal dependencies and predict future musical events. By training on sequences of musical data, these models enable the robot to anticipate tempo changes, dynamic variations, and other expressive cues \cite{hochreiter1997long}.
+    
+    \item \textbf{Leader-Follower Dynamics:} The Modeling Module incorporates algorithms that detect and adapt to changing roles within the ensemble. Utilizing techniques such as the LeaderSTeM model \cite{chakraborty2020leaderstem}, the system analyzes interaction patterns to dynamically assign leader and follower roles, allowing the robot to either lead or follow as needed. The model is discussed in detail in Chapter \ref{ch-4}.
+    
+    \item \textbf{Expressive Performance Generation:} Reinforcement learning techniques are employed to allow the robot to learn expressive playing styles from continuous feedback. By incorporating reward-based learning mechanisms, the robot can fine-tune its expressive capabilities, ensuring performances that are not only technically accurate but also musically engaging.
+\end{itemize}
+
+
+\begin{algorithm}[ht]
+\caption{Simplified Synchronization Algorithm for Cyborg Philharmonic}
+\label{algorithm_cyborg_philharmonic}
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+\Input{$audio\_files$: beat audio files, $oscillator\_states$: initial oscillator states}
+\Output{$control\_signals$: synchronized control signals for robotic performers}
+\BlankLine
+
+\SetKwProg{Fn}{Procedure}{:}{}
+\Fn{\textsc{Cyborg-Synchronization}($audio\_files$, $oscillator\_states$)}{
+    Initialize system parameters (window size, hop size, beat volume, etc.)\;
+    Load beat audio files into a list for processing\;
+    \ForEach{beat file}{
+        Read and process audio buffers\;
+        Store processed beat data\;
+    }
+    Initialize oscillators for each performer\;
+    Set initial phases and frequencies for each oscillator\;
+    \While{performance is ongoing}{
+        \ForEach{oscillator}{
+            Calculate synchronization adjustment based on the Kuramoto model\;
+            Update oscillator phase and frequency\;
+        }
+        Generate control signals for robotic performers\;
+        Process incoming sensory data (audio, visual, gestural)\;
+        Adjust system parameters dynamically\;
+    }
+    \Return $control\_signals$\;
+}
+\end{algorithm}
+
+\subsection{Detailed Explanation of the Simplified Synchronization Algorithm}
+\label{Detailed Explanation of the Simplified Synchronization Algorithm}
+ 
+
+
+The \textsc{Cyborg-Synchronization} algorithm[\ref{algorithm_cyborg_philharmonic}] is designed to achieve real-time synchronization between human and robotic musicians in an ensemble setting.  In a live performance, musicians and robots must synchronize in real time, but for initial development and testing, real-time control introduces uncontrollable variables, including timing inconsistencies, environmental noise, and unanticipated latency. Instead, we use pre-recorded audio files that represent rhythmic patterns as a more stable basis for initial experimentation and model tuning. These controlled audio files enable the system to reliably evaluate beat detection, synchronization accuracy, and phase adjustments without external disruptions. By working in this simulated environment, we can refine synchronization mechanisms before testing them in the variable conditions of a live performance. In this framework, each performer (whether human or robotic) is represented by an oscillator. 
+
+
+\subsubsection{Underlying Concepts and Mechanisms}
+
+\paragraph{Kuramoto Model for Synchronization}
+
+The Kuramoto model is central to the algorithm, providing a mathematical framework for synchronization among oscillators:
+
+\begin{itemize}
+    \item \textbf{Oscillators:} Each performer is represented as an oscillator with its own phase and frequency.
+    \item \textbf{Coupling:} Oscillators influence each other through coupling terms, promoting synchronization.
+    \item \textbf{Adaptive Coupling Coefficients ($a_{ij}$):} These coefficients adjust the strength of interaction between oscillators, allowing the system to adapt to changes in performer dynamics (e.g., when a musician takes the lead).
+\end{itemize}
+
+\paragraph{Adaptive Control and Feedback}
+
+\begin{itemize}
+    \item \textbf{Error Correction:} Differences between the oscillator phases are used to compute adjustments, minimizing synchronization errors. The error-correction equation, adapted from the Kuramoto model, can be written as:
+\begin{equation}
+\dot{\theta}_i(t) \;=\; \omega_i \;+\; K \sum_{j=1}^{N} \sin\!\bigl(\theta_j(t) - \theta_i(t)\bigr),
+\label{eq:error_correction}
+\end{equation}
+where
+\begin{itemize}
+    \item $\theta_i(t)$ is the phase of the $i$th oscillator at time $t$,
+    \item $\omega_i$ is its natural frequency,
+    \item $K$ is the coupling gain that scales the strength of the correction,
+    \item $\sin\bigl(\theta_j(t) - \theta_i(t)\bigr)$ encodes the phase difference (error) between oscillator $j$ and oscillator $i$.
+\end{itemize}
+This term continuously pushes oscillators to reduce their phase differences, thus minimizing synchronization error over time.
+
+    
+    \item \textbf{Feedback Mechanisms:} Real-time sensory data informs adjustments to oscillator states and system parameters, enabling the system to respond to tempo fluctuations and expressive variations.
+    \item \textbf{Dynamic Role Adaptation:} The system can detect changes in leadership within the ensemble and adjust coupling coefficients accordingly.
+\end{itemize}
+
+\paragraph{Multimodal Sensory Integration}
+
+\begin{itemize}
+    \item \textbf{Audio Processing:} Beat detection algorithms analyze audio inputs to extract tempo and rhythmic patterns.
+    \item \textbf{Visual and Gestural Cues:} Computer vision techniques interpret gestures and facial expressions, providing additional synchronization cues. In Chapter \ref{ch-5} It has been studied in details. 
+    \item \textbf{Sensor Fusion:} Data from multiple modalities are combined to create a robust understanding of the ensemble's dynamics discussed in detailed in Chapter \ref{ch-6}. 
+\end{itemize}
+
+\subsubsection{Inputs and Outputs}
+\begin{itemize}
+    \item \textbf{Inputs:}
+    \begin{itemize}
+        \item $audio\_files$: A collection of beat audio files (e.g., \texttt{drum-a.wav}, \texttt{drum-b.wav}) that provide rhythmic patterns for synchronization.
+        \item $oscillator\_states$: The initial states of oscillators representing each performer (both human and robotic), including initial phases $\theta_i(0)$ and natural frequencies $\omega_i(0)$.
+    \end{itemize}
+    \item \textbf{Outputs:}
+    \begin{itemize}
+        \item $control\_signals$: Generated signals that instruct the robotic performers on timing, dynamics, and articulation to achieve synchronization with human musicians.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Algorithm Steps}
+
+\paragraph{1. Initialization of System Parameters}
+
+
+\begin{itemize}
+    \item \textbf{Window Size ($win\_s$):} 
+    The window size determines the number of audio samples processed in each analysis frame, which directly affects the time resolution of audio analysis. A smaller window size provides higher temporal resolution, enabling finer detection of rapid changes in the audio signal. However, a very small window size may result in noise and inaccurate beat detection due to insufficient spectral information. On the other hand, a larger window size improves frequency resolution but reduces temporal resolution, potentially blurring rapid rhythmic events.  
+     
+
+    \item \textbf{Hop Size ($hop\_s$):}
+    The hop size is the step size for moving the analysis window across the audio signal, often set to half the window size (e.g., $hop\_s = win\_s / 2$). This overlap enables the algorithm to capture overlapping information from consecutive frames, improving the detection of transient events like beats. Setting the hop size to half of the window size balances computational efficiency and temporal accuracy by increasing the frame rate of analysis without redundantly processing identical data points.
+     
+
+\end{itemize}
+
+Window size and hop size are carefully selected to balance between computational efficiency and detection accuracy.The chosen size of window-size = 1024 samples offers a balanced compromise, providing adequate temporal resolution for real-time synchronization while maintaining spectral
+clarity for beat detection. Their values directly influence the responsiveness and stability of the synchronization algorithm, affecting the system’s ability to maintain coherent timing with human musicians. If the window size is too large, the algorithm may detect beats with a delay, causing synchronization lag. Conversely, a too-small window size may produce jitter in beat detection due to sensitivity to noise, leading to instability in the synchronization process. A smaller hop size (higher overlap) allows for more frequent updates to beat detection, enhancing the algorithm's ability to track tempo changes in real-time. However, it increases computational load. A larger hop size may reduce computational demands but risks missing beats or reacting too slowly to tempo variations, resulting in less accurate synchronization. 
+
+
+\paragraph{2. Loading Beat Audio Files}
+
+\begin{itemize}
+    \item Load the beat audio files into a list for processing:
+    \[
+    \text{beats} \leftarrow [\text{beat\_a}, \text{beat\_b}, \text{beat\_c}, \text{beat\_d}]
+    \]
+    where each $\text{beat\_x}$ represents a different rhythmic pattern or instrument.
+\end{itemize}
+
+\paragraph{3. Processing Each Beat File}
+
+For each beat file in the list:
+
+\begin{itemize}
+    \item Initialize an empty list to store processed beat data:
+    \[
+    \text{beat\_data} \leftarrow []
+    \]
+    \item Read audio frames from the beat file in chunks of size of hop($hop\_s$):
+    \begin{itemize}
+        \item If the last frame is smaller than $hop\_s$, pad it with zeros to maintain consistent frame size.
+        \item Multiply each frame by $beat\_vol$ to normalize the amplitude.
+        \item Append the processed frame to $\text{beat\_data}$.
+    \end{itemize}
+    \item Store the processed beat data for synchronization analysis:
+    \[
+    \text{beat\_track.append(beat\_data)}
+    \]
+\end{itemize}
+
+This step converts raw audio files into a structured format suitable for real-time processing and synchronization.
+
+\paragraph{4. Initialization of Oscillators}
+
+\begin{itemize}
+    \item For each performer (human or robotic), initialize an oscillator characterized by:
+    \begin{itemize}
+        \item \textbf{Phase ($\theta_i$):} Represents the current position in the oscillation cycle.
+        \item \textbf{Natural Frequency ($\omega_i$):} The inherent tempo of the performer or robotic system.
+    \end{itemize}
+    \item Set initial phases and frequencies based on prior knowledge or default values.
+\end{itemize}
+ 
+
+\paragraph{5. Main Synchronization Loop}
+
+While the performance is ongoing, the algorithm continuously updates oscillator states and generates control signals:
+
+\begin{enumerate}
+    \item \textbf{For Each Oscillator:}
+    \begin{itemize}
+        \item \textbf{Calculate Synchronization Adjustment:}
+        \begin{itemize}
+            \item Use the \textbf{Kuramoto model} (discussed in \ref{Detailed Explanation of the Simplified Synchronization Algorithm}) to compute the influence of other oscillators:
+            \[
+            \frac{d\theta_i}{dt} = \omega_i + \frac{K}{N} \sum_{j=1}^{N} a_{ij} \sin(\theta_j - \theta_i)
+            \]
+            where:
+            \begin{itemize}
+                \item $K$ is the global coupling strength.
+                \item $N$ is the total number of oscillators.
+                \item $a_{ij}$ are adaptive coupling coefficients reflecting the influence of oscillator $j$ on oscillator $i$. The adaptive coupling coefficients $a_{ij}$ indicate how strongly oscillator $j$ influences oscillator $i$ at each instant. In practice, these values can be initialized based on known roles (e.g., a conductor or main beat-keeper might have higher influence) or uniformly if no prior hierarchy is assumed. As the performance unfolds, $a_{ij}$ are incrementally \emph{re-estimated} in real time using sensor data (audio, visual, and gestural cues) to detect which performer(s) exhibit clearer or more dominant timing. One common approach is to use an update rule that nudges each coefficient toward a “desired” value determined by the current leadership or rhythmic stability:
+
+                \begin{equation}
+                    a_{ij}(t + \Delta t)
+                    \;=\;
+                    a_{ij}(t)
+                    \;+\;
+                    \eta\,\bigl(\gamma_{ij}(t) - a_{ij}(t)\bigr),
+                    \label{eq:adapt_rule}
+                \end{equation}
+                
+                where $\eta$ is a small learning rate and $\gamma_{ij}(t)$ represents the \emph{target} coupling strength, derived from real-time metrics such as the standard deviation of oscillator frequencies, the prominence of onsets in oscillator $j$'s audio signal, or visual gestures indicating leadership. By continuously estimating and updating $a_{ij}$ in this way, the system adapts the level of mutual influence among performers to reflect changes in ensemble dynamics, tempo, or role (e.g., a temporary soloist vs.\ a supporting accompanist).
+
+                
+            \end{itemize}
+        \end{itemize}
+        \item \textbf{Update Oscillator Phase and Frequency:}
+        \begin{itemize}
+            \item Integrate the differential equation over a small time step $\Delta t$ to update $\theta_i$.
+            \item Adjust the natural frequency $\omega_i$ if necessary, based on synchronization error or feedback mechanisms.
+        \end{itemize}
+    \end{itemize}
+    \item \textbf{Generate Control Signals:}
+    \begin{itemize}
+        \item Translate the updated oscillator states into actionable control signals for the robotic performers.
+        \item These signals dictate timing, dynamics, and expressive parameters to align with the ensemble.
+    \end{itemize}
+    \item \textbf{Process Incoming Sensory Data:}
+    \begin{itemize}
+        \item Continuously acquire data from microphones (audio), cameras (visual cues), and motion sensors (gestural inputs).
+        \item Analyze data to detect tempo changes, expressive gestures, and coordination cues from human performers.
+    \end{itemize}
+    \item \textbf{Adjust System Parameters Dynamically:}
+    \begin{itemize}
+        \item Modify coupling strengths $a_{ij}$ based on the standard deviation of oscillator frequencies to reflect the changing influence of performers.
+        \item Update natural frequencies $\omega_i$ to correct synchronization errors or adapt to tempo changes.
+        \item Implement role adaptation (e.g., leader-follower dynamics) by adjusting parameters according to detected cues.
+    \end{itemize}
+    \item \textbf{Loop Continuation:}
+    \begin{itemize}
+        \item The loop repeats, ensuring continuous synchronization and adaptation throughout the performance.
+    \end{itemize}
+\end{enumerate}
+
+ 
+\subsubsection{Dynamic Adjustment of System Parameters}
+
+\paragraph{Adaptive Coupling Strengths}
+
+\begin{itemize}
+    \item \textbf{Standard Deviation of Frequencies:} The variability in oscillator frequencies is used to adjust coupling strengths ($a_{ij}$).
+    \item \textbf{Normalization:} Coupling coefficients are normalized to ensure stability and prevent any single oscillator from dominating the synchronization process.
+\end{itemize}
+
+
+ 
+\section{Integration of Mapping and Modelling Modules}
+
+The Cyborg Philharmonic framework’s beat tracking module first extracts the spectral features from audio signals and generates a beat activation function. An autocorrelation function then estimates the primary tempo, filtering out spurious beats. The beat phase is further refined through peak picking, where the local maxima of the activation function align with the most likely beat positions. These features, combined with the adaptive nature of LSTM networks (LeaderSTeM model) explained in details in Chapter \ref{ch-4}, make this leader following beat tracking system highly effective for real-time synchronization in dynamic musical environments. By implementing this advanced neural network-based beat tracking system, the Cyborg Philharmonic framework gains robust, real-time synchronization capabilities, ensuring accurate timing with live musicians and enhancing the cohesion and expressiveness of human-robot musical ensembles.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{images/nature/Figure3.jpg} % Update with correct path
+    \caption{Beat detection and phase synchronization for the single instrumental piece. (a) Follow the leader's beat by using the predictive LSTM model on an input audio stream. (b) Phase Synchronization is achieved between an audio stream and the Kuramoto Oscillator.}
+    \label{fig:beat_detection_synchronization}
+\end{figure}
+
+Figure \ref{fig:beat_detection_synchronization} illustrates the effectiveness of the proposed framework's audio processing capabilities for beat detection and phase synchronization. The two subfigures provide a detailed view of the system's performance in analyzing an audio stream and achieving synchronization.
+
+
+\begin{itemize}
+\item \textbf{Subfigure (a) - LSTM Model for Beat Following:} This subfigure shows the output of an LSTM-based predictive model for beat detection on an input audio stream. The graph plots Beats Per Minute (BPM) against the number of samples. The grey line represents the output from the Aubio library, a well-known tool for audio analysis \cite{brossier2006aubio}, while the blue line denotes the predicted output from the LSTM model. The LSTM model's output closely follows the Aubio output, demonstrating its capability to predict the leader's beat over time. The LeaderSTeM model captures the underlying temporal dependencies within the audio signal, allowing it to adapt to varying tempos and rhythmic patterns. This ability to dynamically adjust to changes in BPM is critical for real-time synchronization, ensuring that the robot musicians can keep pace with human performers even as the tempo fluctuates.
+
+
+ 
+    \item \textbf{Subfigure (b) - Kuramoto's Oscillator for Phase Synchronization:} This subfigure presents the results of phase synchronization between the audio stream and the Kuramoto Oscillator model. The graph shows the phase values (in radians) plotted against the number of samples. The blue line represents the ``Song Phase," which is derived from the actual audio signal, while the orange line represents the ``Kuramoto Phase", predicted by the oscillator model. The close alignment between the Song Phase and the Kuramoto Phase demonstrates the model's effectiveness in achieving phase synchronization. The slight deviations between the two lines indicate points where phase adjustments are necessary, which the system handles in real time to maintain coherence and synchrony. In the beginning, the phase needed a startup time to adjust to the target tempo. In the end, when the tempo went beyond 140 BPM, the audio beat tracking considered it to be 70 BPM(halved the beat), so the Kuramoto oscillator slowly adapted to the change rather than a sharp, abrupt decrease. 
+\end{itemize}
+
+
+
+\subsection{Visual and Gestural Cues in Synchronization}
+
+The integration of visual data with audio processing creates a multimodal synchronization approach, enhancing the robot's ability to respond dynamically to changes in the ensemble \cite{bishop2003visual, wanderley2005gesture}. Visual and gestural cues always play a significant role in synchronization, particularly in ensemble settings where musicians rely on non-verbal communication to coordinate their performances. The Cyborg Philharmonic framework employs Convolutional Neural Networks (CNNs) to recognize gestures, facial expressions, and body movements, providing additional cues for synchronization \cite{garg2023yoga}. Gesture recognition can be used for temporal sequence modelling techniques, such as Hidden Markov Models (HMMs)\cite{sagayam2019probabilistic}. These models capture the temporal dependencies between successive gestures, enabling the robot to interpret conductor cues or the gestures of other musicians accurately. The detailed experiment with only visual features is discussed in Chapter \ref{ch-5}.
+ 
+ 
+\section{Datasets: MUSDB18 and URMP}
+
+In the context of this research, the MUSDB18 \cite{rafii2017musdb18} and URMP \cite{li2018creating} datasets serve as foundational resources for developing and evaluating synchronization algorithms aimed at achieving real-time alignment between human musicians and robotic performers. This section provides a detailed description of each dataset, their characteristics, and the technical methodology employed to utilize these data effectively in the experiments.
+
+\subsection{MUSDB18 Dataset}
+
+The MUSDB18 dataset is a benchmark dataset widely utilized in the field of Music Information Retrieval (MIR) for tasks such as source separation, music transcription, and music analysis. It consists of 150 professionally produced stereo audio tracks spanning a variety of genres including pop, rock, jazz, and hip-hop. Each track in the dataset is provided in a multi-track format, where the mixture is decomposed into four constituent sources: \textit{vocals, drums, bass,} and \textit{other} (a combination of all remaining instruments). The dataset is encoded in stereo WAV format at a sampling rate of 44.1 kHz with 16-bit resolution, providing high-quality audio suitable for deep learning applications.
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/nature/musdb18.jpg}  
+    \caption{MUSDB18 is a collection of  audio STEMS, which is a multitrack audio format that uses lossy compression.}
+    \label{fig:MUSDB18}
+\end{figure}
+
+
+
+\paragraph{Data Characteristics:}
+\begin{itemize}
+    \item \textbf{Format:} Stereo WAV, 44.1 kHz, 16-bit.
+    \item \textbf{Tracks:} 150 songs with an average length of 3-4 minutes.
+    \item \textbf{Sources:} Four stems per track - \textit{vocals, drums, bass, other}.
+    \item \textbf{Genres:} Diverse genres including pop, rock, electronic, jazz, and hip-hop.
+\end{itemize}
+
+\paragraph{Usage in the Experiment:}
+In this research, the MUSDB18 dataset is utilized for training and evaluating machine learning models for source separation and rhythm analysis tasks. The separated tracks provide isolated access to individual instruments, which is critical for developing synchronization algorithms that can perform temporal alignment with a specific musical source (e.g., drums or vocals). The separated stems allow for the analysis of rhythmic and dynamic patterns, which are essential for modeling synchronization behavior in robotic systems. The dataset is used to train Long Short-Term Memory (LSTM) networks to predict rhythmic changes and temporal structures. This setup facilitates the creation of controlled experimental environments that simulate real-world ensemble scenarios.
+
+\subsection{URMP Dataset}
+
+The URMP (University of Rochester Multi-Modal Music Performance) dataset is designed explicitly for multimodal research in music analysis, involving audio-visual data that captures both auditory and visual aspects of musical performances. It contains high-quality recordings of solo and ensemble performances involving various orchestral instruments such as violin, cello, trumpet, and clarinet. Each performance is recorded separately in a controlled environment with high-resolution video and corresponding high-fidelity audio tracks. These individual performances are then mixed to create ensemble pieces. The dataset provides a unique combination of time-aligned audio and video recordings, allowing for in-depth analysis of visual cues (e.g., gestures, facial expressions) and their correlation with audio signals.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/nature/URMP.png}  
+    \caption{The dataset comprises a number of simple multi-instrument musical pieces assembled from coordinated but separately recorded performances of individual tracks. \cite{li2018creating} }
+    \label{fig:URMP}
+\end{figure}
+
+
+\paragraph{Data Characteristics:}
+\begin{itemize}
+    \item \textbf{Format:} Audio (44.1 kHz, 16-bit, mono) and Video (HD resolution, 30 FPS).
+    \item \textbf{Performances:} 44 pieces with synchronized audio-visual recordings, covering a range of instruments.
+    \item \textbf{Instruments:} Violin, cello, flute, clarinet, trumpet, and more.
+    \item \textbf{Recording Conditions:} Controlled studio environment with consistent lighting and background.
+    \item \textbf{Ensemble Types:} Solo, duo, trio, and quartet configurations.
+\end{itemize}
+
+\paragraph{Usage in the Experiment:}
+The URMP dataset is used as test set for this Chapter's experiment because it provides both high-fidelity audio and high-resolution video recordings of instrumental performances in controlled studio settings. Later in Chapter \ref{ch-5} it also facilitates a deeper investigation into how visual cues—such as body movements, gestures, and facial expressions—correlate with musical timing and expression. This multimodal aspect is particularly vital for the Cyborg Philharmonic framework, as it enables the system to learn and anticipate not just acoustic signals but also the visual gestural nuances that guide ensemble coordination that is experimented more. By offering precisely time-aligned audio-visual data across various instrumentation and ensemble sizes, URMP allows researchers to systematically evaluate and refine the synchronization algorithms, predictive modeling, and expressive alignment strategies, thereby significantly enhancing the realism and robustness of human-robot musical collaboration experiments.
+
+
+\subsection{Combined Use of MUSDB18 and URMP Datasets}
+
+The combined use of MUSDB18 and URMP datasets provides a comprehensive foundation for developing a robust synchronization system that can operate in both audio-only and multimodal environments. By integrating the high-quality, isolated audio sources from MUSDB18 with the synchronized audio-visual recordings from URMP, the proposed synchronization framework can leverage a diverse range of inputs to achieve more nuanced and expressive interactions between human musicians and robotic systems.
+
+\paragraph{Data Integration Strategy:}
+\begin{itemize}
+    \item \textbf{Audio Source Separation and Analysis:} Use MUSDB18 for training models to isolate and analyze specific musical sources (e.g., drums, vocals) and predict their rhythmic and dynamic patterns.
+    \item \textbf{Multimodal Synchronization Framework Development:} Employ URMP for training multimodal models that integrate both auditory and visual cues to predict tempo changes, dynamic shifts, and expressive gestures in real-time.
+    \item \textbf{Cross-Dataset Validation:} Validate the synchronization algorithms across both datasets to ensure robustness in various musical genres, instrumentation, and performance settings.
+\end{itemize}
+
+  
+
+
+\section{Experimental Validation and Evaluation Metrics}
+
+The effectiveness of the Cyborg Philharmonic framework is demonstrated through a series of experiments involving live performances with human musicians. This section outlines the experimental setup and the evaluation metrics used to assess the performance of the framework.
+ 
+
+\subsection{Metrics for Synchronization Accuracy and Expressive Alignment}
+
+To evaluate the performance of the Cyborg Philharmonic framework in achieving synchronization between human and robotic musicians, several key metrics are defined. These include synchronization accuracy, phase error, tempo deviation, and expressive alignment. Each metric provides insight into the effectiveness of robotic integration with human performers, ensuring that the robotic system replicates human-like expressiveness in musical contexts.
+
+\subsection{Synchronization Accuracy}
+Synchronization accuracy quantifies the alignment between the human and robotic performers’ beats, expressed as:
+\begin{equation}
+    \text{Accuracy} = 1 - \frac{\sum_{i=1}^{n} \left| \text{beat}_{\text{human}}(i) - \text{beat}_{\text{robot}}(i) \right|}{n}
+\end{equation}
+where $\text{beat}_{\text{human}}(i)$ and $\text{beat}_{\text{robot}}(i)$ represent the beat times for the human and robot in sample $i$, and $n$ is the total number of beat samples. A higher accuracy score indicates closer alignment between performers.
+
+\subsection{Phase Error}
+Phase error measures the phase difference between the Kuramoto model and the actual beat phase at each sample:
+\begin{equation}
+    \text{Phase Error} = \frac{1}{n} \sum_{i=1}^{n} \left| \theta_{\text{song}}(i) - \theta_{\text{Kuramoto}}(i) \right|
+\end{equation}
+where $\theta_{\text{song}}$ and $\theta_{\text{Kuramoto}}$ denote the phases of the song and Kuramoto oscillator, respectively. Lower phase error values suggest better synchronization.
+
+\subsection{Tempo Deviation}
+Tempo deviation assesses the consistency of tempo over the performance and is calculated by the variance in beat intervals:
+\begin{equation}
+    \text{Tempo Deviation} = \text{std}(\text{beat}_{\text{intervals}})
+\end{equation}
+where $\text{std}$ denotes the standard deviation of beat intervals. Lower values indicate stable tempo maintenance, showing the robotic system's robustness in aligning with human musicians.
+
+\subsection{Expressive Alignment}
+Expressive alignment evaluates synchronization of expressive parameters, such as dynamics and articulation. A similarity score is derived using Dynamic Time Warping (DTW) \cite{muller2007dynamic}:
+\begin{equation}
+    \text{Expressive Alignment Score} = 1 - \frac{\text{DTW}(\text{expression}_{\text{human}}, \text{expression}_{\text{robot}})}{n}
+\end{equation}
+where $\text{expression}_{\text{human}}$ and $\text{expression}_{\text{robot}}$ represent dynamic expression levels of human and robot, respectively. DTW compensates for tempo variations while assessing alignment, with higher scores reflecting expressive coherence. In this formula, \(n\) denotes the length of the expression sequences (i.e., the number of samples or frames over which the expressive parameters are measured). Essentially, it serves as a normalization factor so that the DTW cost—\(\text{DTW}(\text{expression}_{\text{human}}, \text{expression}_{\text{robot}})\)—is converted into an average or per-sample cost rather than a raw total. This way, the final Expressive Alignment Score falls within a more interpretable range, typically bounded between 0 and 1.
+
+
+\section{Experimental Results on the URMP Dataset}
+\label{sec:experiments_urmp}
+
+To investigate the effectiveness of our proposed synchronization framework, we carried out a series of \emph{offline} experiments using multi-instrument performances from the URMP dataset. In these experiments, there is \emph{no physical robot or ``cyborg''} involved; rather, we simulate the robotic component via a Kuramoto oscillator that attempts to track and synchronize its phase with pre-recorded audio of real human musicians.
+
+\subsection{Defining the ``Song Phase''}
+
+A crucial part of our approach is the notion of a \textbf{Song Phase}, 
+which represents a continuous measure of the music's beat structure at any moment in time. 
+To extract this, we first use a beat-detection algorithm (such as the \texttt{aubio} library or a neural-network--based tracker) on the URMP recordings. 
+This yields a set of discrete beat times $\{t_1, t_2, \ldots\}$ throughout each piece.
+
+Between consecutive beats $(t_i, t_{i+1})$, we define the Song Phase $\theta_{\text{song}}(t)$ to increase smoothly from $2\pi \times 0$ to $2\pi \times 1$. 
+Mathematically:
+%
+\begin{equation}
+    \theta_{\text{song}}(t) \;=\; 2\pi \times \frac{\,t - t_i\,}{\,t_{i+1} - t_i\,},
+    \quad t \in [t_i,\,t_{i+1}),
+\end{equation}
+%
+and every time the music passes the next detected beat time, we add $2\pi$ to keep the phase \emph{unwrapped} and monotonically increasing. 
+Hence, the Song Phase directly reflects how far we are between successive beats, effectively capturing the timing of the performance.
+
+\subsection{Kuramoto Oscillator Tracking}
+
+To simulate a ``robotic musician,'' we use a Kuramoto oscillator whose phase we denote as $\theta_{\text{Kuramoto}}(t)$. 
+Initially, this oscillator may be out of sync (e.g., $\theta_{\text{Kuramoto}}(0)$ could be any arbitrary value). 
+At every small time step $\Delta t$, the oscillator \emph{adjusts} its own phase according to
+%
+\begin{equation}
+    \frac{d\,\theta_{\text{Kuramoto}}}{dt}
+    \;=\;
+    \omega_{\text{natural}}
+    \;+\;
+    K \,\sin\!\Bigl(\theta_{\text{song}}(t) - \theta_{\text{Kuramoto}}(t)\Bigr),
+\end{equation}
+%
+where $\omega_{\text{natural}}$ is its default frequency and $K$ is a coupling constant. 
+This feedback loop compels the oscillator to ``pull in'' and lock onto the Song Phase over time. 
+Through careful tuning of $K$ and $\omega_{\text{natural}}$, the simulated oscillator can robustly track tempo changes and expressive fluctuations present in the pre-recorded ensemble.
+
+\subsection{Phase Synchronization in Multi-Instrument Ensembles}
+
+Figure~\ref{fig:phase_synchronization_multinstrument} provides an overview of how our framework performs on a multi-instrument ensemble recording from URMP:
+%
+\begin{itemize}
+    \item \textbf{Part (a)} shows an example of leader transitions among four woodwind instruments (Flute, Oboe, Clarinet, Bassoon). Each colored bar indicates the time segments where an instrument \emph{dominates} the beat or leads dynamic changes. 
+    \item \textbf{Part (b)} displays a close alignment between the actual \emph{Song Phase} and the \emph{Kuramoto Oscillator}'s predicted phase. Notice that although instruments take turns leading, the oscillator quickly readjusts to these shifts, consistently tracking the music's timing with minimal delay.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1\textwidth]{images/nature/Figure4.jpg}
+    \caption{%
+      Phase synchronization for a multi-instrument composition with dynamic leader changes.
+      (\textbf{a}) A visualization of woodwind instruments (Flute, Oboe, Clarinet, Bassoon) indicating leader transitions over time.
+      (\textbf{b}) Song Phase vs.\ Kuramoto Phase, demonstrating close alignment between the audio signal’s phase and the oscillator’s predictions.
+    }
+    \label{fig:phase_synchronization_multinstrument}
+\end{figure}
+
+\subsection{Quantitative Metrics and Observations}
+
+We further evaluated synchronization performance across multiple URMP pieces (duos, trios, and quartets) using four principal metrics:
+%
+\begin{enumerate}
+    \item \textbf{Synchronization Accuracy}: 
+    Compares detected beat times from the recording to the oscillator’s predicted beats.
+    \item \textbf{Phase Error}: 
+    Captures the average absolute phase difference $\bigl|\theta_{\text{song}} - \theta_{\text{Kuramoto}}\bigr|$ over time.
+    \item \textbf{Tempo Deviation}: 
+    Reflects how much the performers’ actual tempo fluctuates around a nominal rate.
+    \item \textbf{Expressive Alignment}: 
+    Assesses the system’s ability to mirror dynamic variations (e.g., loudness, articulation) by means of Dynamic Time Warping.
+\end{enumerate}
+%
+A summary of these metrics for selected URMP recordings is shown in Figure~\ref{fig:synchronization_metrics_urmp}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/nature/synchronization_metrics_example.png}
+    \caption{Synchronization Metrics for Selected URMP Ensemble Pieces}
+    \label{fig:synchronization_metrics_urmp}
+\end{figure}
+
+\paragraph{Key Findings.}
+\begin{itemize}
+    \item \emph{Strong Beat Alignment:} 
+    Across diverse ensembles, the system maintained an average phase error below 0.15\,radians and generally produced high synchronization accuracy (often exceeding 0.90). 
+    \item \emph{Leader Transitions:} 
+    When musicians alternated in ``leading'' certain phrases, the Kuramoto oscillator tracked the new leader’s beat within about 1\,s, thus remaining well-synchronized despite these natural role shifts.
+    \item \emph{Expressive Nuances:} 
+    The \emph{Expressive Alignment} typically scored above 0.85, indicating that the simulated robot \emph{would} adapt not only to timing but also to dynamic and articulatory variations in the musical texture.
+\end{itemize}
+
+While these experiments used \emph{offline} recordings without a physical robot, they illustrate the framework’s potential to track \emph{real-time} human performances with low latency and robust adaptation. 
+This paves the way for more advanced research, where an actual robotic musician can seamlessly integrate into a live ensemble by relying on these underlying synchronization principles.
+
+
+% \section{Experimental Results on URMP Dataset}
+
+% To evaluate the proposed synchronization framework, we use selected multi-instrument performances from the URMP dataset. Importantly, these experiments are conducted offline on real, pre-recorded musical performances of human musicians—there is no actual robot or “cyborg” playing in these tests. Instead, we simulate how the robotic side of the system (represented mathematically by a Kuramoto oscillator) would track and synchronize its phase with that of the real music.
+
+% \subsection{Objective Metrics}
+
+% The framework was tested on several URMP ensemble recordings with diverse instrumental configurations, including duets, trios, and quartets. Figure~\ref{fig:synchronization_metrics_urmp} provides a comparison of synchronization accuracy, phase error, tempo deviation, and expressive alignment scores across selected pieces in the URMP dataset.
+
+
+
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=1\textwidth]{images/nature/Figure4.jpg} % Update with correct path
+%     \caption{Phase synchronization for multi-instrumental composition with dynamic leader changes. (a) Multi-instrumental orchestra composition showing leader transitions across four woodwind instruments (Flute, Oboe, Clarinet, Bassoon) over time. (b) Phase synchronization achieved between the musical piece and Kuramoto Oscillator, illustrating the alignment between the audio signal's phase and the predicted phase from the oscillator model.}
+%     \label{fig:phase_synchronization_multinstrument}
+% \end{figure}
+
+
+% \begin{itemize}
+%     \item \textbf{Multi-Instrumental Composition \ref{fig:phase_synchronization_multinstrument}(a):} This subfigure illustrates the temporal dynamics of a musical composition featuring four woodwind instruments—Flute, Oboe, Clarinet, and Bassoon. Each instrument is represented by a distinct horizontal line that denotes its presence and dominance in the musical piece over time. The colored segments on each line correspond to different time intervals where that instrument takes on a leading role in the composition. The overlapping positions multiple instruments are playing. This depiction shows the fluid transitions of leadership among the instruments, which is a common characteristic in orchestral music. The bottom waveform represents the full audio signal of the orchestral piece, indicating variations in amplitude and intensity over time. Such variations are crucial in determining synchronization accuracy as they directly impact phase detection and beat prediction.
+
+%     \item \textbf{Phase Synchronization with Kuramoto's Oscillator \ref{fig:phase_synchronization_multinstrument}(b):} This subfigure shows the phase difference between the actual phase of the musical composition (denoted by the ``Song Phase" or the time interval between two beats) and the predicted phase derived from the Kuramoto Oscillator model (denoted by the ``Kuramoto Phase"). The blue line represents the phase trajectory of the original song, while the orange line represents the phase output from the Kuramoto oscillator. The graph plots the phase difference over a number of samples, providing a visualization of how well the oscillator model synchronizes with the varying tempo and beat patterns of the orchestral piece. The close overlap between the two lines indicates a high degree of synchronization, demonstrating the efficacy of the Kuramoto model in aligning the robotic performance with the dynamic changes in the musical piece.
+
+% \end{itemize}
+
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=0.8\textwidth]{images/nature/synchronization_metrics_example.png} % Update with the actual path
+%     \caption{Synchronization Metrics for Selected URMP Ensemble Pieces}
+%     \label{fig:synchronization_metrics_urmp}
+% \end{figure}
+
+
+% As shown in Figure~\ref{fig:synchronization_metrics_urmp}, the framework achieved high synchronization accuracy across various ensemble configurations, with an average phase error of approximately 0.12 radians and low tempo deviation. The expressive alignment scores, derived via Dynamic Time Warping, consistently exceed 0.85, indicating effective alignment with expressive dynamics across different instruments. The synchronization metrics reveal insights into instrument-specific and ensemble behaviors, which impact the system's overall synchronization performance. In the violin-cello duet, the framework achieves the highest synchronization accuracy (0.94) and lowest phase error (0.11 radians), likely due to the cohesive timing often present in string duets. The similar tonal and expressive qualities of the instruments contribute to a precise alignment, as performers are highly responsive to each other’s dynamics and phrasing. In contrast, the clarinet-trumpet-piano trio, with its diverse timbres, presents a slightly lower synchronization accuracy (0.91) and higher phase error (0.13 radians). The unique characteristics of wind and percussive instruments introduce complexity, requiring the framework to adapt to distinct instrumental attacks, decays, and resonance. This diversity also results in a higher tempo deviation (2.8 BPM), reflecting the real-world challenges of synchronizing contrasting instrumental qualities. The flute-violin-cello trio achieves a high expressive alignment score (0.90), suggesting that the system effectively synchronizes expressive nuances in mixed ensembles. The framework's adaptability to breath control in the flute and bowing dynamics in the strings allows for nuanced alignment across expressive cues. Finally, the string quartet shows the highest phase error (0.15 radians) and tempo deviation (3.0 BPM), highlighting the increased challenges associated with larger groups and layered textures. In real-life scenarios, larger ensembles require a higher sensitivity to complex interactions and individual expression, reinforcing the framework’s robust adaptability across ensemble configurations. Overall, these results demonstrate the system's capacity to maintain technical alignment while adapting to the expressive demands of varied instrumentations.
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Conclusion}
+
+The development of the Cyborg Philharmonic framework marks a significant milestone in the intersection of robotics, artificial intelligence, and musical performance. This chapter has introduced a novel architecture that not only addresses the technical challenges of synchronization between human and robotic musicians but also delves into the expressive and anticipatory aspects of musical collaboration. In this discussion, we explore the broader implications of this work, its potential to influence future research directions, and the key observations that emerge from the integration of advanced computational models with real-time performance settings. By moving beyond static and reactive models, this framework in this chapter represents a significant step forward in achieving expressive and synchronized human-robot musical performances. By combining advanced synchronization algorithms, predictive modeling, and multimodal sensory integration, the framework enables robots to function as dynamic collaborators within musical ensembles, not merely by maintaining technical synchronization but also by capturing the expressive nuances of human performances. However, in more complex ensemble settings, the ability to dynamically identify and adapt to the tempo leader—who dictates the overall rhythm and expressive direction of the group—becomes crucial. Chapter \ref{ch-4}, ``LeaderSTeM," builds on this foundation by introducing a novel machine learning approach for real-time leader identification in musical ensembles. This dynamic 'leader tracking' capability is essential for more nuanced synchronization and adaptation, allowing robotic musicians to adjust more intelligently to shifting roles and maintain coherent ensemble dynamics. By integrating the LeaderSTeM model with the synchronization techniques established in the Cyborg Philharmonic framework, we move towards a more comprehensive and responsive system for human-robot musical interaction.

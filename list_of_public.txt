@@ -1,0 +1,66 @@
+Here are all of the publications listed on Dr Sutirtha Chakraborty’s Google Scholar profile (in descending order of citation count):
+
+1. **The Cyborg Philharmonic: Synchronizing interactive musical performances between humans and machines**
+   *S Chakraborty, S Dutta & J Timoney*
+   Humanities and Social Sciences Communications 8 (1), 1–9.
+   Cited by 25 • 2021
+
+2. **A cooperative and interactive gesture-based drumming interface with application to the Internet of Musical Things**
+   *A Yaseen, S Chakraborty & J Timoney*
+   International Conference on Human-Computer Interaction, pp. 85–92.
+   Cited by 17 • 2022
+
+3. **Adaptive touchless whole-body interaction for casual ubiquitous musical activities**
+   *S Chakraborty, A Yaseen, J Timoney, V Lazzarini & D Keller*
+   International Computer Music Conference 2022, pp. 132–138.
+   Cited by 15 • 2022
+
+4. **Multimodal synchronization in musical ensembles: Investigating audio and visual cues**
+   *S Chakraborty & J Timoney*
+   Companion Publication of the 25th International Conference on Multimodal Interaction.
+   Cited by 13 • 2023
+
+5. **Integrity checking using third party auditor in cloud storage**
+   *S Chakraborty, S Singh & S Thokchom*
+   2018 Eleventh International Conference on Contemporary Computing (IC3), pp. 1–6.
+   Cited by 13 • 2018
+
+6. **Banging interaction: A ubimus-design strategy for the musical internet**
+   *D Keller, A Yaseen, J Timoney, S Chakraborty & V Lazzarini*
+   Future Internet 15 (4):125.
+   Cited by 10 • 2023
+
+7. **A new method for detecting onset and offset for singing in real-time and offline environments**
+   *B Faghih, S Chakraborty, A Yaseen & J Timoney*
+   Applied Sciences 12 (15):7391.
+   Cited by 9 • 2022
+
+8. **LeaderSTeM-A LSTM model for dynamic leader identification within musical streams**
+   *S Chakraborty, S Kishor, S Patil & J Timoney*
+   Joint Conference on AI Music Creativity (AIMC 2019), Stockholm, Sweden.
+   Cited by 9 • 2020
+
+9. **Banging Interaction in Ubiquitous Music**
+   *D Keller, A Yaseen, M Messina, S Chakraborty, L Aliél & V Lazzarini*
+   International Conference on ArtsIT, Interactivity and Game Creation, pp. 489–503.
+   Cited by 9 • (asterisk indicates a tie in citation count)
+
+10. **Robot human synchronization for musical ensemble: progress and challenges**
+    *S Chakraborty & J Timoney*
+    2020 5th International Conference on Robotics and Automation Engineering.
+    Cited by 6 • 2020
+
+11. **Beat Estimation from Musician Visual Cues**
+    *S Chakraborty, S Aktaş, W Clifford & J Timoney*
+    18th Sound and Music Computing Conference (SMC 2021), pp. 46–52.
+    Cited by 5 • 2021
+
+12. **Gesture Mediated Timbre-Led Design based Music Interface for Socio-musical Interaction**
+    *A Yaseen, S Chakraborty & J Timoney*
+    International Conference on Human-Computer Interaction, pp. 335–347.
+    Cited by 4 • 2023
+
+13. **Dynamic Drum Collective: Introducing Kuramoto-Based Temporalities in Banging Interaction**
+    *S Chakraborty, D Keller, A Yaseen & J Timoney*
+    Symposium 2024 (UbiMus 2024), p. 121.
+    Cited by – • 2024

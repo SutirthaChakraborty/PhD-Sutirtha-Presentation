@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2: Literature Review - PhD Thesis</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <h1>Chapter 2: Literature Review</h1>
+            <h2>Human-Robot Synchronization in Musical Performance</h2>
+            <div class="author">Sutirtha Chakraborty</div>
+            <div class="university">Maynooth University</div>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">PhD Thesis</a>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chapter1.html">Ch 1: Introduction</a></li>
+                <li><a href="chapter2.html">Ch 2: Literature</a></li>
+                <li><a href="chapter3.html">Ch 3: Framework</a></li>
+                <li><a href="chapter4.html">Ch 4: LeaderSTeM</a></li>
+                <li><a href="chapter5.html">Ch 5: Visual Cues</a></li>
+                <li><a href="chapter6.html">Ch 6: Virtual</a></li>
+                <li><a href="chapter7.html">Ch 7: Nature</a></li>
+                <li><a href="chapter8.html">Ch 8: Multimodal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span class="separator">›</span>
+            <span class="current">Chapter 2: Literature Review</span>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="card" id="introduction">
+            <h2>Introduction</h2>
+            <p>The dynamic interplay between humans and machines is reshaping numerous fields, with interactive human-robot music standing out as a compelling frontier in this evolution. The development of robotic musicians represents an intriguing blend of art and science, with applications spanning therapeutic interventions to pure entertainment.</p>
+
+            <div class="image-container">
+                <img src="images/literature/shimon-working.png" alt="Shimon Robot Working" style="max-height: 400px;">
+                <div class="image-caption">Shimon robot in action, demonstrating the current state of human-robot musical interaction</div>
+            </div>
+
+            <p>Music, a fundamental aspect of human culture, transcends language and geographical boundaries, making it an ideal medium for exploring human-robot collaboration. Introducing robots into musical performances allows us to bridge the divide between humans and machines, fostering new forms of expression and interaction.</p>
+
+            <div class="quote">
+                "Traditional music systems that rely on pre-programmed MIDI signals follow fixed sequences and instructions, playing notes in a predetermined order without responding to changes in a live performance."
+            </div>
+
+            <p>In contrast, advanced robotic ensembles aim for a higher level of interaction by 'listening' to each other and adapting in <span class="tooltip">real-time<span class="tooltiptext">Processing or responding to data immediately as it is received, without delay</span></span> to the sounds they produce collectively. This dynamic interaction creates a shared acoustic experience, where robots and human musicians synchronize and adjust based on each other's musical cues.</p>
+
+            <h3>The Challenge of Synchronization</h3>
+            <p>However, effective <span class="tooltip">synchronization<span class="tooltiptext">The coordination of simultaneous processes or events to operate in unison</span></span> within human-robot musical ensembles presents a significant challenge. Human musicians naturally adapt to each other using subtle cues and variations in rhythm, tempo, and dynamics—elements that are not easily replicated by machines.</p>
+
+            <p>The <span class="tooltip">tempo<span class="tooltiptext">The speed or pace of music, usually measured in beats per minute (BPM)</span></span> in human performances is rarely fixed; it ebbs and flows according to the emotional and expressive content of the music. Such behaviour can be modelled using dynamical systems, represented as <span class="tooltip">oscillators<span class="tooltiptext">A system that produces regular, repetitive variations, used in synchronization models to represent rhythmic elements</span></span> that synchronize with external signals or among themselves.</p>
+        </div>
+
+        <div class="card" id="research-questions">
+            <h2>Research Questions</h2>
+            <p>To conduct a systematic literature review, we developed specific research questions focusing on the paradigm of human-machine synchronization in the musical domain. These questions guide our exploration of the literature and help identify gaps in existing research.</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                    <h4>🧠 Research Question 1</h4>
+                    <p><strong>What are the underlying factors behind human musical synchronization with other humans?</strong></p>
+                    <p>This explores the neurobiological, psychological, and behavioural mechanisms that enable human-to-human musical coordination.</p>
+                </div>
+                
+                <div style="background: #f0fdf4; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <h4>🤖 Research Question 2</h4>
+                    <p><strong>How are current robots synchronizing with human performances?</strong></p>
+                    <p>This examines the technological approaches and computational frameworks used by existing robotic musical systems.</p>
+                </div>
+                
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                    <h4>🎵 Research Question 3</h4>
+                    <p><strong>How does synchronization work in a musical ensemble?</strong></p>
+                    <p>This investigates the dynamics of group synchronization, leadership roles, and ensemble coordination mechanisms.</p>
+                </div>
+                
+                <div style="background: #f3e8ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                    <h4>📊 Research Question 4</h4>
+                    <p><strong>What are the different mathematical models for synchronization, and what is special about <span class="tooltip">Kuramoto's<span class="tooltiptext">The Kuramoto model describes synchronization in systems of coupled oscillators, widely used in modeling biological and musical synchronization</span></span> model?</strong></p>
+                    <p>This examines mathematical frameworks for modeling synchronization phenomena in complex systems.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="methodology">
+            <h2>Methodology</h2>
+            <h3>Systematic Literature Review Approach</h3>
+            <p>The literature review in this chapter is based on the <span class="highlight">Kitchenham method</span>, a well-regarded approach in software engineering and interdisciplinary studies for conducting systematic literature reviews. This method was selected due to its comprehensive and well-documented review processes.</p>
+
+            <div style="background: #f8fafc; padding: 2rem; border-radius: 8px; border-left: 4px solid var(--secondary-color); margin: 2rem 0;">
+                <h4>Key Steps in the Kitchenham Method:</h4>
+                <ol>
+                    <li><strong>Identifying the need</strong> for a systematic literature review and defining research questions</li>
+                    <li><strong>Conducting a comprehensive search</strong> for relevant studies</li>
+                    <li><strong>Assessing the quality</strong> of the selected research studies</li>
+                    <li><strong>Extracting relevant data</strong> from the selected research studies</li>
+                    <li><strong>Compiling background information</strong> on the selected research studies</li>
+                    <li><strong>Summarizing and synthesizing</strong> the results of the research studies</li>
+                </ol>
+            </div>
+
+            <h3>Search Strategy</h3>
+            <p>The primary research terms used in this study are: <span class="highlight">Music Ensemble</span>, <span class="highlight">Synchronization</span>, and <span class="highlight">Robot</span>.</p>
+
+            <h4>Resources Searched</h4>
+            <p>A comprehensive search was conducted across five journal repositories from January to May 2019:</p>
+            <ul>
+                <li><strong>Google Scholar</strong> - Search engine for scholarly and academic works</li>
+                <li><strong>ScienceDirect</strong> - Database for scientific and medical journals</li>
+                <li><strong>IEEE Xplore</strong> - Digital library of IEEE publications</li>
+                <li><strong>ACM Digital Library</strong> - Over 430,000 full-text research papers in computing</li>
+            </ul>
+
+            <h3>Document Selection Process</h3>
+            <div style="text-align: center; margin: 2rem 0;">
+                <svg width="600" height="400" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Initial Search -->
+                    <rect x="200" y="30" width="200" height="50" fill="#dbeafe" stroke="#3b82f6" stroke-width="2" rx="8"/>
+                    <text x="300" y="60" text-anchor="middle" font-size="14" font-weight="bold">Initial Search: 65 Studies</text>
+                    
+                    <!-- Abstract Analysis -->
+                    <rect x="200" y="120" width="200" height="50" fill="#fef3c7" stroke="#f59e0b" stroke-width="2" rx="8"/>
+                    <text x="300" y="145" text-anchor="middle" font-size="12" font-weight="bold">Abstract Analysis</text>
+                    <text x="300" y="160" text-anchor="middle" font-size="12" font-weight="bold">Exclusion Criteria Applied</text>
+                    
+                    <!-- Quality Assessment -->
+                    <rect x="200" y="210" width="200" height="50" fill="#dcfce7" stroke="#22c55e" stroke-width="2" rx="8"/>
+                    <text x="300" y="235" text-anchor="middle" font-size="12" font-weight="bold">Quality Assessment</text>
+                    <text x="300" y="250" text-anchor="middle" font-size="12" font-weight="bold">47 Studies Evaluated</text>
+                    
+                    <!-- Final Selection -->
+                    <rect x="200" y="300" width="200" height="50" fill="#fce7f3" stroke="#ec4899" stroke-width="2" rx="8"/>
+                    <text x="300" y="330" text-anchor="middle" font-size="14" font-weight="bold">Final: 15 Studies Selected</text>
+                    
+                    <!-- Arrows and exclusion numbers -->
+                    <line x1="300" y1="80" x2="300" y2="120" stroke="#374151" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                    <text x="350" y="100" font-size="12" fill="#ef4444">50 excluded</text>
+                    
+                    <line x1="300" y1="170" x2="300" y2="210" stroke="#374151" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                    <text x="350" y="190" font-size="12" fill="#ef4444">18 excluded</text>
+                    
+                    <line x1="300" y1="260" x2="300" y2="300" stroke="#374151" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                    <text x="350" y="280" font-size="12" fill="#ef4444">32 excluded</text>
+                    
+                    <defs>
+                        <marker id="arrowhead3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#374151"/>
+                        </marker>
+                    </defs>
+                </svg>
+            </div>
+            <div class="image-caption">Document selection process following systematic review guidelines</div>
+
+            <h4>Inclusion Criteria</h4>
+            <p>A research article was included if it directly addressed one or more research questions related to human-robot synchronization, both in general and in the musical domain.</p>
+
+            <h4>Exclusion Criteria</h4>
+            <ul>
+                <li>Research articles that fell into categories of books or grey literature</li>
+                <li>Research articles focused on secondary or primary school learning</li>
+            </ul>
+
+            <h3>Quality Assessment</h3>
+            <p>Each primary research article was assessed based on five key quality criteria:</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px;">
+                    <h4>Credibility</h4>
+                    <p>Are the findings of the research credible?</p>
+                </div>
+                <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px;">
+                    <h4>Objectives</h4>
+                    <p>Does the evaluation adequately address the research aims?</p>
+                </div>
+                <div style="background: #fef3c7; padding: 1rem; border-radius: 8px;">
+                    <h4>Data Collection</h4>
+                    <p>Was data collected appropriately and suitably?</p>
+                </div>
+                <div style="background: #f3e8ff; padding: 1rem; border-radius: 8px;">
+                    <h4>Conclusions</h4>
+                    <p>Are conclusions clearly derived and presented?</p>
+                </div>
+                <div style="background: #fef2f2; padding: 1rem; border-radius: 8px;">
+                    <h4>Documentation</h4>
+                    <p>Is the research process adequately documented?</p>
+                </div>
+            </div>
+
+            <p>Scoring system: <strong>No (N) = 0.0</strong>, <strong>Partly (P) = 0.5</strong>, <strong>Yes (Y) = 1.0</strong>. A study achieving a total score greater than three was accepted.</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Study Focus</th>
+                        <th>Human-Robot Sync</th>
+                        <th>Musical Performance</th>
+                        <th>Count</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>General Human-Robot Synchronization</td>
+                        <td>✓</td>
+                        <td>-</td>
+                        <td>6</td>
+                    </tr>
+                    <tr>
+                        <td>Musical Human-Robot Synchronization</td>
+                        <td>-</td>
+                        <td>✓</td>
+                        <td>11</td>
+                    </tr>
+                    <tr>
+                        <td>Both</td>
+                        <td>✓</td>
+                        <td>✓</td>
+                        <td>2</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="card" id="results">
+            <h2>Results</h2>
+            <p>Out of the 47 sources initially identified, we included 15 peer-reviewed research papers. These studies provide evidence based on experimental data and have been published in scientific journals or conference proceedings.</p>
+
+            <h3>Research Question 1: Underlying Factors Behind Human Musical Synchronization</h3>
+            <p>This research question was guided by four key studies exploring the neurobiological, psychological, and behavioural dynamics of human synchronization in musical contexts.</p>
+
+            <h4>Key Findings:</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                    <h4>🧠 Neural and Physiological Basis</h4>
+                    <ul>
+                        <li><strong>Brain-to-Brain Synchrony:</strong> <span class="tooltip">EEG<span class="tooltiptext">Electroencephalography - a method to record electrical activity of the brain</span></span> coherence in alpha and theta bands</li>
+                        <li><strong>Embodied Listening:</strong> Body movements highly synchronized with music</li>
+                        <li><strong>Social Enhancement:</strong> Synchronicity enhanced during group interactions</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #f0fdf4; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <h4>🎯 Memory and Predictive Coding</h4>
+                    <ul>
+                        <li><strong>Long-Term Memory Effects:</strong> Professional musicians show long-range temporal correlations</li>
+                        <li><strong>Anticipation Strategies:</strong> Complex adaptive strategies for beat prediction</li>
+                        <li><strong>Cross-Species Evidence:</strong> Beat synchronization observed in vocal learning animals</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin: 2rem 0;">
+                <svg width="600" height="300" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Central node -->
+                    <circle cx="300" cy="150" r="80" fill="#dbeafe" stroke="#3b82f6" stroke-width="3"/>
+                    <text x="300" y="145" text-anchor="middle" font-size="12" font-weight="bold">Human Musical</text>
+                    <text x="300" y="160" text-anchor="middle" font-size="12" font-weight="bold">Synchronization</text>
+                    
+                    <!-- Neural Basis -->
+                    <circle cx="150" cy="80" r="60" fill="#dcfce7" stroke="#22c55e" stroke-width="2"/>
+                    <text x="150" y="75" text-anchor="middle" font-size="10" font-weight="bold">Neural &amp;</text>
+                    <text x="150" y="88" text-anchor="middle" font-size="10" font-weight="bold">Physiological</text>
+                    
+                    <!-- Memory -->
+                    <circle cx="450" cy="80" r="60" fill="#fef3c7" stroke="#f59e0b" stroke-width="2"/>
+                    <text x="450" y="75" text-anchor="middle" font-size="10" font-weight="bold">Memory &amp;</text>
+                    <text x="450" y="88" text-anchor="middle" font-size="10" font-weight="bold">Prediction</text>
+                    
+                    <!-- Cross-Species -->
+                    <circle cx="150" cy="220" r="60" fill="#f3e8ff" stroke="#8b5cf6" stroke-width="2"/>
+                    <text x="150" y="215" text-anchor="middle" font-size="10" font-weight="bold">Cross-Species</text>
+                    <text x="150" y="228" text-anchor="middle" font-size="10" font-weight="bold">Evidence</text>
+                    
+                    <!-- Multi-Modal -->
+                    <circle cx="450" cy="220" r="60" fill="#fce7f3" stroke="#ec4899" stroke-width="2"/>
+                    <text x="450" y="215" text-anchor="middle" font-size="10" font-weight="bold">Multi-Modal</text>
+                    <text x="450" y="228" text-anchor="middle" font-size="10" font-weight="bold">Integration</text>
+                    
+                    <!-- Connecting lines -->
+                    <line x1="220" y1="120" x2="270" y2="140" stroke="#374151" stroke-width="2"/>
+                    <line x1="380" y1="120" x2="330" y2="140" stroke="#374151" stroke-width="2"/>
+                    <line x1="220" y1="180" x2="270" y2="160" stroke="#374151" stroke-width="2"/>
+                    <line x1="380" y1="180" x2="330" y2="160" stroke="#374151" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="image-caption">Factors influencing human musical synchronization based on literature analysis</div>
+
+            <h3>Research Question 2: How Robots Synchronize with Human Performances</h3>
+            <p>This research question was informed by three key studies exploring different technological approaches:</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                    <h4>🎹 Shimon (Hoffman & Weinberg)</h4>
+                    <p><strong>Approach:</strong> Gesture-based framework with anticipatory model</p>
+                    <p><strong>Technology:</strong> <span class="tooltip">MIDI<span class="tooltiptext">Musical Instrument Digital Interface - a technical standard that describes a communications protocol for electronic musical instruments</span></span>-based note detection, physics-based motion control</p>
+                    <p><strong>Limitation:</strong> Struggles with rapid tempo changes and complex improvisations</p>
+                </div>
+                
+                <div style="background: #f0fdf4; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <h4>🎶 ESitar & MahaDeviBot (Kapur et al.)</h4>
+                    <p><strong>Approach:</strong> Multi-modal sensors with hyperinstrument</p>
+                    <p><strong>Technology:</strong> Force-sensing resistors, accelerometers, <span class="tooltip">MIR<span class="tooltiptext">Music Information Retrieval - computational methods for analyzing and understanding music</span></span> algorithms</p>
+                    <p><strong>Limitation:</strong> Synchronization lag of 150-200ms during tempo shifts</p>
+                </div>
+                
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                    <h4>🎵 Robot Thereminist (Otsuka)</h4>
+                    <p><strong>Approach:</strong> <span class="tooltip">ICA<span class="tooltiptext">Independent Component Analysis - a statistical technique for separating mixed signals</span></span>-based noise suppression</p>
+                    <p><strong>Technology:</strong> Real-time beat-tracking, precision arm control</p>
+                    <p><strong>Limitation:</strong> Signal separation quality degrades in noisy environments</p>
+                </div>
+            </div>
+
+            <h4>Common Challenges Identified:</h4>
+            <ul>
+                <li><strong>Adaptability Issues:</strong> Difficulty with rapid tempo changes and complex improvisations</li>
+                <li><strong>Latency Problems:</strong> Synchronization lags of 200-300ms during dynamic changes</li>
+                <li><strong>Environmental Robustness:</strong> Performance degradation in noisy or polyphonic environments</li>
+                <li><strong>Limited Expressiveness:</strong> Insufficient capture of human musical nuances</li>
+            </ul>
+
+            <h3>Research Question 3: Synchronization in Musical Ensembles</h3>
+            <p>This question was explored through three studies examining different dimensions of ensemble synchronization:</p>
+
+            <h4>Key Findings:</h4>
+            <div style="background: #f8fafc; padding: 2rem; border-radius: 8px; border-left: 4px solid var(--secondary-color); margin: 2rem 0;">
+                <h4>🎭 Social Dynamics (Volpe et al.)</h4>
+                <p>Small ensembles require collaborative synchronization rather than hierarchical control. Synchrony emerges from continuous, bidirectional adjustments by all members.</p>
+                
+                <h4>🎹 Auditory Feedback (Goebl & Palmer)</h4>
+                <p>Piano duet studies revealed that reduced auditory feedback increases temporal asynchronies. Visual cues become more critical when auditory information is limited.</p>
+                
+                <h4>🧠 Cognitive Processes (Keller)</h4>
+                <p>Three key cognitive processes enable ensemble synchronization:</p>
+                <ul>
+                    <li><strong>Anticipatory Auditory Imagery:</strong> Mental simulation of sounds</li>
+                    <li><strong>Prioritized Integrative Attention:</strong> Dividing attention between self and others</li>
+                    <li><strong>Adaptive Timing:</strong> Real-time movement modification</li>
+                </ul>
+            </div>
+
+            <h3>Research Question 4: Mathematical Models for Synchronization</h3>
+            <p>The <span class="tooltip">Kuramoto model<span class="tooltiptext">The Kuramoto model describes synchronization in systems of coupled oscillators, widely used in modeling biological and musical synchronization</span></span> emerges as a particularly powerful framework for modeling synchronization in complex systems.</p>
+
+            <div class="image-container">
+                <img src="images/literature/kuramoto.png" alt="Kuramoto Model Visualization">
+                <div class="image-caption">Visualization of the Kuramoto model showing oscillator synchronization dynamics</div>
+            </div>
+
+            <div class="equation">
+                θ̇ᵢ = ωᵢ + (K/N) Σⱼ sin(θⱼ - θᵢ)
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">
+                    Kuramoto Model: θᵢ = phase of oscillator i, ωᵢ = natural frequency, K = coupling strength
+                </div>
+            </div>
+
+            <h4>Why Kuramoto Model is Special:</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin: 2rem 0;">
+                <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px;">
+                    <h4>🔄 Phase Coupling</h4>
+                    <p>Models how oscillators influence each other's timing through phase differences</p>
+                </div>
+                <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px;">
+                    <h4>⚖️ Emergence</h4>
+                    <p>Demonstrates how global synchronization emerges from local interactions</p>
+                </div>
+                <div style="background: #fef3c7; padding: 1rem; border-radius: 8px;">
+                    <h4>🎵 Musical Relevance</h4>
+                    <p>Directly applicable to modeling musicians as coupled oscillators</p>
+                </div>
+                <div style="background: #f3e8ff; padding: 1rem; border-radius: 8px;">
+                    <h4>📊 Mathematical Tractability</h4>
+                    <p>Provides analytical solutions for certain parameter ranges</p>
+                </div>
+            </div>
+
+            <h3>Research Gaps Identified</h3>
+            <div style="background: #fef2f2; padding: 2rem; border-radius: 8px; border-left: 4px solid #ef4444; margin: 2rem 0;">
+                <h4>🚫 Key Limitations in Current Research:</h4>
+                <ul>
+                    <li><strong>Limited Multimodal Integration:</strong> Most systems rely on single sensory modalities</li>
+                    <li><strong>Insufficient Real-Time Adaptation:</strong> Poor handling of dynamic tempo changes</li>
+                    <li><strong>Lack of Expressive Modeling:</strong> Limited capture of human musical nuances</li>
+                    <li><strong>Scalability Issues:</strong> Most studies limited to small ensembles or specific instruments</li>
+                    <li><strong>Environmental Constraints:</strong> Performance degradation in complex acoustic environments</li>
+                </ul>
+            </div>
+
+            <h3>Future Research Directions</h3>
+            <p>Based on the literature analysis, several key areas emerge for future investigation:</p>
+            <ul>
+                <li><strong>Advanced <span class="tooltip">Multimodal<span class="tooltiptext">Using multiple modes or methods of input/output, such as combining audio, visual, and gestural data</span></span> Integration:</strong> Combining audio, visual, and gestural cues</li>
+                <li><strong>Predictive Modeling:</strong> Using <span class="tooltip">machine learning<span class="tooltiptext">A type of artificial intelligence that enables computers to learn and improve from experience without being explicitly programmed</span></span> for anticipatory synchronization</li>
+                <li><strong>Adaptive Control Systems:</strong> Real-time adaptation to changing musical contexts</li>
+                <li><strong>Expressive Modeling:</strong> Capturing and reproducing human musical expression</li>
+                <li><strong>Scalable Architectures:</strong> Systems that work across different ensemble sizes and genres</li>
+            </ul>
+        </div>
+
+        <div class="chapter-nav">
+            <a href="chapter1.html" class="btn">← Chapter 1: Introduction</a>
+            <a href="chapter3.html" class="btn">Chapter 3: Cyborg Philharmonic →</a>
+        </div>
+    </div>
+
+    <button class="back-to-top">↑</button>
+
+    <script src="main.js"></script>
+    <script>
+        // Chapter 2 specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate research question cards
+            document.querySelectorAll('#research-questions .card > div > div').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+
+            // Interactive quality assessment visualization
+            const qualityCards = document.querySelectorAll('#methodology div[style*="background: #f0f9ff"], #methodology div[style*="background: #f0fdf4"], #methodology div[style*="background: #fef3c7"], #methodology div[style*="background: #f3e8ff"], #methodology div[style*="background: #fef2f2"]');
+            
+            qualityCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+
+            // Results section progressive reveal
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateX(0)';
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            document.querySelectorAll('#results h4, #results .equation, #results table').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateX(-20px)';
+                el.style.transition = 'all 0.8s ease';
+                observer.observe(el);
+            });
+        });
+    </script>
+</body>
+</html>

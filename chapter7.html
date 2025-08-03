@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 7: Implementation for Human-Robot Musical Ensemble - PhD Thesis</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .flowchart {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .flowchart-step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 25px;
+            margin: 10px;
+            border-radius: 10px;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .flowchart-step:hover {
+            transform: translateY(-2px);
+        }
+        .arrow-down {
+            font-size: 24px;
+            color: #667eea;
+            margin: 5px 0;
+        }
+        .parameter-table {
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        .parameter-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .parameter-table th {
+            background: #343a40;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        .parameter-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .parameter-table tr:hover {
+            background: #e9ecef;
+        }
+        .component-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .component-card {
+            background: white;
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .component-card:hover {
+            transform: translateY(-2px);
+        }
+        .component-card h4 {
+            color: #495057;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        .metric-box {
+            background: linear-gradient(135deg, #74b9ff, #0984e3);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px 0;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .equation-box {
+            background: #ffeaa7;
+            border-left: 4px solid #fdcb6e;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .highlight-box {
+            background: #e8f4f8;
+            border: 2px solid #17a2b8;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .objective-list {
+            counter-reset: objective-counter;
+        }
+        .objective-item {
+            counter-increment: objective-counter;
+            background: #f8f9fa;
+            margin: 10px 0;
+            padding: 15px;
+            border-left: 4px solid #28a745;
+            border-radius: 0 8px 8px 0;
+        }
+        .objective-item::before {
+            content: "Objective " counter(objective-counter) ": ";
+            font-weight: bold;
+            color: #28a745;
+        }
+        .algorithm-box {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 20px 0;
+            overflow-x: auto;
+        }
+        .algorithm-step {
+            margin: 10px 0;
+            padding: 5px 0;
+        }
+        .algorithm-title {
+            color: #63b3ed;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .interactive-demo {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        .demo-button {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-weight: bold;
+        }
+        .demo-button:hover {
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+    <header class="header">
+        <div class="container">
+            <h1>Chapter 7: Implementation for Human-Robot Musical Ensemble</h1>
+            <h2>Real-Time Multimodal Synchronization and Robotic Ensemble</h2>
+            <div class="author">Sutirtha Chakraborty</div>
+            <div class="university">Maynooth University</div>
+        </div>
+    </header>
+    <div class="container">
+        <nav class="nav">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chapter6.html">Previous</a></li>
+                <li><a href="#introduction">Introduction</a></li>
+                <li><a href="#system-overview">System Overview</a></li>
+                <li><a href="#technical-components">Technical Components</a></li>
+                <li><a href="#hardware-implementation">Hardware Implementation</a></li>
+                <li><a href="#algorithmic-description">Algorithmic Description</a></li>
+                <li><a href="#experimental-setup">Experimental Setup</a></li>
+                <li><a href="#results-analysis">Results & Analysis</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+                <li><a href="chapter8.html">Next Chapter</a></li>
+            </ul>
+        </nav>
+        
+        <div class="card" id="introduction">
+            <h2>🎵 Introduction</h2>
+            <div class="highlight-box">
+                <h3>Chapter Overview</h3>
+                <p>This chapter presents the <strong>culmination</strong> of our research journey, demonstrating the practical application of theoretical frameworks from previous chapters. We integrate:</p>
+                <ul>
+                    <li><strong>Audio-based beat detection</strong> (Chapter 4)</li>
+                    <li><strong>Visual cues extraction</strong> (Chapter 5)</li>
+                    <li><strong>Multimodal synchronization approaches</strong> (Chapter 6)</li>
+                </ul>
+            </div>
+            
+            <div class="two-column">
+                <div>
+                    <h3>Research Objective</h3>
+                    <p>Create an environment where <strong>human musicians and robotic agents</strong> interact musically, adapting to each other's:</p>
+                    <ul>
+                        <li>🎼 Tempo variations</li>
+                        <li>🤲 Gestural cues</li>
+                        <li>🎭 Non-verbal communication</li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="image-container">
+                        <img src="images/virtual/trail.jpg" alt="Gesture-based synchronization">
+                        <div class="image-caption">A participant interacting with the system, demonstrating gesture-based synchronization.</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Key Contributions</h3>
+            <div class="component-grid">
+                <div class="component-card">
+                    <h4>🔍 Real-time Integration</h4>
+                    <p>Combines visual pose estimation, audio beat detection, and Kuramoto synchronization in real-time</p>
+                </div>
+                <div class="component-card">
+                    <h4>🤖 Robotic Implementation</h4>
+                    <p>Physical robotic system that responds to human gestures and musical cues</p>
+                </div>
+                <div class="component-card">
+                    <h4>📊 Experimental Validation</h4>
+                    <p>Comprehensive user studies demonstrating system robustness and adaptability</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="system-overview">
+            <h2>🏗️ System Overview</h2>
+            
+            <h3>System Pipeline</h3>
+            <div class="flowchart">
+                <div class="flowchart-step">📹 Data Acquisition<br><small>Live video & audio capture</small></div>
+                <div class="arrow-down">⬇️</div>
+                <div class="flowchart-step">🤸 Pose Estimation<br><small>YOLO-based keypoint detection</small></div>
+                <div class="arrow-down">⬇️</div>
+                <div class="flowchart-step">📈 Motion Analysis & BPM Inference<br><small>Temporal pattern analysis</small></div>
+                <div class="arrow-down">⬇️</div>
+                <div class="flowchart-step">🔄 Kuramoto Synchronization<br><small>Phase alignment & coupling</small></div>
+                <div class="arrow-down">⬇️</div>
+                <div class="flowchart-step">🎛️ Multimodal Integration<br><small>Audio + visual fusion</small></div>
+                <div class="arrow-down">⬇️</div>
+                <div class="flowchart-step">🎹 MIDI Output & Robotic Control<br><small>Real-time instrument triggering</small></div>
+            </div>
+
+            <h3>System Parameters</h3>
+            <div class="parameter-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>Description</th>
+                            <th>Typical Values</th>
+                            <th>Impact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Video Frame Rate</strong></td>
+                            <td>Input video capture rate</td>
+                            <td>25-30 fps</td>
+                            <td>Higher = better temporal resolution</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Pose Confidence Threshold</strong></td>
+                            <td>YOLO confidence for keypoint detection</td>
+                            <td>0.3-0.5</td>
+                            <td>Lower = more detections, higher noise</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Motion Buffer Size</strong></td>
+                            <td>Frames stored for BPM estimation</td>
+                            <td>30 frames</td>
+                            <td>Larger = more stable, slower adaptation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Natural Frequency</strong></td>
+                            <td>Baseline oscillator frequency (~120 BPM)</td>
+                            <td>2.0 Hz</td>
+                            <td>Default tempo when no input detected</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Coupling Strength</strong></td>
+                            <td>Kuramoto oscillator coupling</td>
+                            <td>0.1-0.2</td>
+                            <td>Higher = stronger synchronization</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MIDI Velocity</strong></td>
+                            <td>Note intensity for percussion</td>
+                            <td>90-110 (of 127)</td>
+                            <td>Controls robotic strike force</td>
+                        </tr>
+                        <tr>
+                            <td><strong>BPM Range</strong></td>
+                            <td>Allowed tempo estimation range</td>
+                            <td>60-180 BPM</td>
+                            <td>Filters unrealistic tempo estimates</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card" id="technical-components">
+            <h2>⚙️ Technical Components</h2>
+            
+            <div class="component-grid">
+                <div class="component-card">
+                    <h4>🎯 Visual Pose Estimation</h4>
+                    <p><strong>Technology:</strong> YOLO-based pose detection</p>
+                    <p><strong>Keypoints:</strong> Wrists, elbows, shoulders</p>
+                    <p><strong>Performance:</strong> 25 fps on GPU</p>
+                    <p><strong>Focus:</strong> Wrist motion for tempo inference</p>
+                    <div class="highlight-box">
+                        <strong>Why YOLO-Pose-Tiny?</strong><br>
+                        Optimized for real-time performance while maintaining accuracy for gesture recognition
+                    </div>
+                </div>
+                
+                <div class="component-card">
+                    <h4>📊 Motion-to-Tempo Conversion</h4>
+                    <p><strong>Method:</strong> Peak detection algorithms</p>
+                    <p><strong>Buffer:</strong> Rolling position & timestamp data</p>
+                    <p><strong>Smoothing:</strong> Prevents sudden BPM jumps</p>
+                    <div class="equation-box">
+                        BPM = 60 / mean(Δt_peaks)
+                    </div>
+                </div>
+            </div>
+
+            <div class="image-container">
+                <img src="images/virtual/drum_machine.png" alt="UI showing detected BPM">
+                <div class="image-caption">
+                    <strong>System Interface:</strong> The UI displays detected BPM from each person in an oscillatory circle. 
+                    The dotted red line represents Kuramoto's phase, and the circles in the top-right show 4/4 beat bars.
+                </div>
+            </div>
+
+            <h3>🔄 Kuramoto Synchronization Model</h3>
+            <div class="highlight-box">
+                <h4>Mathematical Foundation</h4>
+                <p>Each participant is represented as an oscillator with:</p>
+                <ul>
+                    <li><strong>Phase θᵢ:</strong> Current beat position</li>
+                    <li><strong>Frequency ωᵢ:</strong> BPMᵢ/60 (intrinsic tempo)</li>
+                </ul>
+            </div>
+
+            <div class="equation-box">
+                <strong>Phase Update Rule:</strong><br>
+                dθᵢ/dt = ωᵢ + (K/N) Σⱼ sin(θⱼ - θᵢ)
+                <br><br>
+                Where:
+                <ul style="margin: 10px 0; list-style: none;">
+                    <li>• K = coupling strength</li>
+                    <li>• N = number of participants</li>
+                    <li>• Coupling term drives synchronization</li>
+                </ul>
+            </div>
+
+            <div class="two-column">
+                <div>
+                    <h4>Global Phase & Frequency</h4>
+                    <p><strong>Global Phase:</strong> Circular mean of all participant phases</p>
+                    <p><strong>Global BPM:</strong> ω_global × 60</p>
+                    <p><strong>Convergence:</strong> Phases align over time through differential adjustment</p>
+                </div>
+                <div>
+                    <div class="metric-box">
+                        <span class="metric-value">2-3s</span>
+                        <span class="metric-label">Typical Convergence Time</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3>🎹 MIDI Event Generation & Robotic Control</h3>
+            <div class="component-card">
+                <h4>Rhythmic Pattern Implementation</h4>
+                <div class="parameter-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Instrument</th>
+                                <th colspan="16">16-Step Pattern (1-16)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Kick</strong></td>
+                                <td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td>
+                                <td>1</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Snare</strong></td>
+                                <td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td>
+                                <td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>1</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Hi-hat</strong></td>
+                                <td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td>
+                                <td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td><td>1</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Clap</strong></td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td>
+                                <td>0</td><td>0</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="image-container">
+                <img src="images/virtual/hardware_interface.png" alt="Robotic Arm Interface">
+                <div class="image-caption">Robotic Arm Interface connected via USB to laptop, controlling a MIDI keyboard for synchronized performance</div>
+            </div>
+        </div>
+
+        <div class="card" id="hardware-implementation">
+            <h2>🔧 Hardware Implementation</h2>
+            
+            <h3>System Architecture</h3>
+            <div class="highlight-box">
+                <p>The robotic piano interface combines <strong>solenoid actuators</strong>, <strong>microcontroller control</strong>, and <strong>MIDI communication</strong> to create a responsive musical robot that can perform alongside human musicians.</p>
+            </div>
+
+            <div class="component-grid">
+                <div class="component-card">
+                    <h4>🎹 Robotic Piano Interface</h4>
+                    <ul>
+                        <li><strong>Base:</strong> Standard electronic keyboard</li>
+                        <li><strong>Actuators:</strong> One solenoid per key</li>
+                        <li><strong>Alignment:</strong> Precise key-to-solenoid mapping</li>
+                        <li><strong>Response:</strong> Tactile feedback simulation</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>⚡ Solenoid Actuators</h4>
+                    <ul>
+                        <li><strong>Power:</strong> 12V supply for adequate force</li>
+                        <li><strong>Housing:</strong> Custom wooden enclosure</li>
+                        <li><strong>Driver:</strong> ULN2003A Darlington array</li>
+                        <li><strong>Protection:</strong> Current limiting & isolation</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>🧠 Control System</h4>
+                    <ul>
+                        <li><strong>MCU:</strong> Arduino Mega 2560</li>
+                        <li><strong>I/O:</strong> Multiple digital output pins</li>
+                        <li><strong>Processing:</strong> Real-time MIDI handling</li>
+                        <li><strong>Communication:</strong> USB to computer</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>🔌 Power & Circuitry</h4>
+                    <ul>
+                        <li><strong>Voltage:</strong> 12V dedicated supply</li>
+                        <li><strong>Current:</strong> Managed via driver array</li>
+                        <li><strong>Protection:</strong> Surge & overcurrent</li>
+                        <li><strong>Efficiency:</strong> On-demand activation</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="image-container">
+                <img src="images/virtual/solenoid.png" alt="Solenoid control circuit">
+                <div class="image-caption">
+                    <strong>Circuit Schematic:</strong> Shows the solenoid control circuit with ULN2003A driver array, 
+                    Mega 2560 microcontroller interfacing, and power distribution system.
+                </div>
+            </div>
+
+            <h3>Integration & Synchronization</h3>
+            <div class="two-column">
+                <div>
+                    <h4>Signal Flow</h4>
+                    <ol>
+                        <li><strong>MIDI Generation:</strong> Computer generates MIDI events</li>
+                        <li><strong>USB Transfer:</strong> Commands sent to Mega 2560</li>
+                        <li><strong>Signal Processing:</strong> MCU processes MIDI messages</li>
+                        <li><strong>Driver Control:</strong> Digital signals to ULN2003A</li>
+                        <li><strong>Solenoid Activation:</strong> Physical key strikes</li>
+                    </ol>
+                </div>
+                <div>
+                    <div class="metric-box">
+                        <span class="metric-value">&lt;10ms</span>
+                        <span class="metric-label">MIDI to Physical Response Latency</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="algorithmic-description">
+            <h2>🔄 Algorithmic Description</h2>
+            
+            <div class="algorithm-box">
+                <div class="algorithm-title">Real-Time Multimodal Synchronization Algorithm</div>
+                
+                <div class="algorithm-step"><strong>INPUT:</strong></div>
+                <div class="algorithm-step">  • Video frames F_t</div>
+                <div class="algorithm-step">  • Pre-trained YOLO-Pose model M</div>
+                <div class="algorithm-step">  • Coupling strength K</div>
+                <div class="algorithm-step">  • MIDI patterns P</div>
+                
+                <div class="algorithm-step"><strong>OUTPUT:</strong></div>
+                <div class="algorithm-step">  • Real-time MIDI events</div>
+                <div class="algorithm-step">  • Robotic actuator commands</div>
+                
+                <div class="algorithm-step"><strong>INITIALIZATION:</strong></div>
+                <div class="algorithm-step">  1. Set initial BPM estimates (BPM_i = 120) for all participants</div>
+                <div class="algorithm-step">  2. Initialize buffers for wrist positions</div>
+                <div class="algorithm-step">  3. Initialize oscillator phases θ_i and frequencies ω_i</div>
+                <div class="algorithm-step">  4. Configure MIDI output devices and robotic interfaces</div>
+                
+                <div class="algorithm-step"><strong>MAIN LOOP:</strong></div>
+                <div class="algorithm-step">  WHILE system_running:</div>
+                <div class="algorithm-step">    1. <strong>Video Acquisition:</strong> Capture frame F_t</div>
+                <div class="algorithm-step">    2. <strong>Pose Inference:</strong> Detect keypoints with M(F_t)</div>
+                <div class="algorithm-step">       Extract wrist positions for each participant</div>
+                <div class="algorithm-step">    3. <strong>BPM Estimation:</strong> </div>
+                <div class="algorithm-step">       Normalize and filter wrist motion data</div>
+                <div class="algorithm-step">       Compute BPM_i using peak detection</div>
+                <div class="algorithm-step">    4. <strong>Kuramoto Update:</strong></div>
+                <div class="algorithm-step">       Update oscillator phases θ_i using coupling equation</div>
+                <div class="algorithm-step">    5. <strong>MIDI Scheduling:</strong></div>
+                <div class="algorithm-step">       Generate MIDI Note On/Off events based on θ_global</div>
+                <div class="algorithm-step">    6. <strong>Robotic Actuation:</strong></div>
+                <div class="algorithm-step">       Send MIDI messages to robotic actuators</div>
+                <div class="algorithm-step">  END WHILE</div>
+            </div>
+
+            <div class="interactive-demo">
+                <h3>🎮 Interactive System Demo</h3>
+                <p>Experience how the algorithm responds to different inputs:</p>
+                <button class="demo-button" onclick="simulateTempoChange()">Simulate Tempo Change</button>
+                <button class="demo-button" onclick="simulateOcclusion()">Simulate Visual Occlusion</button>
+                <button class="demo-button" onclick="simulateMultimodal()">Enable Audio + Visual</button>
+                <div id="demo-output" style="margin-top: 15px; min-height: 30px;"></div>
+            </div>
+        </div>
+
+        <div class="card" id="experimental-setup">
+            <h2>🧪 Experimental Setup and Evaluation</h2>
+            
+            <div class="highlight-box">
+                <h3>Research Objectives</h3>
+                <p>Comprehensive evaluation of the multimodal synchronization framework's effectiveness, adaptability, and perceived responsiveness through controlled user studies.</p>
+            </div>
+
+            <div class="objective-list">
+                <div class="objective-item">
+                    <strong>Assess Synchronization Accuracy:</strong> Determine alignment between robotic percussionist and human-induced tempo/phase, measuring robustness to intentional tempo variations.
+                </div>
+                <div class="objective-item">
+                    <strong>Evaluate Adaptation Speed:</strong> Measure system response time to abrupt tempo changes and stability maintenance during fluctuations.
+                </div>
+                <div class="objective-item">
+                    <strong>Examine Perceived Responsiveness:</strong> Gather subjective feedback on whether the robot is perceived as an active partner vs. static metronome.
+                </div>
+                <div class="objective-item">
+                    <strong>Explore Multi-Condition Influence:</strong> Investigate impact of environmental factors, multimodal cues, and ensemble size on synchronization quality.
+                </div>
+            </div>
+
+            <h3>👥 Participant Demographics</h3>
+            <div class="results-grid">
+                <div class="metric-box">
+                    <span class="metric-value">6</span>
+                    <span class="metric-label">Total Participants</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-value">3M / 3F</span>
+                    <span class="metric-label">Gender Distribution</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-value">22-35</span>
+                    <span class="metric-label">Age Range</span>
+                </div>
+                <div class="metric-box">
+                    <span class="metric-value">2+ years</span>
+                    <span class="metric-label">Musical Experience</span>
+                </div>
+            </div>
+
+            <h3>🏗️ Experimental Setup</h3>
+            <div class="component-grid">
+                <div class="component-card">
+                    <h4>📹 Video Capture</h4>
+                    <ul>
+                        <li>HD camera at 30 fps</li>
+                        <li>2.5m distance from participants</li>
+                        <li>Upper body visibility ensured</li>
+                        <li>Uniform overhead lighting</li>
+                    </ul>
+                </div>
+                <div class="component-card">
+                    <h4>🥁 Robotic Drummer</h4>
+                    <ul>
+                        <li>Solenoid-driven percussion</li>
+                        <li>Snare-like surface</li>
+                        <li>Real-time MIDI control</li>
+                        <li>Sub-10ms response time</li>
+                    </ul>
+                </div>
+                <div class="component-card">
+                    <h4>🎵 Audio System</h4>
+                    <ul>
+                        <li>Reference click track (120 BPM)</li>
+                        <li>Bimodal scenario support</li>
+                        <li>High-quality playback</li>
+                        <li>Synchronized with visual</li>
+                    </ul>
+                </div>
+                <div class="component-card">
+                    <h4>👤 Participant Setup</h4>
+                    <ul>
+                        <li>Comfortable attire</li>
+                        <li>Free gesture choice</li>
+                        <li>Periodic motion required</li>
+                        <li>Conducting patterns encouraged</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>📋 Experimental Conditions</h3>
+            <div class="component-grid">
+                <div class="component-card">
+                    <h4>1️⃣ Baseline (Visual-Only, Steady)</h4>
+                    <p><strong>Duration:</strong> 3-4 minutes</p>
+                    <p><strong>Task:</strong> Steady tempo ~120 BPM</p>
+                    <p><strong>Input:</strong> Visual cues only</p>
+                    <p><strong>Purpose:</strong> Baseline synchronization measure</p>
+                </div>
+                
+                <div class="component-card">
+                    <h4>2️⃣ Tempo-Change (Visual-Only, Variable)</h4>
+                    <p><strong>Pattern:</strong> 120 → 130 → 120 BPM</p>
+                    <p><strong>Timing:</strong> Changes at 60s and 130s marks</p>
+                    <p><strong>Transition:</strong> 10-second gradual change</p>
+                    <p><strong>Purpose:</strong> Test adaptation capability</p>
+                </div>
+                
+                <div class="component-card">
+                    <h4>3️⃣ Multimodal (Audio + Visual)</h4>
+                    <p><strong>Audio:</strong> 120 BPM click track</p>
+                    <p><strong>Visual:</strong> Participant gestures at ±5 BPM</p>
+                    <p><strong>Conflict:</strong> Intentional audio-visual mismatch</p>
+                    <p><strong>Purpose:</strong> Test conflict resolution</p>
+                </div>
+                
+                <div class="component-card">
+                    <h4>4️⃣ Occlusion (Visual Interference)</h4>
+                    <p><strong>Interference:</strong> 2-3 second camera obstruction</p>
+                    <p><strong>Tempo:</strong> Steady 120 BPM maintained</p>
+                    <p><strong>Challenge:</strong> Lost/noisy visual data</p>
+                    <p><strong>Purpose:</strong> Test robustness</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="results-analysis">
+            <h2>📊 Results & Analysis</h2>
+            
+            <h3>📈 Quantitative Metrics</h3>
+            <div class="component-grid">
+                <div class="component-card">
+                    <h4>🎯 Tempo Estimation Error (TEE)</h4>
+                    <div class="equation-box">
+                        TEE = |BPM_estimated - BPM_intended|
+                    </div>
+                    <p>Measures accuracy of system's tempo estimation compared to participant's intended tempo.</p>
+                </div>
+                
+                <div class="component-card">
+                    <h4>🎵 Synchronization Accuracy (SyncAcc)</h4>
+                    <div class="equation-box">
+                        SyncAcc = (1/N) Σ|t_human,i - t_robot,i|
+                    </div>
+                    <p>Mean absolute deviation between human beats and robotic drum hits.</p>
+                </div>
+                
+                <div class="component-card">
+                    <h4>⏱️ Adaptation Time (AT)</h4>
+                    <div class="equation-box">
+                        AT = t_settle - t_change
+                    </div>
+                    <p>Duration for system to align within ±3 BPM of new target tempo.</p>
+                </div>
+                
+                <div class="component-card">
+                    <h4>🔄 Phase Variance (σ_θ)</h4>
+                    <div class="equation-box">
+                        σ²_θ = (1/N) Σ(θ_i - θ̄)²
+                    </div>
+                    <p>Variability in oscillator phases, indicating synchronization stability.</p>
+                </div>
+            </div>
+
+            <h3>📋 Quantitative Results</h3>
+            <div class="parameter-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Condition</th>
+                            <th>TEE (BPM)</th>
+                            <th>SyncAcc (ms)</th>
+                            <th>AT (s)</th>
+                            <th>Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Baseline (Visual)</strong></td>
+                            <td>2.5 ± 0.9</td>
+                            <td>18 ± 5</td>
+                            <td>N/A</td>
+                            <td>🟢 Excellent</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tempo-Change (Visual)</strong></td>
+                            <td>3.1 ± 1.2</td>
+                            <td>22 ± 6</td>
+                            <td>2.8 ± 0.7</td>
+                            <td>🟡 Good</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Multimodal (Audio+Visual)</strong></td>
+                            <td>2.2 ± 1.0</td>
+                            <td>15 ± 4</td>
+                            <td>2.5 ± 0.9</td>
+                            <td>🟢 Best</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Occlusion (Visual)</strong></td>
+                            <td>3.5 ± 1.5</td>
+                            <td>25 ± 8</td>
+                            <td>N/A</td>
+                            <td>🟡 Acceptable</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>💭 Qualitative Feedback</h3>
+            <div class="parameter-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Condition</th>
+                            <th>Responsiveness (1-5)</th>
+                            <th>Naturalness (1-5)</th>
+                            <th>Confidence (1-5)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Baseline (Visual)</strong></td>
+                            <td>4.0 ± 0.6</td>
+                            <td>3.9 ± 0.7</td>
+                            <td>3.8 ± 0.5</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tempo-Change (Visual)</strong></td>
+                            <td>3.8 ± 0.8</td>
+                            <td>3.7 ± 0.9</td>
+                            <td>3.5 ± 0.6</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Multimodal (Audio+Visual)</strong></td>
+                            <td>4.3 ± 0.5</td>
+                            <td>4.1 ± 0.6</td>
+                            <td>4.0 ± 0.6</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Occlusion (Visual)</strong></td>
+                            <td>3.4 ± 1.0</td>
+                            <td>3.2 ± 1.1</td>
+                            <td>3.0 ± 1.0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>🔍 Key Findings</h3>
+            <div class="results-grid">
+                <div class="metric-box" style="background: linear-gradient(135deg, #00b894, #00a085);">
+                    <span class="metric-value">✓</span>
+                    <span class="metric-label">Hypothesis Confirmed: ±3 BPM Accuracy</span>
+                </div>
+                <div class="metric-box" style="background: linear-gradient(135deg, #0984e3, #74b9ff);">
+                    <span class="metric-value">2.5s</span>
+                    <span class="metric-label">Adaptation Time (Target: &lt;3s)</span>
+                </div>
+                <div class="metric-box" style="background: linear-gradient(135deg, #6c5ce7, #a29bfe);">
+                    <span class="metric-value">4.3/5</span>
+                    <span class="metric-label">Peak Responsiveness (Multimodal)</span>
+                </div>
+                <div class="metric-box" style="background: linear-gradient(135deg, #fd79a8, #e84393);">
+                    <span class="metric-value">15ms</span>
+                    <span class="metric-label">Best Sync Accuracy (Audio+Visual)</span>
+                </div>
+            </div>
+
+            <h3>📝 Detailed Analysis</h3>
+            <div class="component-grid">
+                <div class="component-card">
+                    <h4>🎯 Tempo Estimation Performance</h4>
+                    <ul>
+                        <li><strong>Baseline:</strong> 2.5 BPM error - excellent alignment</li>
+                        <li><strong>Tempo Changes:</strong> 3.1 BPM - good adaptation capability</li>
+                        <li><strong>Multimodal:</strong> 2.2 BPM - best performance with audio stabilization</li>
+                        <li><strong>Occlusions:</strong> 3.5 BPM - acceptable degradation</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>🎵 Synchronization Quality</h4>
+                    <ul>
+                        <li><strong>Audio cues</strong> improved accuracy to ~15ms</li>
+                        <li><strong>Visual-only</strong> achieved stable ~18ms baseline</li>
+                        <li><strong>Tempo changes</strong> slightly worsened to ~22ms</li>
+                        <li><strong>Occlusions</strong> degraded to ~25ms but remained functional</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>⚡ Adaptation Capabilities</h4>
+                    <ul>
+                        <li><strong>Quick response:</strong> 2.5-2.8s adaptation time</li>
+                        <li><strong>Minimal disruption</strong> to musical flow</li>
+                        <li><strong>Smooth transitions</strong> between tempo changes</li>
+                        <li><strong>Rapid recovery</strong> from visual interruptions</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>👥 User Perception</h4>
+                    <ul>
+                        <li><strong>High responsiveness</strong> in stable conditions (4.0+/5)</li>
+                        <li><strong>Natural interaction</strong> feeling developed over time</li>
+                        <li><strong>Multimodal preference</strong> - robot seemed more "attentive"</li>
+                        <li><strong>Temporary confusion</strong> during occlusions but quick recovery</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>🚀 Advanced Observations</h3>
+            <div class="highlight-box">
+                <h4>Multimodal Conflict Resolution</h4>
+                <p>When audio and visual cues conflicted, the system reached a <strong>compromise tempo</strong> - participants described this as the robot "negotiating" the tempo, creating a more musical and collaborative experience.</p>
+            </div>
+
+            <div class="highlight-box">
+                <h4>Group Performance Dynamics</h4>
+                <p>In supplementary 2-3 participant tests, the Kuramoto model effectively synchronized multiple oscillators. <strong>Phase variance decreased</strong> from 1.2 to ~0.3 radians after 30 seconds, demonstrating robust ensemble synchronization.</p>
+            </div>
+        </div>
+
+        <div class="card" id="conclusion">
+            <h2>🎯 Conclusion</h2>
+            
+            <div class="highlight-box">
+                <h3>🏆 Research Achievement</h3>
+                <p>Successfully demonstrated the <strong>feasibility and practicality</strong> of integrating Kuramoto-based synchronization with multimodal cues to create compelling human-robot musical ensemble experiences.</p>
+            </div>
+
+            <h3>✅ Validated Capabilities</h3>
+            <div class="results-grid">
+                <div class="component-card">
+                    <h4>🎯 Accuracy & Stability</h4>
+                    <ul>
+                        <li>Maintained tempo alignment within ±3 BPM</li>
+                        <li>Synchronization accuracy below 20ms average</li>
+                        <li>Stable performance under normal conditions</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>🔄 Adaptability</h4>
+                    <ul>
+                        <li>Rapid adaptation to tempo changes (2-3s)</li>
+                        <li>Smooth handling of intentional variations</li>
+                        <li>Quick recovery from disruptions</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>👥 User Experience</h4>
+                    <ul>
+                        <li>High perceived responsiveness (4.0+/5)</li>
+                        <li>Natural interaction development</li>
+                        <li>Positive collaborative experience</li>
+                    </ul>
+                </div>
+                
+                <div class="component-card">
+                    <h4>🛡️ Robustness</h4>
+                    <ul>
+                        <li>Resilience to visual occlusions</li>
+                        <li>Effective multimodal integration</li>
+                        <li>Functional degradation, not failure</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>🔮 Future Implications</h3>
+            <div class="two-column">
+                <div>
+                    <h4>🎼 Musical Applications</h4>
+                    <ul>
+                        <li><strong>Complex ensembles:</strong> Larger groups with multiple robots</li>
+                        <li><strong>Genre diversity:</strong> Beyond percussion to melodic instruments</li>
+                        <li><strong>Expressive control:</strong> Dynamics and articulation adaptation</li>
+                        <li><strong>Composition tools:</strong> AI-assisted musical creation</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4>🤖 Technical Advances</h4>
+                    <ul>
+                        <li><strong>Enhanced sensing:</strong> Additional modalities (haptic, spatial)</li>
+                        <li><strong>Learning systems:</strong> Adaptive personal style recognition</li>
+                        <li><strong>Distributed performance:</strong> Remote ensemble capabilities</li>
+                        <li><strong>Mobile platforms:</strong> Portable robotic musicians</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="interactive-demo">
+                <h3>🎵 "Cyborg Philharmonic" Vision Realized</h3>
+                <p>This chapter completes our journey from theoretical foundations to practical implementation, demonstrating that <strong>human-robot musical collaboration</strong> is not just possible, but can be natural, responsive, and genuinely collaborative.</p>
+                <p><em>The future of music may well include artificial performers who listen, adapt, and contribute as true ensemble partners.</em></p>
+            </div>
+
+            <div class="chapter-nav">
+                <a href="chapter6.html" class="btn">&larr; Previous: Multimodal Synchronization</a>
+                <a href="chapter8.html" class="btn">Next: Conclusion and Future Work &rarr;</a>
+            </div>
+        </div>
+    </div>
+    
+    <button class="back-to-top">&uarr;</button>
+    
+    <script src="main.js"></script>
+    <script>
+        function simulateTempoChange() {
+            const output = document.getElementById('demo-output');
+            output.innerHTML = '🎵 Simulating tempo change: 120 → 130 BPM<br>⏱️ Adaptation time: ~2.8 seconds<br>✅ Successfully synchronized to new tempo';
+        }
+        
+        function simulateOcclusion() {
+            const output = document.getElementById('demo-output');
+            output.innerHTML = '👁️ Visual occlusion detected<br>🤖 Robot maintaining last known tempo<br>🔄 Visual signal restored - resynchronizing...';
+        }
+        
+        function simulateMultimodal() {
+            const output = document.getElementById('demo-output');
+            output.innerHTML = '🎵 Audio + Visual modes active<br>🎯 Improved synchronization accuracy: 15ms<br>🤝 Enhanced human-robot cooperation detected';
+        }
+    </script>
+</body>
+</html>

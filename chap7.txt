@@ -1,0 +1,441 @@
+
+\chapter{Implementation for Human-Robot Musical Ensemble}\label{ch-7}
+
+
+\section{Introduction}
+This chapter presents the final stage of the research, demonstrating the practical application of the theoretical and methodological frameworks described in previous chapters and building upon the audio-based beat detection (Chapter \ref{ch-4}), visual cues extraction (Chapter \ref{ch-5}), and multimodal synchronization approaches (Chapter \ref{ch-6}), we now integrate all these elements into a real-time system capable of synchronizing robotic and human performers. The objective is to create an environment where human musicians and robotic agents interact musically, adapting to each other’s tempo, gestures, and non-verbal cues. As shown in Figure \ref{fig:virtual_interaction}, a participant interacts with the system, demonstrating its ability to interpret gestures and synchronize in real-time.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/virtual/trail.jpg}
+    \caption{A participant interacting with the system, demonstrating gesture-based synchronization.}
+    \label{fig:virtual_interaction}
+\end{figure}
+
+
+\subsection{Overview of the Chapter}
+
+This chapter details developing and evaluating a real-time multimodal system for synchronizing human and robotic performers in a musical ensemble. The key focus is on integrating theoretical models of multimodal synchronization with practical implementation, combining visual pose estimation, audio-based beat detection, and a Kuramoto synchronization model. A detailed system pipeline and implementation of each component are presented, including data acquisition, motion-to-tempo conversion, and MIDI event generation for robotic control. The system’s capabilities are validated through experiments involving human participants performing rhythmic gestures. Quantitative metrics, such as tempo estimation error and synchronization accuracy, demonstrate the system’s performance, while qualitative feedback highlights its perceived responsiveness and naturalness in a musical interaction context. Experimental results confirm the system's robustness under various conditions, including visual occlusions and intentional tempo variations, and underscore the benefits of combining visual and audio modalities. The chapter concludes with a discussion on the implications of these findings for human-robot co-creation in the arts and potential avenues for future research.
+
+
+\section{System Overview}
+The integrated system can be viewed as a pipeline of sequential stages given below with parameter values as shown in Table \ref{tab:parameters_system} :
+\begin{enumerate}
+    \item \textbf{Data Acquisition}: Live video is captured from a camera, and optional audio streams (e.g., a microphone feed) may be incorporated.
+    \item \textbf{Pose Estimation}: Each frame is processed by a YOLO-based \footnote{https://github.com/ultralytics/ultralytics} pose detection model to extract keypoints representing multiple human performers.
+    \item \textbf{Motion Analysis and BPM Inference}: The temporal patterns of keypoint trajectories (specifically, wrist positions) are analyzed to estimate tempo (beats per minute, BPM) for each individual.
+    \item \textbf{Synchronization Engine (Kuramoto Model)}: Each participant is represented as an oscillator whose estimated BPM determines their intrinsic frequency. Coupling terms align phases across all participants.
+    \item \textbf{Multimodal Integration}: Results from audio-based beat estimations (if used) are combined with visual cues to produce a more robust global tempo.
+    \item \textbf{MIDI Output and Robotic Control}: The synchronized tempo and phase information generate MIDI signals, which trigger robotic percussive instruments in real-time.
+\end{enumerate}
+
+\begin{table}[H]
+    \centering
+    \caption{Key Parameters of the Integrated System}
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Parameter} & \textbf{Description} & \textbf{Typical Values} \\
+        \midrule
+        Video Frame Rate & Input video frame capture rate & 25--30 fps \\
+        Pose Model Threshold (conf) & YOLO confidence threshold for keypoint detection & 0.3--0.5 \\
+        Max Buffer Size (positions) & Length of buffer for estimating BPM from motion & 30 frames \\
+        Natural Frequency (osc.) & Baseline oscillator frequency (~120 BPM) & 2.0 Hz \\
+        Coupling Strength (Kuramoto) & Degree of coupling between oscillators & 0.1--0.2 \\
+        MIDI Note On/Off Velocity & Intensity of triggered percussive notes & 90--110 (out of 127) \\
+        BPM Clip Range & Allowed BPM range for estimated tempo & 60--180 BPM \\
+        \bottomrule
+    \end{tabular}%
+    }
+    \label{tab:parameters_system}
+\end{table}
+
+\section{Technical Components}
+\subsection{Visual Pose Estimation}
+The visual front-end employs a lightweight YOLO-based pose detection model trained for human keypoints, including wrists, elbows, shoulders, etc. The model processes each captured video frame and returns a set of 2D coordinates for each detected participant. These keypoints form the basis for tempo inference from body motion.
+
+For computational efficiency, the model uses a simplified pose variant (e.g., YOLO-Pose-Tiny) \footnote{\url{https://docs.ultralytics.com/tasks/pose}}, achieving near-real-time inference (25 fps) on a GPU-equipped machine. Since wrist motion strongly correlates with performance gestures (e.g., conducting patterns or simple hand-waving to indicate a beat), we specifically track the average vertical displacement of both left and right wrist keypoints.
+
+\subsection{Motion-to-Tempo Conversion}
+We maintain a rolling buffer of positions and timestamps for each detected participant to estimate the tempo from wrist motion. After normalizing and smoothing the time-series data, we apply peak detection algorithms (e.g., via the \texttt{find\_peaks} method in the SciPy signal processing library\footnote{\url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.find_peaks.html}}) to identify periodicities. The mean interval between peaks estimates that person’s BPM as shown in Figure \ref{fig:drum_machine} in the application interface. If two or more peaks are detected within the last 5 seconds, an approximate tempo is computed as:
+\begin{equation}
+\text{BPM} = \frac{60}{\overline{\Delta t_{peaks}}}
+\end{equation}
+where \(\overline{\Delta t_{peaks}}\) is the average time between consecutive peaks.
+
+A smoothing factor may be applied to avoid sudden BPM jumps. The BPM for each individual is clipped to a plausible range (60--180 BPM) to reject outliers and excessively noisy estimates.
+
+Figure \ref{fig:drum_machine} illustrates how the detected BPM from each person is visualized in the user interface. The detected BPM values are plotted in an oscillatory circle, with each participant represented as a point on the circle. The dotted red line represents Kuramoto’s phase, which is the collective phase of the entire ensemble, synchronized with the individual oscillators’ phases. The circles in the top-right corner of the figure represent the 4/4 beat bars, which act as a visual reference to track the temporal alignment between the human performers and the robotic system.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/virtual/drum_machine.png}
+    \caption{The UI shows the detected BPM from each person and plots them in an oscillatory circle. The dotted red line represents Kuramoto's phase and the circles on the right top represent the 4/4 beat bars.}
+    \label{fig:drum_machine}
+\end{figure}
+
+
+\subsection{Kuramoto Synchronization Model}
+In the Kuramoto model, each participant is represented as an oscillator characterized by a phase \(\theta_i\) and an intrinsic frequency \(\omega_i\), where the intrinsic frequency is derived from the estimated Beats Per Minute (BPM) of each participant. Specifically, the intrinsic frequency \(\omega_i\) is calculated as \(\omega_i = \frac{\text{BPM}_i}{60}\), where \(\text{BPM}_i\) is the tempo of the individual performer. The phase \(\theta_i\) indicates the specific point in time where the individual’s beat occurs in relation to the global tempo, which allows for synchronization among multiple performers.
+
+The Kuramoto model updates the phase of each oscillator by computing the differential of its phase. This differential represents the rate at which the phase of each participant evolves based on the phase differences between that participant and the other performers in the system. The equation gives the update rule:
+
+\begin{equation}
+\frac{d\theta_i}{dt} = \omega_i + \frac{K}{N} \sum_{j=1}^{N} \sin(\theta_j - \theta_i)
+\end{equation}
+
+where:
+- \(\frac{d\theta_i}{dt}\) is the rate of change of phase for participant \(i\),
+- \(\omega_i\) is the intrinsic frequency of participant \(i\),
+- \(K\) is the coupling strength that controls how strongly the others influence each participant’s phase,
+- \(N\) is the number of participants or oscillators in the system,
+- \(\theta_j\) is the phase of the \(j\)-th participant, and
+- \(\theta_i\) is the phase of the \(i\)-th participant.
+
+The coupling term \(\frac{K}{N} \sum_{j=1}^{N} \sin(\theta_j - \theta_i)\) represents the interaction between the phase of the \(i\)-th participant and the collective phases of all other participants. This term drives the synchronization process by adjusting each participant’s phase in response to the differences between their phase and those of the others. We discretize this model with a small time step \(\Delta t\) (typically 10–30 ms), which determines how frequently the system updates the phases of all participants.
+
+Over time, this phase differential results in phase alignment, where all participants’ phases converge toward a common phase. The \textbf{global phase} \(\theta_{\text{global}}\) is computed as the circular mean of the phases of all participants, which ensures that the global phase is not biased by any one individual’s phase. The global phase is used to represent the overall synchronization of the ensemble. The \textbf{global frequency} \(\omega_{\text{global}}\) is the average frequency of all participants, calculated as the average of their individual intrinsic frequencies. From the global frequency, the \textbf{global BPM} is derived:
+
+\begin{equation}
+\text{BPM}_{\text{global}} = \omega_{\text{global}} \times 60
+\end{equation}
+
+The Kuramoto model, through the differential phase adjustment for each oscillator, ensures that the phases of all participants gradually align to a common rhythm. In this way, the output of the Kuramoto model provides a \textbf{global phase} that reflects the collective synchronization of all participants in the ensemble. Each participant’s phase \(\theta_i\) is continuously adjusted according to the differential calculated in equation (7.2), leading to new phase values that ultimately result in global synchronization.
+
+
+\subsection{MIDI Event Generation and Robotic Control}
+The system converts the global tempo estimate into a stepwise event sequencer. Given a chosen subdivision (e.g., 16 steps per measure at a given BPM), each step triggers MIDI messages corresponding to a pattern (e.g., a drum groove as shown in Table \ref{tab:rhythmic_patterns}). Each participant’s phase influences slight adjustments in the timing of these triggers, allowing for micro-synchronization effects.
+
+\begin{table}[H]
+\centering
+\caption{Rhythmic Patterns for Instrument}
+\label{tab:rhythmic_patterns}
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Instrument} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} & \textbf{7} & \textbf{8} & \textbf{9} & \textbf{10} & \textbf{11} & \textbf{12} & \textbf{13} & \textbf{14} & \textbf{15} & \textbf{16} \\ \hline
+Kick & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\ \hline
+Snare & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 1 \\ \hline
+Hi-hat & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 1 \\ \hline
+Clap & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 1 & 0 & 0 \\ \hline
+\end{tabular}
+\end{table}
+
+
+When integrated into a robotic environment, these MIDI messages are sent via a MIDI-out device or a virtual MIDI port. On the receiving end, a microcontroller (e.g., Arduino) interprets these messages to actuate solenoids or servo motors, physically striking percussive surfaces as shown in Fig \ref{fig:hardware_interface}. Such mechanical translation ensures the robot’s performance is synchronized with human gestures observed in real-time. 
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/virtual/hardware_interface.png}
+    \caption{Robotic Arm Interface connected with USB with Laptop over a MIDI Keyboard}
+    \label{fig:hardware_interface}
+\end{figure}
+
+
+
+\section{Hardware Implementation of Robotic Arm Interface}
+
+The robotic piano interface consists of a customized keyboard with solenoids and is controlled through a microcontroller. This setup enables precise and synchronized key actuation, facilitating interaction between human musicians and robotic performers within a multimodal synchronization framework. To clearly understand the system's operation, Figure \ref{sec:experimental_setup_evaluation} presents a flowchart outlining the key stages of the real-time multimodal synchronization process. This process begins with Data Acquisition, where video frames and audio signals are captured to monitor the performance of human musicians. The system then performs Pose Estimation using a YOLO-based model to extract keypoints, precisely wrist positions, from the video feed. The Motion Analysis and BPM Inference stage analyzes the motion trajectories of these keypoints to estimate the tempo (beats per minute) of each individual performer. The next step, the Kuramoto Synchronization Model, utilizes the estimated BPMs as intrinsic frequencies and applies a synchronization model to align the phases of all participants. Multimodal Integration then combines the audio and visual cues to produce a robust global tempo, enhancing the synchronization accuracy. The system generates MIDI Output and Robotic Control signals, which trigger the robotic percussion instruments in real-time. This flowchart serves as a simplified overview of the core components and processes, ensuring that the system's functionality is clearly understood before diving into the detailed explanations of each stage.
+
+\subsection{Robotic  Arm Interface}
+
+The robotic arm utilized in this system is a standard electronic keyboard. The keyboard serves as the input interface for the robotic system, where each key corresponds to a distinct solenoid that controls its mechanical actuation. This mechanical interface is key to the physical interaction between the robotic system and the human performers. The keyboard’s keys are equipped with solenoids, which are arranged so that each solenoid aligns with a specific key. Upon receiving MIDI events, the solenoids activate sequentially or simultaneously to strike the corresponding keys, generating sound. 
+
+\subsection{Solenoid Actuators and Mechanical Design}
+
+A 12V supply powers the solenoids used in the system to ensure they generate sufficient force to activate the piano keys. The solenoid-driven mechanism emulates an acoustic piano's tactile feedback and mechanical sound production, facilitating a seamless interaction with human performers. Each solenoid is carefully positioned to correspond with an individual key on the keyboard, ensuring accurate key activation when triggered by the MIDI event signals.
+
+The solenoids are housed in a custom-built wooden enclosure, which organises the wiring and protects the actuators. This housing design ensures that the solenoids are securely mounted and aligned with the piano keys, minimizing misalignment and mechanical failure. The wooden box design is chosen for its structural integrity and ease of construction while providing sufficient wiring and actuator control space.
+
+The solenoids are controlled through a ULN2003A Darlington transistor array, which acts as a driver circuit to interface the low-voltage logic signals from the microcontroller to the higher current required to activate the solenoids. Each solenoid is connected to an output pin on the ULN2003A, which is responsible for switching the solenoid on or off based on the received MIDI events. The ULN2003A ensures the system can drive multiple solenoids simultaneously while protecting the microcontroller from excessive current draw.
+
+\subsection{Microcontroller System: Mega 2560}
+
+The system's central control unit is the Mega 2560 microcontroller, which manages the MIDI data and triggers the solenoids accordingly. This microcontroller is well-suited for handling the real-time processing required for the synchronization tasks, due to its high number of input and output pins, which are necessary to control each solenoid independently. The MIDI signals, which correspond to musical notes and control events, are processed by the Mega 2560, which then sends appropriate signals to the solenoids through the ULN2003A driver.
+
+The Mega 2560 interfaces with the solenoids using its digital output pins, sending signals to the driver to activate or deactivate the solenoids in real-time. These MIDI signals, generated by the synchronization engine (as described in Chapter \ref{ch-6}), represent musical events corresponding to specific piano notes and are translated into solenoid activation commands by the microcontroller. The solenoid actuation is synchronized with the rest of the system, ensuring that the robotic piano performs in perfect harmony with human musicians.
+
+\subsection{Power Supply and Circuitry}
+
+The solenoids in this system require a dedicated 12V power supply to function effectively, as indicated in the block diagram (Figure \ref{fig:solenoid_circuit}). This high voltage is necessary to generate sufficient force to strike the keys with adequate velocity and produce an audible sound. The power supply is connected to the solenoids through the ULN2003A driver, which ensures that only the necessary current is drawn, protecting the rest of the circuitry from power surges.
+
+The block diagram in Figure \ref{fig:solenoid_circuit} illustrates the flow of electrical signals from the Mega 2560 microcontroller to the ULN2003A, and subsequently to the solenoids. The microcontroller processes MIDI messages and translates them into digital output signals, which control the corresponding solenoid's activation. The ULN2003A driver amplifies these signals to the required voltage and current levels, powering the solenoids to strike the piano keys.
+
+\subsection{System Integration and Synchronization}
+
+In this hardware configuration, the solenoids play a crucial role in the real-time synchronization between human performers and robotic agents. Integrating the MIDI-driven solenoid actuation system allows the robotic piano to participate actively in the ensemble performance, adjusting dynamically to tempo and synchronization patterns. As described in Chapter \ref{ch-6}, the MIDI event generation is synchronized with the Kuramoto-based synchronization engine, which uses tempo and phase information to control the solenoid activation.
+
+The precise alignment of the solenoids with the piano keys, combined with the efficient solenoid driver circuitry, ensures that the robotic piano can follow the human performers accurately, generating a responsive and natural musical experience. The system’s performance relies on the real-time processing of MIDI events and solenoid control, making it a highly responsive and adaptable component of the multimodal synchronization system.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{images/virtual/solenoid.png}
+    \caption{Schematic diagram showing the solenoid control circuit and microcontroller interfacing.}
+    \label{fig:solenoid_circuit}
+\end{figure}
+
+
+
+
+
+\section{Algorithmic Description}
+\begin{algorithm}[H]
+    \caption{Real-Time Multimodal Synchronization}
+    \textbf{Input:} Video frames $F_t$, Pre-trained YOLO-Pose model $\mathcal{M}$, Coupling strength $K$, MIDI patterns $\mathcal{P}$.\\
+    \textbf{Output:} Real-time MIDI events synchronized to global phase, Robotic actuator commands.
+    \begin{enumerate}
+        \item \textbf{Initialization:}
+        \begin{itemize}
+            \item Set initial BPM estimates ($\text{BPM}_i = 120$) for all participants.
+            \item Initialize data structures: buffers for wrist positions, oscillator phases $\theta_i$, and frequencies $\omega_i$.
+            \item Configure MIDI output devices and robotic interfaces.
+        \end{itemize}
+        \item \textbf{Main Loop:}
+        \begin{enumerate}
+            \item \textbf{Video Acquisition:} Capture frame $F_t$.
+            \item \textbf{Pose Inference:} Detect keypoints with $\mathcal{M}(F_t)$; extract wrist positions.
+            \item \textbf{BPM Estimation:} Normalize and filter wrist motion data; compute $\text{BPM}_i$ using peak detection.
+            \item \textbf{Kuramoto Update:} Update oscillator phases $\theta_i$ using Equation (2).
+            \item \textbf{MIDI Scheduling:} Generate MIDI Note On/Off events based on $\theta_{\text{global}}$.
+            \item \textbf{Robotic Actuation:} Send MIDI messages to robotic actuators.
+        \end{enumerate}
+    \end{enumerate}
+\end{algorithm}
+ 
+
+
+\section{Experimental Setup and Evaluation}
+\label{sec:experimental_setup_evaluation}
+
+This section presents the methodology and results of a user-based experiment to evaluate the proposed multimodal synchronisation framework's effectiveness, adaptability, and perceived responsiveness. The experimental setup examined how human participants interact with the robotic percussionist, how well the system adapts to varying tempos and gestures, and how stable the resulting human-robot ensemble remains under different conditions. Using quantitative performance metrics and qualitative user feedback, we seek to understand the system’s strengths and limitations comprehensively.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[node distance=2cm]
+
+% Define block styles
+\tikzstyle{startstop} = [rectangle, rounded corners, minimum width=3cm, minimum height=1cm,text centered, draw=black, fill=red!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{io} = [trapezium, trapezium left angle=70, trapezium right angle=110, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=yellow!30]
+\tikzstyle{decision} = [diamond, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+% Define nodes
+\node (start) [startstop] {Start};
+\node (acquisition) [process, below of=start] {Data Acquisition (Video, Audio)};
+\node (pose) [process, below of=acquisition] {Pose Estimation (YOLO Model)};
+\node (motion) [process, below of=pose] {Motion Analysis and BPM Inference};
+\node (kuramoto) [process, below of=motion] {Kuramoto Synchronization Model};
+\node (integration) [process, below of=kuramoto] {Multimodal Integration (Audio + Visual)};
+\node (midi) [process, below of=integration] {MIDI Output and Robotic Control};
+\node (end) [startstop, below of=midi] {End};
+
+% Draw arrows
+\draw [arrow] (start) -- (acquisition);
+\draw [arrow] (acquisition) -- (pose);
+\draw [arrow] (pose) -- (motion);
+\draw [arrow] (motion) -- (kuramoto);
+\draw [arrow] (kuramoto) -- (integration);
+\draw [arrow] (integration) -- (midi);
+\draw [arrow] (midi) -- (end);
+
+\end{tikzpicture}
+\caption{Flowchart of the Real-Time Multimodal Synchronization System}
+\end{figure}
+
+\subsection{Objectives and Hypotheses}
+
+The primary objectives of the user-based experiment were:
+\begin{enumerate}
+    \item \textbf{Assess Synchronization Accuracy:} To determine how closely the robotic percussionist aligns with human-induced tempo and phase, and how robust this alignment remains when participants introduce intentional tempo variations.
+    \item \textbf{Evaluate Adaptation Speed:} To measure how quickly the system responds to abrupt tempo changes, and whether it can maintain stable synchronization amidst such fluctuations.
+    \item \textbf{Examine Perceived Responsiveness:} To gather subjective user feedback on whether the robotic performer is perceived as an ``active partner'' who follows the human leads or a static, metronomic entity.
+    \item \textbf{Explore Influence of Multiple Conditions:} To investigate the impact of environmental factors (e.g., visual occlusions, varying lighting), multimodal cues (audio and visual), and ensemble size on synchronization quality.
+\end{enumerate}
+
+We hypothesized that the integrated system, leveraging both visual pose estimation and the Kuramoto-based synchronization model, would:
+\begin{itemize}
+    \item Track human gestures sufficiently to maintain tempo estimation within approximately $\pm 3\ \text{BPM}$ of the human-perceived tempo.
+    \item Adapt to deliberate tempo changes (e.g., $+10$ BPM or $-10$ BPM) within a short convergence time (under 3 seconds).
+    \item Be perceived by participants as responsive, particularly after an initial ``warm-up'' period of a few seconds.
+\end{itemize}
+
+\subsection{Participant Demographics and Experimental Conditions}
+
+A total of 6 participants (3 male, 3 female) between the ages of 22 and 35 were recruited. All had at least moderate musical experience, defined as a minimum of 2 years playing an instrument or participating in ensemble performances. Among them, 2 participants had previous experience with conducting or ensemble-leading roles. None had prior exposure to human-robot co-performance systems.
+
+The experiments took place in a controlled lab environment equipped with:
+\begin{itemize}
+    \item \textbf{Video Capture:} A single HD camera capturing at 30 fps, positioned 2.5 meters from the participants, ensuring their upper bodies were visible.
+    \item \textbf{Lighting:} Uniform overhead lighting to minimize shadows and improve pose detection accuracy.
+    \item \textbf{Robotic Drummer:} A solenoid-driven percussion module triggering a snare-like surface, controlled in real-time via MIDI messages generated by the system.
+    \item \textbf{Audio Playback:} A reference audio click track at 120 BPM was available in some trials to simulate a bimodal scenario (audio and visual inputs).
+\end{itemize}
+
+Participants wore comfortable attire and could choose their gestures (e.g., light conducting patterns, tapping their chest or thigh) as long as the motions had a clear periodic component.
+
+\subsection{Experimental Procedure}
+
+Each participant underwent four conditions, each lasting approximately 3--4 minutes:
+
+\begin{enumerate}
+    \item \textbf{Baseline Condition (Visual-Only, Steady Tempo):}  
+    Participants were instructed to move at a steady tempo (approximately 120 BPM) without any intention to alter it. The system relied solely on visual cues from the participant’s wrist movements. This provided a baseline measure of synchronization under stable conditions.
+
+    \item \textbf{Tempo-Change Condition (Visual-Only, Variable Tempo):}  
+    Participants began at 120 BPM and, at the 60-second mark, gradually increased their tempo to about 130 BPM over 10 seconds and maintained it. After another 60 seconds, they returned to 120 BPM. This test assessed how quickly and stably the system adapted to deliberate tempo shifts using only visual cues.
+
+    \item \textbf{Multimodal Condition (Audio + Visual):}  
+    A steady audio click track at 120 BPM was introduced while participants maintained a visually indicated tempo at or near 120 BPM. Occasionally, participants attempted to deviate by $\pm 5$ BPM to test whether the system favored the audio cue, the visual cue, or reached a compromise. This scenario tested multimodal conflict resolution.
+
+    \item \textbf{Occlusion Condition (Visual-Only with Interference):}  
+    The camera view was partially obstructed briefly (e.g., another object passing in front of the participant for 2--3 seconds). Participants maintained their tempo at 120 BPM, and the system’s robustness in handling lost or noisy visual data was evaluated.
+\end{enumerate}
+
+\subsection{Data Collection}
+
+\noindent\textbf{Quantitative Metrics:}  
+\begin{itemize}
+    \item \textbf{Tempo Estimation Error (TEE)}: Tempo Estimation Error quantifies the absolute difference between the system's estimated tempo and the participant's intended tempo. It is defined as:
+    \[
+    \text{TEE} = \left| \text{BPM}_{\text{estimated}} - \text{BPM}_{\text{intended}} \right|
+    \]
+    where:
+    \begin{itemize}
+        \item $\text{BPM}_{\text{estimated}}$ is the tempo estimated by the system.
+        \item $\text{BPM}_{\text{intended}}$ is the tempo intended by the participant.
+    \end{itemize}
+
+    \item \textbf{Synchronization Accuracy (SyncAcc)}: Synchronization Accuracy measures the mean absolute deviation between the human-indicated beats and the corresponding robotic drum hits. It is calculated as:
+    \[
+    \text{SyncAcc} = \frac{1}{N} \sum_{i=1}^{N} \left| t_{\text{human}, i} - t_{\text{robot}, i} \right|
+    \]
+    where:
+    \begin{itemize}
+        \item $N$ is the total number of beats.
+        \item $t_{\text{human}, i}$ is the timestamp of the $i$-th human-indicated beat.
+        \item $t_{\text{robot}, i}$ is the timestamp of the $i$-th corresponding robotic drum hit.
+    \end{itemize}
+
+    \item \textbf{Adaptation Time (AT)}: Adaptation Time represents the duration required for the system to adjust its tempo to align within a specified range of the new target tempo after a deliberate change. It is expressed as:
+    \[
+    \text{AT} = t_{\text{settle}} - t_{\text{change}}
+    \]
+    where:
+    \begin{itemize}
+        \item $t_{\text{change}}$ is the time the deliberate tempo change is introduced.
+        \item $t_{\text{settle}}$ is when the system's tempo first remains consistently within $\pm 3$ BPM of the new target tempo.
+    \end{itemize}
+
+    \item \textbf{Phase Variance ($\sigma_{\theta}$)}: Phase Variance quantifies the variability in oscillator phases among all detected participants, serving as an indicator of synchronization stability. It is defined as:
+    \[
+    \sigma_{\theta}^2 = \frac{1}{N} \sum_{i=1}^{N} \left( \theta_i - \bar{\theta} \right)^2
+    \]
+    where:
+    \begin{itemize}
+        \item $N$ is the number of participants.
+        \item $\theta_i$ is the phase of the $i$-th participant.
+        \item $\bar{\theta}$ is the mean phase, calculated as:
+        \[
+        \bar{\theta} = \frac{1}{N} \sum_{i=1}^{N} \theta_i
+        \]
+    \end{itemize}
+\end{itemize}
+
+
+\noindent\textbf{Qualitative Measures:}  
+After each condition, participants completed a brief questionnaire:
+\begin{itemize}
+    \item \textbf{Responsiveness Rating (RR)}: On a 5-point Likert scale (1=Very Unresponsive, 5=Highly Responsive), participants rated how well the robot seemed to follow their tempo changes.
+    \item \textbf{Naturalness of Interaction (NI)}: On a 5-point scale, participants rated how natural interacting with the robotic performer felt.
+    \item \textbf{Confidence in Tempo (CT)}: On a 5-point scale, participants rated their confidence that the robot was consistently aligned with their intended tempo.
+\end{itemize}
+
+\subsection{Results and Analysis}
+
+Table~\ref{tab:quantitative_results} summarizes the averaged quantitative results (mean $\pm$ standard deviation) across the 6 participants for the four test conditions.
+
+\begin{table}[h!]
+\centering
+\caption{Quantitative Results Across Conditions}
+\label{tab:quantitative_results}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Condition} & \textbf{TEE (BPM)} & \textbf{SyncAcc (ms)} & \textbf{AT (s)} & \textbf{$\sigma_{\theta}$ (radians)} \\
+\midrule
+Baseline (Visual)         & $2.5 \pm 0.9$   & $18 \pm 5$   & N/A       & N/A \\
+Tempo-Change (Visual)     & $3.1 \pm 1.2$   & $22 \pm 6$   & $2.8 \pm 0.7$ & N/A \\
+Multimodal (Audio+Visual) & $2.2 \pm 1.0$   & $15 \pm 4$   & $2.5 \pm 0.9$ & N/A \\
+Occlusion (Visual)         & $3.5 \pm 1.5$   & $25 \pm 8$   & N/A       & N/A \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Tempo Estimation Error (TEE):}  
+In the Baseline condition, the system aligned closely with the participant’s intended tempo, showing an average TEE of about 2.5 BPM. During the Tempo-Change condition, TEE increased slightly to 3.1 BPM, reflecting the challenge of adapting to dynamic changes. The Multimodal condition displayed the lowest TEE (2.2 BPM), suggesting that the audio cue stabilized the estimation. The Occlusion condition had the highest TEE (3.5 BPM), indicating that visual interruptions degrade performance but not drastically.
+
+\noindent\textbf{Synchronization Accuracy (SyncAcc):}  
+The baseline achieved stable synchronization (~18 ms deviation), slightly worsening during tempo changes and visual occlusions. The presence of an audio cue improved SyncAcc to around 15 ms, as the auditory reference helped maintain steady timing.
+
+\noindent\textbf{Adaptation Time (AT):}  
+In both the Tempo-Change and Multimodal conditions, the system adapted to a new tempo within roughly 2.5 to 2.8 seconds, meeting our hypothesis. This quick adaptation ensured minimal disruption to the musical flow.
+
+\noindent\textbf{Phase Variance ($\sigma_{\theta}$):}  
+For these trials, most involved a single participant, thus phase variance was not applicable (N/A). In supplementary tests with small group participants (2--3 people), $\sigma_{\theta}$ decreased significantly after about 20 seconds of performance, indicating coherent group synchronization. For instance, a small group test (not shown in the main table) yielded $\sigma_{\theta} \approx 0.3$ radians after 30 seconds, down from an initial 1.2 radians at startup.
+
+Table~\ref{tab:qualitative_results} summarizes the qualitative results. The values are averaged ratings from participants on Responsiveness, Naturalness of Interaction, and Confidence in Tempo.
+
+\begin{table}[h!]
+\centering
+\caption{Qualitative Questionnaire Results (Mean $\pm$ SD) on a 5-Point Scale}
+\label{tab:qualitative_results}
+\begin{tabular}{lccc}
+\toprule
+\textbf{Condition} & \textbf{RR (1-5)} & \textbf{NI (1-5)} & \textbf{CT (1-5)} \\
+\midrule
+Baseline (Visual)         & $4.0 \pm 0.6$ & $3.9 \pm 0.7$ & $3.8 \pm 0.5$ \\
+Tempo-Change (Visual)     & $3.8 \pm 0.8$ & $3.7 \pm 0.9$ & $3.5 \pm 0.6$ \\
+Multimodal (Audio+Visual) & $4.3 \pm 0.5$ & $4.1 \pm 0.6$ & $4.0 \pm 0.6$ \\
+Occlusion (Visual)         & $3.4 \pm 1.0$ & $3.2 \pm 1.1$ & $3.0 \pm 1.0$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\noindent\textbf{Responsiveness Rating (RR):}  
+Participants generally perceived the robot as responsive, particularly in the Baseline and Multimodal conditions (RR $\approx 4.0$ and $4.3$, respectively). The introduction of audio cues improved the perceived responsiveness, as participants felt the robot was “listening” more attentively. Occasional occlusions reduced RR to about 3.4, as the system briefly struggled to maintain a steady tempo.
+
+\noindent\textbf{Naturalness of Interaction (NI):}  
+NI scores followed a similar trend: stable conditions yielded NI $\approx 3.9$ to $4.1$. Participants described the interaction as feeling increasingly natural once the system locked onto their tempo. In the Occlusion condition, NI decreased to about 3.2, with some participants noting a brief feeling of “confusion” in the robotic drummer’s timing.
+
+\noindent\textbf{Confidence in Tempo (CT):}  
+Confidence was highest in the Multimodal condition (CT $\approx 4.0$), where both audio and visual cues gave participants the impression that the robot was well-grounded. The Occlusion condition saw CT drop to around 3.0, indicating that visual interruptions made participants doubt the robot’s consistency.
+
+\subsection{Discussion of Phenomena Observed}
+
+\noindent\textbf{Robustness to Noise and Visual Interference:}  
+Although occlusions raised TEE and reduced subjective scores, the system produced rhythmic output close to the intended tempo. Participants noted that the robot occasionally “lagged” or “jumped” in timing for a few beats but recovered quickly. This demonstrates partial robustness to transient visual failures.
+
+\noindent\textbf{Influence of Multimodality:}  
+The presence of a stable audio reference improved both objective and subjective measures. When participants attempted to deviate from the audio click, the system reached a compromise tempo, slightly higher than the audio’s BPM yet not fully meeting the participant’s intended faster tempo. Participants perceived this compromise as the robot “negotiating” the tempo, which they found intriguing and somewhat more ``musical'' than strictly adhering to a single source.
+
+\noindent\textbf{Adaptation to Tempo Changes:}  
+The system’s rapid adaptation (2--3 seconds) allowed the ensemble to recover from tempo shifts smoothly. Participants described these adaptations as feeling like the robot was “catching up” rather than imposing a fixed tempo. While some remarked that the robot never became as “humanly expressive” as a live musician, the quick adaptation and stable phase alignment fostered a sense of shared agency in the performance.
+
+\noindent\textbf{Group Performance Dynamics:}  
+In supplementary tests with 2--3 participants performing simultaneously, the Kuramoto model effectively synchronized multiple oscillators. Although not the focus of the main experiment, initial data suggested that increasing the number of participants enhanced tempo stability due to the ensemble averaging effect, reducing the impact of any single participant’s timing fluctuations.
+
+\subsection{Summary of Findings}
+
+The experimental results confirm that the proposed system effectively balances accuracy, adaptability, and perceived responsiveness:
+\begin{itemize}
+    \item \textbf{Accuracy and Stability:} Under stable conditions, the system maintained tempo alignment within about 80--110 BPM of the intended tempo and kept synchronization accuracy below 20 ms on average.
+    \item \textbf{Adaptability:} The system rapidly adapted to intentional tempo changes, requiring only a few seconds to settle into the new tempo range.
+    \item \textbf{User Perception:} Participants rated the interaction as responsive and natural, especially when audio cues complemented the visual signals.
+    \item \textbf{Resilience to Occlusions:} While visual occlusions degraded performance slightly, the system remained functionally coherent, demonstrating robustness to transient visual failures.
+\end{itemize}
+
+
+\section{Conclusion}
+These findings support the feasibility and practicality of integrating a Kuramoto-based synchronization model with multimodal cues (primarily visual pose estimation, optionally supplemented by audio) to create a compelling human-robot musical ensemble experience. The experiments demonstrate that the system can reliably track human-induced tempo variations and maintain stable synchronization. By combining visual cues with potential audio cues, we achieve resilience against noise and environmental disruptions. This chapter detailed the final integrated system that actualizes the ``Cyborg Philharmonic" vision: human musicians and robotic performers synchronizing in real-time via multimodal cues. The results open the door for further refinements, expanding applicability to more complex musical contexts and larger ensembles.
+

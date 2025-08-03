@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3: The Cyborg Philharmonic Framework - PhD Thesis</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .simulation-container {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 2px solid #0ea5e9;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(14, 165, 233, 0.1);
+        }
+        .control-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .parameter-control {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .parameter-control label {
+            font-weight: bold;
+            color: #1e40af;
+        }
+        .parameter-control input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+        }
+        .parameter-control input[type="range"]::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #0ea5e9;
+            cursor: pointer;
+        }
+        .visualization-canvas {
+            width: 100%;
+            height: 300px;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            background: white;
+            margin: 15px 0;
+        }
+        .phase-circle {
+            width: 200px;
+            height: 200px;
+            border: 3px solid #0ea5e9;
+            border-radius: 50%;
+            position: relative;
+            margin: 20px auto;
+            background: radial-gradient(circle, #f0f9ff, #dbeafe);
+        }
+        .oscillator-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: absolute;
+            transition: all 0.1s ease;
+        }
+        .framework-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .framework-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .framework-card:hover {
+            transform: translateY(-5px);
+        }
+        .framework-card h4 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #0ea5e9;
+            padding-bottom: 8px;
+        }
+        .ensemble-network {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: radial-gradient(circle, #f8fafc, #e2e8f0);
+            border-radius: 15px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .musician-node {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .musician-node:hover {
+            transform: scale(1.1);
+        }
+        .connection-line {
+            position: absolute;
+            height: 2px;
+            background: linear-gradient(90deg, #0ea5e9, #06b6d4);
+            transform-origin: left center;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        .metrics-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #10b981;
+        }
+        .metric-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #047857;
+            display: block;
+        }
+        .metric-label {
+            color: #065f46;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .interactive-equation {
+            background: #fef3c7;
+            border: 2px solid #f59e0b;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2em;
+            text-align: center;
+            position: relative;
+        }
+        .equation-explanation {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: Arial, sans-serif;
+            font-size: 0.9em;
+            color: #374151;
+        }
+        .timeline-visualization {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+        .beat-marker {
+            position: absolute;
+            width: 3px;
+            height: 100%;
+            background: #ef4444;
+            animation: moveBeat 4s linear infinite;
+        }
+        @keyframes moveBeat {
+            from { left: -10px; }
+            to { left: 100%; }
+        }
+        .waveform {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(90deg, #3b82f6, #06b6d4, #10b981, #f59e0b);
+            opacity: 0.3;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scaleY(0.5); }
+            50% { transform: scaleY(1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <h1>Chapter 3: The Cyborg Philharmonic</h1>
+            <h2>A Framework for Human-Robot Musical Synchronization</h2>
+            <div class="author">Sutirtha Chakraborty</div>
+            <div class="university">Maynooth University</div>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">PhD Thesis</a>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chapter1.html">Ch 1: Introduction</a></li>
+                <li><a href="chapter2.html">Ch 2: Literature</a></li>
+                <li><a href="chapter3.html">Ch 3: Framework</a></li>
+                <li><a href="chapter4.html">Ch 4: LeaderSTeM</a></li>
+                <li><a href="chapter5.html">Ch 5: Visual Cues</a></li>
+                <li><a href="chapter6.html">Ch 6: Virtual</a></li>
+                <li><a href="chapter7.html">Ch 7: Nature</a></li>
+                <li><a href="chapter8.html">Ch 8: Multimodal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span class="separator">›</span>
+            <span class="current">Chapter 3: The Cyborg Philharmonic</span>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="card" id="introduction">
+            <h2>🎼 Introduction</h2>
+            <p>The integration of robotic systems into musical ensembles is a frontier that pushes the boundaries of robotics, artificial intelligence, and human-computer interaction. It can be represented as a connected graph where each of the musicians is connected to each other as shown in the figure below.</p>
+
+            <div class="image-container">
+                <img src="images/nature/Figure1.jpg" alt="Ensemble Network" style="max-width: 100%; height: 400px; object-fit: contain;">
+                <div class="image-caption">Interconnected network among musicians during a musical ensemble depicts each individual musician to be connected to others to synchronize their performances with the leader.</div>
+            </div>
+
+            <p>Building upon the historical evolution of automated musical systems explored in Chapter 1 and the detailed analysis of synchronization mechanisms in Chapter 2, this chapter introduces the <strong>Cyborg Philharmonic framework</strong>. The framework aims to address the intricate challenges of achieving expressive and synchronized human-robot performances in real-time ensemble settings.</p>
+
+            <div class="highlight-box">
+                <h3>🎯 Framework Goals</h3>
+                <p>Unlike static or purely algorithmic approaches, the Cyborg Philharmonic integrates <strong>dynamic learning models</strong> with classical synchronization techniques to create a responsive, adaptive, and expressive robotic musician. The goal is not only technical synchronization but also the emulation of <strong>human-like musicality</strong>—capturing the subtleties of timing, phrasing, and expression that are inherent in human performances.</p>
+            </div>
+
+            <h3>📚 Chapter Structure</h3>
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>🏗️ Framework Overview</h4>
+                    <p>Key components including Mapping and Modeling Modules for data acquisition, synchronization, and predictive modeling</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🔄 Multimodal Synchronization</h4>
+                    <p>Integration of audio, visual, and gestural data to achieve robust synchronization between human and robotic performers</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🤖 Predictive Modeling</h4>
+                    <p>Anticipation strategies enabling robots to proactively synchronize with human musicians</p>
+                </div>
+                <div class="framework-card">
+                    <h4>⚙️ Adaptive Control</h4>
+                    <p>Feedback systems ensuring stability and expressiveness of the performance</p>
+                </div>
+                <div class="framework-card">
+                    <h4>📊 Dataset Analysis</h4>
+                    <p>MUSDB18 and URMP datasets for training and validation</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🧪 Evaluation</h4>
+                    <p>Experimental setup and metrics for assessing framework effectiveness</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="ensemble-model">
+            <h2>🎵 Ensemble Interaction Model</h2>
+            
+            <p>The ensemble interaction model illustrates the complex interaction framework among musicians, instruments, listeners, and the environment within a musical ensemble. This model provides insights into the acoustic, mechanical, and visual feedback mechanisms essential for achieving cohesive performances.</p>
+
+            <div class="image-container">
+                <img src="images/nature/Acoustic-path-of-ensemble-sound-formation-and-information-based-on-8.png" alt="Ensemble Feedback Model" style="max-width: 100%; height: 400px; object-fit: contain;">
+                <div class="image-caption">A generalized feedback model within an ensemble, showing the acoustic paths and information flow between musicians, instruments, and the listening environment.</div>
+            </div>
+
+            <h3>🔍 Explanation of the Feedback Model</h3>
+            <p>In an ensemble, a musician interacts with multiple sources of feedback, creating a networked environment for synchronization and harmonization. The primary components involved are:</p>
+
+            <div class="framework-grid">
+                <div class="framework-card" style="background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #92400e;">
+                    <h4>🎼 Musician and Instrument</h4>
+                    <p>The <strong>Musician</strong> performs actions on the <strong>Instrument</strong>, often referred to as <em>mechanical actions</em>. These actions result in <em>direct sound</em>, which is the immediate auditory feedback the musician perceives. This direct sound allows the musician to monitor their performance in real time, making minute adjustments to ensure precision and consistency.</p>
+                </div>
+                
+                <div class="framework-card" style="background: linear-gradient(135deg, #dbeafe, #3b82f6); color: #1e40af;">
+                    <h4>👥 Interaction Among Musicians</h4>
+                    <p>Ensemble performances require coordination between <strong>Musicians</strong> and <strong>Other Musicians</strong>. Visual feedback plays a significant role here, as musicians rely on sight to maintain temporal alignment and respond to visual cues, especially in the absence of direct auditory feedback.</p>
+                </div>
+                
+                <div class="framework-card" style="background: linear-gradient(135deg, #dcfce7, #22c55e); color: #166534;">
+                    <h4>🏠 Acoustic Environment (Room)</h4>
+                    <p>The <strong>Room</strong> modifies the sound produced by each instrument acoustically before it reaches the listener. This acoustically modified feedback allows musicians to understand how their sound interacts with the environment, which is crucial in large ensemble settings where spatial arrangement affects acoustics.</p>
+                </div>
+                
+                <div class="framework-card" style="background: linear-gradient(135deg, #fce7f3, #ec4899); color: #be185d;">
+                    <h4>👂 Listener Perception</h4>
+                    <p>The <strong>Listener</strong> receives sound from two primary sources: the <em>direct sound</em> from the musician's instrument and the <em>acoustically modified sound</em> reflected from the room. This combination provides a richer auditory experience, allowing listeners to perceive depth and spatial nuances within the ensemble.</p>
+                </div>
+            </div>
+
+            <h3>🔄 Feedback Loops and Synchronization</h3>
+            <p>Two primary feedback loops are present in this model:</p>
+            <ul>
+                <li><strong>Visual Feedback Loop:</strong> Visual cues facilitate real-time synchronization among musicians. These cues allow musicians to anticipate each other's actions, maintain timing, and enhance expressive coherence.</li>
+                <li><strong>Acoustic Feedback Loop:</strong> The musician receives <em>acoustically modified feedback</em> from the instrument's sound interacting with the room. This feedback is essential for adapting dynamics and expression based on the acoustics of the performance space.</li>
+            </ul>
+
+            <div class="simulation-container">
+                <h4>🎮 Interactive Ensemble Network Simulation</h4>
+                <p>Explore how musicians connect and influence each other in an ensemble:</p>
+                <div class="ensemble-network" id="ensembleNetwork">
+                    <!-- Network visualization will be generated by JavaScript -->
+                </div>
+                <div class="control-panel">
+                    <div class="parameter-control">
+                        <label>Number of Musicians: <span id="musicianCount">4</span></label>
+                        <input type="range" id="musicianSlider" min="2" max="8" value="4">
+                    </div>
+                    <div class="parameter-control">
+                        <label>Connection Strength: <span id="connectionStrength">0.5</span></label>
+                        <input type="range" id="connectionSlider" min="0.1" max="1" step="0.1" value="0.5">
+                    </div>
+                    <div class="parameter-control">
+                        <label>Leader Influence: <span id="leaderInfluence">0.8</span></label>
+                        <input type="range" id="leaderSlider" min="0.3" max="1" step="0.1" value="0.8">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="oscillators">
+            <h2>🔄 Oscillators as Models for Rhythmic Synchronization</h2>
+            
+            <p>In the context of musical ensembles, <strong>oscillators</strong> serve as fundamental mathematical models that represent rhythmic timing and periodic behaviours among performers. Each oscillator is defined by its <em>phase</em> and <em>frequency</em>, where the phase indicates the position in the oscillation cycle (analogous to the beat in a musical phrase), and the frequency represents the natural tempo of the performer.</p>
+
+            <div class="interactive-equation">
+                <div style="font-size: 1.5em; margin-bottom: 15px;">
+                    <strong>Kuramoto Model:</strong>
+                </div>
+                <div style="font-size: 1.3em; color: #1e40af;">
+                    dθᵢ/dt = ωᵢ + (K/N) Σⱼ sin(θⱼ - θᵢ)
+                </div>
+                <div class="equation-explanation">
+                    <strong>Where:</strong><br>
+                    • <strong>θᵢ</strong> = phase of musician i (position in beat cycle)<br>
+                    • <strong>ωᵢ</strong> = natural frequency of musician i (their preferred tempo)<br>
+                    • <strong>K</strong> = coupling strength (how much musicians influence each other)<br>
+                    • <strong>N</strong> = total number of musicians<br>
+                    • <strong>sin(θⱼ - θᵢ)</strong> = synchronization force between musicians
+                </div>
+            </div>
+
+            <div class="simulation-container">
+                <h4>🎭 Interactive Kuramoto Model Simulation</h4>
+                <p>Watch how oscillators (musicians) synchronize with each other:</p>
+                
+                <div class="control-panel">
+                    <div class="parameter-control">
+                        <label>Coupling Strength (K): <span id="couplingValue">0.5</span></label>
+                        <input type="range" id="couplingSlider" min="0" max="2" step="0.1" value="0.5">
+                    </div>
+                    <div class="parameter-control">
+                        <label>Number of Oscillators: <span id="oscillatorCount">4</span></label>
+                        <input type="range" id="oscillatorSlider" min="2" max="8" value="4">
+                    </div>
+                    <div class="parameter-control">
+                        <label>Frequency Variation: <span id="freqVariation">0.2</span></label>
+                        <input type="range" id="freqSlider" min="0" max="1" step="0.1" value="0.2">
+                    </div>
+                    <div class="parameter-control">
+                        <button id="resetButton" style="padding: 10px 20px; background: #0ea5e9; color: white; border: none; border-radius: 5px; cursor: pointer;">Reset Simulation</button>
+                        <button id="playPauseButton" style="padding: 10px 20px; background: #10b981; color: white; border: none; border-radius: 5px; cursor: pointer;">Pause</button>
+                    </div>
+                </div>
+
+                <div class="phase-circle" id="phaseCircle">
+                    <!-- Oscillator dots will be generated by JavaScript -->
+                </div>
+
+                <div class="timeline-visualization" id="timelineViz">
+                    <div class="waveform"></div>
+                    <div class="beat-marker" id="beatMarker"></div>
+                    <div style="position: absolute; top: 10px; left: 10px; background: rgba(255,255,255,0.9); padding: 5px 10px; border-radius: 5px; font-size: 0.9em;">
+                        <strong>Synchronization Progress:</strong> <span id="syncProgress">0%</span>
+                    </div>
+                </div>
+
+                <div class="metrics-dashboard">
+                    <div class="metric-card">
+                        <span class="metric-value" id="avgPhase">0°</span>
+                        <div class="metric-label">Average Phase</div>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value" id="phaseVariance">0.0</span>
+                        <div class="metric-label">Phase Variance</div>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value" id="syncTime">0s</span>
+                        <div class="metric-label">Sync Time</div>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value" id="globalTempo">120</span>
+                        <div class="metric-label">Global BPM</div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>🎯 Implementation of Role Adaptation</h3>
+            <p>Role adaptation is a dynamic process that allows robotic performers to adjust their synchronization behavior based on real-time cues from human performers in the ensemble. This adaptation enables the system to respond flexibly to the evolving leadership and follower roles within the group:</p>
+
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>👑 Leader-Follower Dynamics</h4>
+                    <p>In musical ensembles, certain performers naturally take on the role of a leader, guiding the tempo, rhythm, and expressive dynamics of the group. The algorithm detects leadership roles in real-time by analyzing visual and auditory cues.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🔗 Adaptive Coupling Coefficients</h4>
+                    <p>The synchronization model uses adaptive coupling coefficients, which adjust the strength of interaction between oscillators based on the identified role. When a performer is assigned the role of a leader, the algorithm increases the coupling strength.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🎛️ Dynamic Feedback Control</h4>
+                    <p>The system includes real-time feedback mechanisms to ensure that the robotic performer continuously adjusts its actions to match changes in tempo and dynamics set by the leader.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="framework">
+            <h2>🏗️ Framework Overview: The Cyborg Philharmonic</h2>
+            
+            <p>The Cyborg Philharmonic framework consists of two main components: the <strong>Mapping Module</strong> and the <strong>Modeling Module</strong>. Together, they enable robots to synchronize with human musicians, anticipate future musical events, and adapt to changes during performances.</p>
+
+            <div class="image-container">
+                <img src="images/nature/Figure2.jpg" alt="Cyborg Philharmonic Architecture" style="max-width: 100%; height: 500px; object-fit: contain;">
+                <div class="image-caption">Architecture of the Cyborg Philharmonic framework, showing the interaction between the Mapping and Modeling modules for real-time synchronization and anticipation in human-robot musical ensembles.</div>
+            </div>
+
+            <h3>🗺️ Mapping Module</h3>
+            <p>The Mapping Module is the foundation for data acquisition and synchronization control within the Cyborg Philharmonic framework. It focuses on capturing and processing multimodal data—such as audio, visual, and gestural inputs—to enable the robot to interpret the musical environment accurately.</p>
+
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>📡 Sensor Acquisition and Processing</h4>
+                    <p>Employs an array of sensors, including microphones and cameras, to capture real-time multimodal data. Microphones capture audio signals, cameras monitor visual cues, and pose detection algorithms estimate subtle body movements.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🔍 Feature Extraction</h4>
+                    <p>Signal processing algorithms extract relevant features from acquired data. Auditory features include beat, tempo, and dynamics, while visual features focus on gestures and body movements.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🔄 Synchronization Algorithms</h4>
+                    <p>Core synchronization algorithms use mathematical models like the Kuramoto model of coupled oscillators. These models achieve phase synchronization between human and robotic performers.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🎛️ Control Interface</h4>
+                    <p>A real-time control interface translates synchronization parameters into actionable control signals for the robotic performers, ensuring the robot remains in sync with the ensemble.</p>
+                </div>
+            </div>
+
+            <h3>🤖 Modeling Module</h3>
+            <p>The Modeling Module builds on the data processed by the Mapping Module to enable predictive modeling, role adaptation, and expressive performance generation. This module focuses on higher-level cognitive functions that allow the robot to anticipate changes in the musical environment.</p>
+
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>🔮 Predictive Modeling</h4>
+                    <p>Utilizes deep learning architectures, particularly Recurrent Neural Networks (RNNs) and Long Short-Term Memory (LSTM) networks, to model temporal dependencies and predict future musical events.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>👑 Leader-Follower Dynamics</h4>
+                    <p>Incorporates algorithms that detect and adapt to changing roles within the ensemble. The system analyzes interaction patterns to dynamically assign leader and follower roles.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🎭 Expressive Performance Generation</h4>
+                    <p>Employs reinforcement learning techniques to allow the robot to learn expressive playing styles from continuous feedback, ensuring performances that are both technically accurate and musically engaging.</p>
+                </div>
+            </div>
+
+            <h3>🔧 Integration of Mapping and Modeling Modules</h3>
+            <p>The Cyborg Philharmonic framework's beat tracking module first extracts spectral features from audio signals and generates a beat activation function. An autocorrelation function then estimates the primary tempo, filtering out spurious beats. The beat phase is further refined through peak picking, where the local maxima of the activation function align with the most likely beat positions.</p>
+
+            <div class="image-container">
+                <img src="images/nature/Figure3.jpg" alt="Beat Detection and Synchronization" style="max-width: 100%; height: 400px; object-fit: contain;">
+                <div class="image-caption">Beat detection and phase synchronization for the single instrumental piece. (a) Follow the leader's beat by using the predictive LSTM model on an input audio stream. (b) Phase Synchronization is achieved between an audio stream and the Kuramoto Oscillator.</div>
+            </div>
+
+            <h4>📊 Key Observations from the Results:</h4>
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>🎯 LSTM Model Performance (a)</h4>
+                    <p>The graph shows BPM against number of samples. The grey line represents Aubio library output, while the blue line denotes the LSTM model prediction. The LSTM model closely follows the Aubio output, demonstrating capability to predict the leader's beat over time and adapt to varying tempos.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🔄 Kuramoto Phase Synchronization (b)</h4>
+                    <p>Shows phase values (in radians) against samples. The blue line represents "Song Phase" from actual audio, while orange represents "Kuramoto Phase" from the oscillator model. Close alignment demonstrates effective phase synchronization with real-time adjustments.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="datasets">
+            <h2>📊 Datasets: MUSDB18 and URMP</h2>
+            
+            <p>In the context of this research, the MUSDB18 and URMP datasets serve as foundational resources for developing and evaluating synchronization algorithms aimed at achieving real-time alignment between human musicians and robotic performers.</p>
+
+            <h3>🎵 MUSDB18 Dataset</h3>
+            <p>The MUSDB18 dataset is a benchmark dataset widely utilized in the field of Music Information Retrieval (MIR) for tasks such as source separation, music transcription, and music analysis. It consists of 150 professionally produced stereo audio tracks spanning a variety of genres including pop, rock, jazz, and hip-hop.</p>
+
+            <div class="image-container">
+                <img src="images/nature/musdb18.jpg" alt="MUSDB18 Dataset" style="max-width: 100%; height: 300px; object-fit: contain;">
+                <div class="image-caption">MUSDB18 is a collection of audio STEMS, which is a multitrack audio format that uses lossy compression.</div>
+            </div>
+
+            <div class="framework-grid">
+                <div class="framework-card" style="background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #92400e;">
+                    <h4>📈 Data Characteristics</h4>
+                    <ul>
+                        <li><strong>Format:</strong> Stereo WAV, 44.1 kHz, 16-bit</li>
+                        <li><strong>Tracks:</strong> 150 songs with average length of 3-4 minutes</li>
+                        <li><strong>Sources:</strong> Four stems per track - vocals, drums, bass, other</li>
+                        <li><strong>Genres:</strong> Pop, rock, electronic, jazz, hip-hop</li>
+                    </ul>
+                </div>
+                <div class="framework-card" style="background: linear-gradient(135deg, #dbeafe, #3b82f6); color: #1e40af;">
+                    <h4>🔬 Usage in Research</h4>
+                    <p>Used for training and evaluating machine learning models for source separation and rhythm analysis tasks. The separated tracks provide isolated access to individual instruments, critical for developing synchronization algorithms that can perform temporal alignment with specific musical sources.</p>
+                </div>
+            </div>
+
+            <h3>🎼 URMP Dataset</h3>
+            <p>The URMP (University of Rochester Multi-Modal Music Performance) dataset is designed explicitly for multimodal research in music analysis, involving audio-visual data that captures both auditory and visual aspects of musical performances.</p>
+
+            <div class="image-container">
+                <img src="images/nature/URMP.png" alt="URMP Dataset" style="max-width: 100%; height: 300px; object-fit: contain;">
+                <div class="image-caption">The dataset comprises a number of simple multi-instrument musical pieces assembled from coordinated but separately recorded performances of individual tracks.</div>
+            </div>
+
+            <div class="framework-grid">
+                <div class="framework-card" style="background: linear-gradient(135deg, #dcfce7, #22c55e); color: #166534;">
+                    <h4>📊 Data Characteristics</h4>
+                    <ul>
+                        <li><strong>Format:</strong> Audio (44.1 kHz, 16-bit, mono) and Video (HD, 30 FPS)</li>
+                        <li><strong>Performances:</strong> 44 pieces with synchronized audio-visual recordings</li>
+                        <li><strong>Instruments:</strong> Violin, cello, flute, clarinet, trumpet, and more</li>
+                        <li><strong>Recording:</strong> Controlled studio environment</li>
+                        <li><strong>Ensemble Types:</strong> Solo, duo, trio, and quartet configurations</li>
+                    </ul>
+                </div>
+                <div class="framework-card" style="background: linear-gradient(135deg, #fce7f3, #ec4899); color: #be185d;">
+                    <h4>🎯 Research Applications</h4>
+                    <p>Facilitates investigation into how visual cues—such as body movements, gestures, and facial expressions—correlate with musical timing and expression. This multimodal aspect is vital for the Cyborg Philharmonic framework.</p>
+                </div>
+            </div>
+
+            <h3>🔗 Combined Dataset Strategy</h3>
+            <p>The combined use of MUSDB18 and URMP datasets provides a comprehensive foundation for developing a robust synchronization system that can operate in both audio-only and multimodal environments:</p>
+
+            <div class="highlight-box">
+                <h4>📋 Data Integration Strategy:</h4>
+                <ul>
+                    <li><strong>Audio Source Separation:</strong> Use MUSDB18 for training models to isolate and analyze specific musical sources and predict their rhythmic patterns</li>
+                    <li><strong>Multimodal Framework Development:</strong> Employ URMP for training multimodal models that integrate auditory and visual cues</li>
+                    <li><strong>Cross-Dataset Validation:</strong> Validate synchronization algorithms across both datasets to ensure robustness</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card" id="results">
+            <h2>🧪 Experimental Results on URMP Dataset</h2>
+            
+            <p>To investigate the effectiveness of our proposed synchronization framework, we carried out a series of <em>offline</em> experiments using multi-instrument performances from the URMP dataset. In these experiments, there is <em>no physical robot or "cyborg"</em> involved; rather, we simulate the robotic component via a Kuramoto oscillator that attempts to track and synchronize its phase with pre-recorded audio of real human musicians.</p>
+
+            <h3>🎵 Defining the "Song Phase"</h3>
+            <p>A crucial part of our approach is the notion of a <strong>Song Phase</strong>, which represents a continuous measure of the music's beat structure at any moment in time. To extract this, we first use a beat-detection algorithm on the URMP recordings, yielding discrete beat times throughout each piece.</p>
+
+            <div class="interactive-equation">
+                <div style="font-size: 1.3em; color: #1e40af;">
+                    θ_song(t) = 2π × (t - tᵢ)/(tᵢ₊₁ - tᵢ), t ∈ [tᵢ, tᵢ₊₁)
+                </div>
+                <div class="equation-explanation">
+                    Between consecutive beats (tᵢ, tᵢ₊₁), the Song Phase increases smoothly from 2π × 0 to 2π × 1, directly reflecting how far we are between successive beats.
+                </div>
+            </div>
+
+            <h3>🔄 Kuramoto Oscillator Tracking</h3>
+            <p>To simulate a "robotic musician," we use a Kuramoto oscillator whose phase adjusts according to:</p>
+
+            <div class="interactive-equation">
+                <div style="font-size: 1.3em; color: #1e40af;">
+                    dθ_Kuramoto/dt = ω_natural + K × sin(θ_song(t) - θ_Kuramoto(t))
+                </div>
+                <div class="equation-explanation">
+                    This feedback loop compels the oscillator to "pull in" and lock onto the Song Phase over time. Through careful tuning of K and ω_natural, the simulated oscillator can robustly track tempo changes and expressive fluctuations.
+                </div>
+            </div>
+
+            <h3>📊 Phase Synchronization in Multi-Instrument Ensembles</h3>
+            <div class="image-container">
+                <img src="images/nature/Figure4.jpg" alt="Multi-instrument Phase Synchronization" style="max-width: 100%; height: 500px; object-fit: contain;">
+                <div class="image-caption">Phase synchronization for a multi-instrument composition with dynamic leader changes. (a) A visualization of woodwind instruments (Flute, Oboe, Clarinet, Bassoon) indicating leader transitions over time. (b) Song Phase vs. Kuramoto Phase, demonstrating close alignment between the audio signal's phase and the oscillator's predictions.</div>
+            </div>
+
+            <h4>🔍 Key Observations:</h4>
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>🎼 Multi-Instrumental Composition (a)</h4>
+                    <p>Shows temporal dynamics featuring four woodwind instruments—Flute, Oboe, Clarinet, and Bassoon. Each instrument is represented by a horizontal line with colored segments corresponding to leadership roles. The fluid transitions demonstrate dynamic leadership changes common in orchestral music.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🔄 Phase Synchronization (b)</h4>
+                    <p>Displays phase difference between actual musical composition ("Song Phase") and predicted phase from Kuramoto Oscillator ("Kuramoto Phase"). The close overlap indicates high synchronization degree, demonstrating the model's efficacy in aligning with dynamic tempo and beat patterns.</p>
+                </div>
+            </div>
+
+            <h3>📈 Quantitative Metrics and Observations</h3>
+            <p>We evaluated synchronization performance across multiple URMP pieces using four principal metrics:</p>
+
+            <div class="image-container">
+                <img src="images/nature/synchronization_metrics_example.png" alt="Synchronization Metrics" style="max-width: 100%; height: 300px; object-fit: contain;">
+                <div class="image-caption">Synchronization Metrics for Selected URMP Ensemble Pieces</div>
+            </div>
+
+            <div class="metrics-dashboard">
+                <div class="metric-card">
+                    <span class="metric-value">0.90+</span>
+                    <div class="metric-label">Synchronization Accuracy</div>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">&lt;0.15</span>
+                    <div class="metric-label">Phase Error (radians)</div>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">~1s</span>
+                    <div class="metric-label">Leader Transition Time</div>
+                </div>
+                <div class="metric-card">
+                    <span class="metric-value">0.85+</span>
+                    <div class="metric-label">Expressive Alignment</div>
+                </div>
+            </div>
+
+            <h4>🎯 Key Findings:</h4>
+            <div class="framework-grid">
+                <div class="framework-card">
+                    <h4>💪 Strong Beat Alignment</h4>
+                    <p>Across diverse ensembles, the system maintained an average phase error below 0.15 radians and generally produced high synchronization accuracy (often exceeding 0.90).</p>
+                </div>
+                <div class="framework-card">
+                    <h4>👑 Leader Transitions</h4>
+                    <p>When musicians alternated in "leading" certain phrases, the Kuramoto oscillator tracked the new leader's beat within about 1 second, remaining well-synchronized despite natural role shifts.</p>
+                </div>
+                <div class="framework-card">
+                    <h4>🎭 Expressive Nuances</h4>
+                    <p>The Expressive Alignment typically scored above 0.85, indicating that the simulated robot would adapt not only to timing but also to dynamic and articulatory variations in the musical texture.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🎯 Conclusion</h2>
+            
+            <p>The development of the Cyborg Philharmonic framework marks a significant milestone in the intersection of robotics, artificial intelligence, and musical performance. This chapter has introduced a novel architecture that not only addresses the technical challenges of synchronization between human and robotic musicians but also delves into the expressive and anticipatory aspects of musical collaboration.</p>
+
+            <div class="highlight-box">
+                <h3>🏆 Key Achievements</h3>
+                <p>By moving beyond static and reactive models, this framework represents a significant step forward in achieving expressive and synchronized human-robot musical performances. By combining advanced synchronization algorithms, predictive modeling, and multimodal sensory integration, the framework enables robots to function as dynamic collaborators within musical ensembles.</p>
+            </div>
+
+            <p>However, in more complex ensemble settings, the ability to dynamically identify and adapt to the tempo leader—who dictates the overall rhythm and expressive direction of the group—becomes crucial. <strong>Chapter 4, "LeaderSTeM,"</strong> builds on this foundation by introducing a novel machine learning approach for real-time leader identification in musical ensembles.</p>
+
+            <div class="quote">
+                "This dynamic 'leader tracking' capability is essential for more nuanced synchronization and adaptation, allowing robotic musicians to adjust more intelligently to shifting roles and maintain coherent ensemble dynamics."
+            </div>
+
+            <p>By integrating the LeaderSTeM model with the synchronization techniques established in the Cyborg Philharmonic framework, we move towards a more comprehensive and responsive system for human-robot musical interaction.</p>
+        </div>
+
+        <div class="chapter-nav">
+            <a href="chapter2.html" class="btn">← Chapter 2: Literature Review</a>
+            <a href="chapter4.html" class="btn">Chapter 4: LeaderSTeM →</a>
+        </div>
+    </div>
+
+    <button class="back-to-top">↑</button>
+
+    <script src="main.js"></script>
+    <script>
+        // Kuramoto Model Simulation
+        class KuramotoSimulation {
+            constructor() {
+                this.oscillators = [];
+                this.numOscillators = 4;
+                this.couplingStrength = 0.5;
+                this.freqVariation = 0.2;
+                this.isPlaying = true;
+                this.time = 0;
+                this.baseFreq = 1.0; // 1 Hz base frequency
+                this.setupOscillators();
+                this.setupControls();
+                this.setupEnsembleNetwork();
+                this.animate();
+            }
+
+            setupOscillators() {
+                this.oscillators = [];
+                const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+                
+                for (let i = 0; i < this.numOscillators; i++) {
+                    this.oscillators.push({
+                        phase: Math.random() * 2 * Math.PI,
+                        frequency: this.baseFreq + (Math.random() - 0.5) * this.freqVariation,
+                        color: colors[i],
+                        id: i
+                    });
+                }
+                
+                this.updateVisualization();
+            }
+
+            setupControls() {
+                // Coupling strength control
+                document.getElementById('couplingSlider').addEventListener('input', (e) => {
+                    this.couplingStrength = parseFloat(e.target.value);
+                    document.getElementById('couplingValue').textContent = this.couplingStrength.toFixed(1);
+                });
+
+                // Number of oscillators control
+                document.getElementById('oscillatorSlider').addEventListener('input', (e) => {
+                    this.numOscillators = parseInt(e.target.value);
+                    document.getElementById('oscillatorCount').textContent = this.numOscillators;
+                    this.setupOscillators();
+                });
+
+                // Frequency variation control
+                document.getElementById('freqSlider').addEventListener('input', (e) => {
+                    this.freqVariation = parseFloat(e.target.value);
+                    document.getElementById('freqVariation').textContent = this.freqVariation.toFixed(1);
+                    this.setupOscillators();
+                });
+
+                // Reset button
+                document.getElementById('resetButton').addEventListener('click', () => {
+                    this.time = 0;
+                    this.setupOscillators();
+                });
+
+                // Play/Pause button
+                document.getElementById('playPauseButton').addEventListener('click', (e) => {
+                    this.isPlaying = !this.isPlaying;
+                    e.target.textContent = this.isPlaying ? 'Pause' : 'Play';
+                });
+            }
+
+            updatePhases(dt) {
+                if (!this.isPlaying) return;
+
+                const newPhases = [...this.oscillators.map(osc => osc.phase)];
+                
+                for (let i = 0; i < this.numOscillators; i++) {
+                    let coupling = 0;
+                    for (let j = 0; j < this.numOscillators; j++) {
+                        if (i !== j) {
+                            coupling += Math.sin(this.oscillators[j].phase - this.oscillators[i].phase);
+                        }
+                    }
+                    
+                    const dPhase = this.oscillators[i].frequency + 
+                                   (this.couplingStrength / this.numOscillators) * coupling;
+                    newPhases[i] += dPhase * dt;
+                }
+
+                // Update phases
+                for (let i = 0; i < this.numOscillators; i++) {
+                    this.oscillators[i].phase = newPhases[i] % (2 * Math.PI);
+                }
+
+                this.time += dt;
+            }
+
+            updateVisualization() {
+                const circle = document.getElementById('phaseCircle');
+                circle.innerHTML = '';
+
+                this.oscillators.forEach((osc, i) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'oscillator-dot';
+                    dot.style.backgroundColor = osc.color;
+                    
+                    const radius = 90; // Distance from center
+                    const centerX = 100; // Center of circle
+                    const centerY = 100;
+                    
+                    const x = centerX + radius * Math.cos(osc.phase - Math.PI/2);
+                    const y = centerY + radius * Math.sin(osc.phase - Math.PI/2);
+                    
+                    dot.style.left = `${x - 6}px`;
+                    dot.style.top = `${y - 6}px`;
+                    dot.title = `Oscillator ${i + 1}: ${(osc.phase * 180 / Math.PI).toFixed(1)}°`;
+                    
+                    circle.appendChild(dot);
+                });
+
+                this.updateMetrics();
+            }
+
+            updateMetrics() {
+                // Calculate average phase
+                const avgPhase = this.oscillators.reduce((sum, osc) => sum + osc.phase, 0) / this.numOscillators;
+                document.getElementById('avgPhase').textContent = `${(avgPhase * 180 / Math.PI).toFixed(0)}°`;
+
+                // Calculate phase variance
+                const variance = this.oscillators.reduce((sum, osc) => {
+                    const diff = osc.phase - avgPhase;
+                    return sum + diff * diff;
+                }, 0) / this.numOscillators;
+                document.getElementById('phaseVariance').textContent = variance.toFixed(2);
+
+                // Calculate synchronization progress
+                const maxVariance = Math.PI * Math.PI; // Maximum possible variance
+                const syncProgress = Math.max(0, (1 - variance / maxVariance) * 100);
+                document.getElementById('syncProgress').textContent = `${syncProgress.toFixed(0)}%`;
+
+                // Update sync time
+                document.getElementById('syncTime').textContent = `${this.time.toFixed(1)}s`;
+
+                // Update global tempo (average frequency)
+                const avgFreq = this.oscillators.reduce((sum, osc) => sum + osc.frequency, 0) / this.numOscillators;
+                const globalBPM = Math.round(avgFreq * 60);
+                document.getElementById('globalTempo').textContent = globalBPM;
+            }
+
+            setupEnsembleNetwork() {
+                const network = document.getElementById('ensembleNetwork');
+                
+                // Setup musician slider
+                document.getElementById('musicianSlider').addEventListener('input', (e) => {
+                    const count = parseInt(e.target.value);
+                    document.getElementById('musicianCount').textContent = count;
+                    this.updateEnsembleNetwork(count);
+                });
+
+                // Setup connection strength slider
+                document.getElementById('connectionSlider').addEventListener('input', (e) => {
+                    const strength = parseFloat(e.target.value);
+                    document.getElementById('connectionStrength').textContent = strength.toFixed(1);
+                    this.updateConnectionStrength(strength);
+                });
+
+                // Setup leader influence slider
+                document.getElementById('leaderSlider').addEventListener('input', (e) => {
+                    const influence = parseFloat(e.target.value);
+                    document.getElementById('leaderInfluence').textContent = influence.toFixed(1);
+                    this.updateLeaderInfluence(influence);
+                });
+
+                this.updateEnsembleNetwork(4);
+            }
+
+            updateEnsembleNetwork(count) {
+                const network = document.getElementById('ensembleNetwork');
+                network.innerHTML = '';
+
+                const colors = ['#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'];
+                const instruments = ['🎹', '🎻', '🎺', '🥁', '🎷', '🎸', '🎼', '🎤'];
+                
+                // Create musician nodes
+                for (let i = 0; i < count; i++) {
+                    const node = document.createElement('div');
+                    node.className = 'musician-node';
+                    node.style.backgroundColor = colors[i];
+                    node.textContent = instruments[i];
+                    node.title = `Musician ${i + 1}`;
+                    
+                    // Position nodes in a circle
+                    const angle = (i * 2 * Math.PI) / count;
+                    const radius = 150;
+                    const centerX = 200;
+                    const centerY = 200;
+                    
+                    const x = centerX + radius * Math.cos(angle) - 30;
+                    const y = centerY + radius * Math.sin(angle) - 30;
+                    
+                    node.style.left = `${x}px`;
+                    node.style.top = `${y}px`;
+                    
+                    network.appendChild(node);
+                }
+
+                // Create connection lines
+                for (let i = 0; i < count; i++) {
+                    for (let j = i + 1; j < count; j++) {
+                        const line = document.createElement('div');
+                        line.className = 'connection-line';
+                        
+                        const angle1 = (i * 2 * Math.PI) / count;
+                        const angle2 = (j * 2 * Math.PI) / count;
+                        const radius = 150;
+                        const centerX = 200;
+                        const centerY = 200;
+                        
+                        const x1 = centerX + radius * Math.cos(angle1);
+                        const y1 = centerY + radius * Math.sin(angle1);
+                        const x2 = centerX + radius * Math.cos(angle2);
+                        const y2 = centerY + radius * Math.sin(angle2);
+                        
+                        const length = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                        const angle = Math.atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+                        
+                        line.style.left = `${x1}px`;
+                        line.style.top = `${y1}px`;
+                        line.style.width = `${length}px`;
+                        line.style.transform = `rotate(${angle}deg)`;
+                        
+                        network.appendChild(line);
+                    }
+                }
+            }
+
+            updateConnectionStrength(strength) {
+                const lines = document.querySelectorAll('.connection-line');
+                lines.forEach(line => {
+                    line.style.opacity = strength;
+                    line.style.height = `${2 * strength + 1}px`;
+                });
+            }
+
+            updateLeaderInfluence(influence) {
+                const nodes = document.querySelectorAll('.musician-node');
+                if (nodes.length > 0) {
+                    // Make first node (index 0) the leader
+                    nodes[0].style.transform = `scale(${1 + influence * 0.5})`;
+                    nodes[0].style.boxShadow = `0 0 ${influence * 20}px rgba(239, 68, 68, 0.8)`;
+                }
+            }
+
+            animate() {
+                this.updatePhases(0.016); // ~60 FPS
+                this.updateVisualization();
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        // Initialize simulation when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            new KuramotoSimulation();
+
+            // Smooth scroll for navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Image lazy loading and animation
+            const images = document.querySelectorAll('img');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.style.opacity = '0';
+                        img.style.transform = 'translateY(20px)';
+                        img.style.transition = 'all 0.6s ease';
+                        
+                        setTimeout(() => {
+                            img.style.opacity = '1';
+                            img.style.transform = 'translateY(0)';
+                        }, 100);
+                        
+                        observer.unobserve(img);
+                    }
+                });
+            });
+
+            images.forEach(img => imageObserver.observe(img));
+
+            // Framework cards animation
+            const cards = document.querySelectorAll('.framework-card');
+            const cardObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry, index) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => {
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                        }, index * 100);
+                    }
+                });
+            });
+
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+                cardObserver.observe(card);
+            });
+
+            // Equation hover effects
+            document.querySelectorAll('.interactive-equation').forEach(eq => {
+                eq.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.boxShadow = '0 8px 25px rgba(245, 158, 11, 0.2)';
+                });
+                
+                eq.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Human-Robot Musical Synchronization - PhD Thesis</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <h1>Human-Robot Musical Synchronization</h1>
+            <h2>Multimodal Approaches for Real-Time Musical Collaboration</h2>
+            <div class="author">Sutirtha Chakraborty</div>
+            <div class="university">Maynooth University</div>
+            <div class="university">National University of Ireland Maynooth</div>
+        </div>
+    </header>
+
+    <div class="container">
+        <nav class="nav">
+            <div class="nav-container">
+                <a href="index.html" class="nav-logo">PhD Thesis</a>
+                <div class="nav-toggle">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="chapter1.html">Ch 1: Introduction</a></li>
+                    <li><a href="chapter2.html">Ch 2: Literature</a></li>
+                    <li><a href="chapter3.html">Ch 3: Framework</a></li>
+                    <li><a href="chapter4.html">Ch 4: LeaderSTeM</a></li>
+                    <li><a href="chapter5.html">Ch 5: Visual Cues</a></li>
+                    <li><a href="chapter6.html">Ch 6: Multimodal</a></li>
+                    <li><a href="chapter7.html">Ch 7: Implementation</a></li>
+                    <li><a href="chapter8.html">Ch 8: Conclusion</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="card" id="abstract">
+            <h2>Abstract</h2>
+            <p>The emerging field of <span class="tooltip">"Robotic Musicianship"<span class="tooltiptext">The development of machine intelligence to capture musical perception, composition, and performance capabilities in robots</span></span> focuses on developing machine intelligence, in terms of <span class="tooltip">algorithms<span class="tooltiptext">A set of rules or instructions given to a computer to help it solve problems or complete tasks</span></span> and cognitive models, to capture musical perception, composition, and performance, and to transplant these skills into a robot that can then reproduce them in any context.</p>
+            
+            <p>In such multi-ensemble technological settings, it must be assumed that humans will not play rigidly; rather they will move and express with the 'feel' of the music, wherein the roles of 'leader' and 'follower' within the troupe could often change in a fluid manner. Hence, for machines to participate and create cooperative musical performances, where <span class="tooltip">synchronization<span class="tooltiptext">The coordination of simultaneous processes or events to operate in unison</span></span> and adaptation plays a vital role, they need to operate at a higher cognitive level.</p>
+
+            <div class="quote">
+                "This thesis explores how real-time collaborations between humans and machines can be improved by integrating models from the technologies of Oscillator Synchronization and Machine Learning, thus driving closer towards a vision of a human-robot symphonic orchestra."
+            </div>
+
+            <p>We develop an approach based on the joint strategy of:</p>
+            <ul>
+                <li><strong>Mapping</strong> – responsible for ensuring control and sensing of musical instrument components along with sound synthesis parameters</li>
+                <li><strong>Modeling</strong> – focuses on capturing the overall representation of the musical process</li>
+            </ul>
+
+            <p>We consider each musician (irrespective of human or machine) as a separate <span class="tooltip">oscillator<span class="tooltiptext">A system that produces regular, repetitive variations, used in synchronization models to represent rhythmic elements</span></span>, wherein mathematical models for oscillator coupling, for example the well-known <span class="tooltip">Kuramoto<span class="tooltiptext">The Kuramoto model describes synchronization in systems of coupled oscillators, widely used in modeling biological and musical synchronization</span></span> algorithm, can be used for establishing and maintaining synchronization.</p>
+        </div>
+
+        <div class="image-container">
+            <img src="images/maynooth.jpg" alt="Maynooth University" style="max-height: 300px;">
+            <div class="image-caption">Maynooth University - National University of Ireland Maynooth</div>
+        </div>
+
+        <div class="card" id="chapters">
+            <h2>Thesis Structure</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem;">
+                <div class="chapter-card" style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                    <h3><a href="chapter1.html" class="btn">Chapter 1: Introduction</a></h3>
+                    <p>Historical context of automated musical systems and the central challenge of human-robot musical interaction.</p>
+                </div>
+                
+                <div class="chapter-card" style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                    <h3><a href="chapter2.html" class="btn">Chapter 2: Literature Review</a></h3>
+                    <p>Comprehensive review of existing work on human-robot musical synchronization and identification of research gaps.</p>
+                </div>
+                
+                <div class="chapter-card" style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                    <h3><a href="chapter3.html" class="btn">Chapter 3: Cyborg Philharmonic Framework</a></h3>
+                    <p>Development of a comprehensive multimodal synchronization framework integrating audio, visual, and gestural cues.</p>
+                </div>
+                
+                <div class="chapter-card" style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                    <h3><a href="chapter4.html" class="btn">Chapter 4: LeaderSTeM</a></h3>
+                    <p>Audio-based ensemble leadership tracking using advanced machine learning techniques.</p>
+                </div>
+                
+                <div class="chapter-card" style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                    <h3><a href="chapter5.html" class="btn">Chapter 5: Visual Cues</a></h3>
+                    <p>Exploration of visual signals and gestural information in musical synchronization.</p>
+                </div>
+                
+                <div class="chapter-card" style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                    <h3><a href="chapter6.html" class="btn">Chapter 6: Multimodal Synchronization</a></h3>
+                    <p>Integration of multiple modalities for enhanced human-robot musical collaboration.</p>
+                </div>
+                
+                <div class="chapter-card" style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                    <h3><a href="chapter7.html" class="btn">Chapter 7: Implementation</a></h3>
+                    <p>Real-world implementation for human-robot musical ensemble with experimental validation.</p>
+                </div>
+                
+                <div class="chapter-card" style="background: #f3f4f6; padding: 1.5rem; border-radius: 8px; border-left: 4px solid var(--secondary-color);">
+                    <h3><a href="chapter8.html" class="btn">Chapter 8: Conclusion</a></h3>
+                    <p>Summary of contributions, limitations, and future research directions.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="overview">
+            <h2>Research Overview</h2>
+            <h3>The Central Challenge</h3>
+            <p>Achieving effective <span class="highlight">synchronization</span> in human-robot musical ensembles presents a significant challenge. Human musicians naturally adapt to each other using subtle cues and variations in rhythm, tempo, and dynamics—elements that are not easily replicated by machines.</p>
+
+            <h3>Key Innovation Areas</h3>
+            <ul>
+                <li><strong><span class="tooltip">Multimodal Integration<span class="tooltiptext">Using multiple modes or methods of input/output, such as combining audio, visual, and gestural data</span></span></strong> - Combining audio, visual, and gestural inputs for comprehensive synchronization</li>
+                <li><strong>Predictive Modeling</strong> - Using <span class="tooltip">LSTM<span class="tooltiptext">Long Short-Term Memory - a type of recurrent neural network capable of learning long-term dependencies</span></span> networks to anticipate musical changes</li>
+                <li><strong>Oscillator-Based Synchronization</strong> - Mathematical models for maintaining ensemble coordination</li>
+                <li><strong><span class="tooltip">Real-time<span class="tooltiptext">Processing or responding to data immediately as it is received, without delay</span></span> Adaptation</strong> - Dynamic response to changing musical conditions</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="images/introduction/camm_venn_diagram.png" alt="CAMM Venn Diagram" style="max-height: 400px;">
+                <div class="image-caption">Computer Assisted Music Making (CAMM) Framework showing the relationship between Composition (CAMC) and Performance (CAMP)</div>
+            </div>
+        </div>
+
+        <div class="card" id="methodology">
+            <h2>Research Methodology</h2>
+            <h3>Dual Strategy Approach</h3>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px;">
+                    <h4>🎵 Mapping Phase</h4>
+                    <p>Ensures control and sensing of musical instrument components along with parameters in sound synthesis. This includes:</p>
+                    <ul>
+                        <li>Sensor integration</li>
+                        <li>Control mechanisms</li>
+                        <li>Sound synthesis parameters</li>
+                        <li><span class="tooltip">MIDI<span class="tooltiptext">Musical Instrument Digital Interface - a technical standard that describes a communications protocol for electronic musical instruments</span></span> event generation</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #dbeafe; padding: 1.5rem; border-radius: 8px;">
+                    <h4>🤖 Modeling Phase</h4>
+                    <p>Focuses on capturing the overall representation of the musical process through:</p>
+                    <ul>
+                        <li><span class="tooltip">Deep learning<span class="tooltiptext">A subset of machine learning using neural networks with multiple layers to model and understand complex patterns</span></span> models</li>
+                        <li>Predictive algorithms</li>
+                        <li>Feature extraction</li>
+                        <li>Pattern recognition</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Mathematical Foundation</h3>
+            <div class="equation">
+                θ̇ᵢ = ωᵢ + (K/N) Σⱼ sin(θⱼ - θᵢ)
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">
+                    Kuramoto Model for Oscillator Synchronization
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="contributions">
+            <h2>Key Contributions</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                <div class="contribution-item" style="background: linear-gradient(135deg, #fef3c7, #fbbf24); padding: 1.5rem; border-radius: 8px; color: #92400e;">
+                    <h4>🎼 Cyborg Philharmonic Framework</h4>
+                    <p>Novel multimodal synchronization system integrating audio, visual, and gestural cues for human-robot musical collaboration.</p>
+                </div>
+                
+                <div class="contribution-item" style="background: linear-gradient(135deg, #dbeafe, #3b82f6); padding: 1.5rem; border-radius: 8px; color: #1e40af;">
+                    <h4>🎯 LeaderSTeM Algorithm</h4>
+                    <p>Advanced machine learning approach for dynamic leader identification in musical ensembles using LSTM networks.</p>
+                </div>
+                
+                <div class="contribution-item" style="background: linear-gradient(135deg, #dcfce7, #22c55e); padding: 1.5rem; border-radius: 8px; color: #15803d;">
+                    <h4>👁️ Visual Synchronization</h4>
+                    <p>Integration of computer vision techniques for gesture-based musical synchronization and conductor following.</p>
+                </div>
+                
+                <div class="contribution-item" style="background: linear-gradient(135deg, #fce7f3, #ec4899); padding: 1.5rem; border-radius: 8px; color: #be185d;">
+                    <h4>🔄 Real-time Adaptation</h4>
+                    <p>Continuous learning mechanisms that adapt to individual performance styles and musical preferences.</p>
+                </div>
+            </div>
+
+            <h3>Publications and Impact</h3>
+            <p>This research has resulted in several peer-reviewed publications and has been presented at international conferences in the fields of music technology, robotics, and human-computer interaction.</p>
+            
+            <div style="background: #f8fafc; padding: 2rem; border-radius: 12px; margin: 2rem 0; border-left: 4px solid var(--primary-color);"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                    <h4 style="margin: 0; color: var(--primary-color);">📚 Research Publications</h4>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <span style="background: var(--primary-color); color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: bold;">13 Publications</span>
+                        <span style="background: #22c55e; color: white; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.9rem; font-weight: bold;">125+ Citations</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                    <button class="filter-btn active" onclick="filterPublications('all')" style="background: var(--primary-color); color: white; border: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.9rem;">All Publications</button>
+                    <button class="filter-btn" onclick="filterPublications('high-impact')" style="background: #e5e7eb; color: #374151; border: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.9rem;">High Impact (10+ citations)</button>
+                    <button class="filter-btn" onclick="filterPublications('recent')" style="background: #e5e7eb; color: #374151; border: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.9rem;">Recent (2022+)</button>
+                    <button class="filter-btn" onclick="filterPublications('core')" style="background: #e5e7eb; color: #374151; border: none; padding: 0.5rem 1rem; border-radius: 20px; cursor: pointer; font-size: 0.9rem;">Core Research</button>
+                </div>
+                
+                <div id="publications-container">
+                    <div class="publication-item" data-citations="25" data-year="2021" data-category="core" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">The Cyborg Philharmonic: Synchronizing interactive musical performances between humans and machines</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">S Chakraborty, S Dutta & J Timoney</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">Humanities and Social Sciences Communications 8 (1), 1–9</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #ef4444; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">🔥 25 Citations</span>
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2021</span>
+                                    <span style="background: #8b5cf6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">🏆 Most Cited</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="17" data-year="2022" data-category="recent" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">A cooperative and interactive gesture-based drumming interface with application to the Internet of Musical Things</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">A Yaseen, S Chakraborty & J Timoney</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">International Conference on Human-Computer Interaction, pp. 85–92</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📈 17 Citations</span>
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2022</span>
+                                    <span style="background: #10b981; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">🤖 IoMT</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="15" data-year="2022" data-category="recent" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">Adaptive touchless whole-body interaction for casual ubiquitous musical activities</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">S Chakraborty, A Yaseen, J Timoney, V Lazzarini & D Keller</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">International Computer Music Conference 2022, pp. 132–138</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📈 15 Citations</span>
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2022</span>
+                                    <span style="background: #06b6d4; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">👐 Ubimus</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="13" data-year="2023" data-category="recent core" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">Multimodal synchronization in musical ensembles: Investigating audio and visual cues</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">S Chakraborty & J Timoney</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">Companion Publication of the 25th International Conference on Multimodal Interaction</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📈 13 Citations</span>
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2023</span>
+                                    <span style="background: #ec4899; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">🎭 Multimodal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="13" data-year="2018" data-category="other" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">Integrity checking using third party auditor in cloud storage</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">S Chakraborty, S Singh & S Thokchom</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">2018 Eleventh International Conference on Contemporary Computing (IC3), pp. 1–6</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📈 13 Citations</span>
+                                    <span style="background: #6b7280; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2018</span>
+                                    <span style="background: #374151; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">☁️ Cloud Computing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="10" data-year="2023" data-category="recent" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">Banging interaction: A ubimus-design strategy for the musical internet</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">D Keller, A Yaseen, J Timoney, S Chakraborty & V Lazzarini</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">Future Internet 15 (4):125</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📊 10 Citations</span>
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2023</span>
+                                    <span style="background: #06b6d4; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">🌐 Ubimus</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="9" data-year="2022" data-category="recent" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">A new method for detecting onset and offset for singing in real-time and offline environments</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">B Faghih, S Chakraborty, A Yaseen & J Timoney</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">Applied Sciences 12 (15):7391</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📊 9 Citations</span>
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2022</span>
+                                    <span style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">🎤 Voice Processing</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="9" data-year="2020" data-category="core" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">LeaderSTeM-A LSTM model for dynamic leader identification within musical streams</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">S Chakraborty, S Kishor, S Patil & J Timoney</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">Joint Conference on AI Music Creativity (AIMC 2019), Stockholm, Sweden</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📊 9 Citations</span>
+                                    <span style="background: #6b7280; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2020</span>
+                                    <span style="background: #8b5cf6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">🧠 LSTM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="6" data-year="2020" data-category="core" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">Robot human synchronization for musical ensemble: progress and challenges</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">S Chakraborty & J Timoney</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">2020 5th International Conference on Robotics and Automation Engineering</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📊 6 Citations</span>
+                                    <span style="background: #6b7280; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2020</span>
+                                    <span style="background: #ef4444; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">🤖 Robotics</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="5" data-year="2021" data-category="core" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">Beat Estimation from Musician Visual Cues</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">S Chakraborty, S Aktaş, W Clifford & J Timoney</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">18th Sound and Music Computing Conference (SMC 2021), pp. 46–52</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📊 5 Citations</span>
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2021</span>
+                                    <span style="background: #ec4899; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">👁️ Visual</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="4" data-year="2023" data-category="recent" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">Gesture Mediated Timbre-Led Design based Music Interface for Socio-musical Interaction</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">A Yaseen, S Chakraborty & J Timoney</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">International Conference on Human-Computer Interaction, pp. 335–347</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #22c55e; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">📊 4 Citations</span>
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2023</span>
+                                    <span style="background: #f59e0b; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">🎨 HCI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="publication-item" data-citations="0" data-year="2024" data-category="recent" style="background: white; border-radius: 8px; padding: 1.5rem; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 16px rgba(0,0,0,0.15)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 8px rgba(0,0,0,0.1)'">
+                        <div style="display: flex; justify-content: between; align-items: flex-start; gap: 1rem;">
+                            <div style="flex: 1;">
+                                <h5 style="color: var(--primary-color); margin: 0 0 0.5rem 0; font-size: 1.1rem; line-height: 1.3;">Dynamic Drum Collective: Introducing Kuramoto-Based Temporalities in Banging Interaction</h5>
+                                <p style="color: #6b7280; margin: 0 0 0.5rem 0; font-style: italic;">S Chakraborty, D Keller, A Yaseen & J Timoney</p>
+                                <p style="color: #374151; margin: 0 0 0.5rem 0; font-size: 0.9rem;">Symposium 2024 (UbiMus 2024), p. 121</p>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; margin-top: 0.75rem;">
+                                    <span style="background: #10b981; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">🆕 New</span>
+                                    <span style="background: #3b82f6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">2024</span>
+                                    <span style="background: #8b5cf6; color: white; padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.8rem;">⚡ Kuramoto</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 2rem; padding: 1.5rem; background: linear-gradient(135deg, #667eea, #764ba2); color: white; border-radius: 8px; text-align: center;">
+                    <h4 style="margin: 0 0 1rem 0;">📊 Research Impact Metrics</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1rem;">
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">125+</div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Total Citations</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">13</div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Publications</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">6</div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Years Active</div>
+                        </div>
+                        <div>
+                            <div style="font-size: 2rem; font-weight: bold; margin-bottom: 0.5rem;">25</div>
+                            <div style="font-size: 0.9rem; opacity: 0.9;">Max Citations</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chapter-nav">
+            <div></div>
+            <a href="chapter1.html" class="btn">Start with Chapter 1 →</a>
+        </div>
+    </div>
+
+    <button class="back-to-top">↑</button>
+
+    <script src="main.js"></script>
+    <script>
+        // Index page specific animations
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate chapter cards on hover
+            document.querySelectorAll('.chapter-card').forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px)';
+                    this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0)';
+                    this.style.boxShadow = 'none';
+                });
+            });
+
+            // Animate contribution items
+            document.querySelectorAll('.contribution-item').forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

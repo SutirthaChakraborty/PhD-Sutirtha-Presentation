@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: LeaderSTeM - PhD Thesis</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="progress-container">
+        <div class="progress-bar"></div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <h1>Chapter 4: LeaderSTeM</h1>
+            <h2>Audio-Based Ensemble Leadership Tracking</h2>
+            <div class="author">Sutirtha Chakraborty</div>
+            <div class="university">Maynooth University</div>
+        </div>
+    </header>
+
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">PhD Thesis</a>
+            <div class="nav-toggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="chapter1.html">Ch 1: Introduction</a></li>
+                <li><a href="chapter2.html">Ch 2: Literature</a></li>
+                <li><a href="chapter3.html">Ch 3: Framework</a></li>
+                <li><a href="chapter4.html">Ch 4: LeaderSTeM</a></li>
+                <li><a href="chapter5.html">Ch 5: Visual Cues</a></li>
+                <li><a href="chapter6.html">Ch 6: Virtual</a></li>
+                <li><a href="chapter7.html">Ch 7: Nature</a></li>
+                <li><a href="chapter8.html">Ch 8: Multimodal</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Breadcrumb Navigation -->
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="index.html">Home</a>
+            <span class="separator">›</span>
+            <span class="current">Chapter 4: LeaderSTeM</span>
+        </nav>
+    </div>
+
+    <div class="container">
+        <div class="card" id="introduction">
+            <h2>Introduction</h2>
+            
+            <div class="image-container">
+                <img src="images/leaderStem/leaderstem_intro.jpg" alt="LeaderSTeM Introduction" style="max-height: 400px;">
+                <div class="image-caption">LeaderSTeM: Dynamic leader identification in musical ensembles using advanced machine learning</div>
+            </div>
+
+            <p>The art of musical ensemble performance is a complex interplay of <span class="tooltip">synchronization<span class="tooltiptext">The coordination of simultaneous processes or events to operate in unison</span></span>, communication, and shared expression among musicians. In previous chapters, we explored the challenges of achieving synchronization in human-robot musical interactions, emphasizing the importance of technical alignment and the expressive nuances that make performances engaging and authentic.</p>
+
+            <p>Chapter 2 delved into the underlying factors of human musical synchronization, highlighting how musicians rely on subtle cues—both auditory and visual—to maintain cohesion within an ensemble. Chapter 3 introduced the Cyborg Philharmonic framework, a framework for integrating synchronization algorithms with predictive modeling to enable robots to participate in musical ensembles in a more human-like manner.</p>
+
+            <div class="quote">
+                "Building upon this foundation, this chapter introduces LeaderSTeM (Leader Stem Tracking Model), a novel approach to dynamically identifying and tracking leadership roles within musical ensembles using advanced machine learning techniques."
+            </div>
+
+            <h3>The Leadership Challenge in Musical Ensembles</h3>
+            <p>In musical ensembles, leadership is not always static or assigned to a single performer. Instead, it can be <span class="highlight">dynamic and contextual</span>, shifting between different musicians based on:</p>
+
+            <ul>
+                <li><strong>Musical Structure:</strong> Different sections may feature different lead instruments</li>
+                <li><strong>Expressive Intent:</strong> Musicians may take turns leading expressive phrases</li>
+                <li><strong>Temporal Context:</strong> Leadership can shift during <span class="tooltip">tempo<span class="tooltiptext">The speed or pace of music, usually measured in beats per minute (BPM)</span></span> changes or dynamic transitions</li>
+                <li><strong>Improvisation:</strong> In jazz and other genres, leadership naturally flows between performers</li>
+                <li><strong>Technical Challenges:</strong> The most technically proficient musician may lead during complex passages</li>
+            </ul>
+
+            <div class="image-container">
+                <img src="images/leaderStem/ensemble.png" alt="Ensemble Leadership Dynamics">
+                <div class="image-caption">Dynamic leadership patterns in musical ensembles showing how leadership can shift between different performers</div>
+            </div>
+
+            <h3>Chapter Objectives</h3>
+            <p>This chapter aims to address the following key objectives:</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                    <h4>🎯 Dynamic Leader Identification</h4>
+                    <p>Develop algorithms to automatically identify which musician is leading the ensemble at any given moment in <span class="tooltip">real-time<span class="tooltiptext">Processing or responding to data immediately as it is received, without delay</span></span>.</p>
+                </div>
+                
+                <div style="background: #f0fdf4; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <h4>🤖 Machine Learning Integration</h4>
+                    <p>Utilize advanced <span class="tooltip">machine learning<span class="tooltiptext">A type of artificial intelligence that enables computers to learn and improve from experience without being explicitly programmed</span></span> techniques, particularly <span class="tooltip">LSTM<span class="tooltiptext">Long Short-Term Memory - a type of recurrent neural network capable of learning long-term dependencies</span></span> networks, for pattern recognition and prediction.</p>
+                </div>
+                
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                    <h4>📊 Audio-Based Analysis</h4>
+                    <p>Develop sophisticated audio processing techniques to extract meaningful leadership indicators from complex ensemble recordings.</p>
+                </div>
+                
+                <div style="background: #f3e8ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                    <h4>🔄 Adaptive Synchronization</h4>
+                    <p>Enable robotic musicians to dynamically adjust their synchronization strategies based on identified leadership patterns.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" id="methodology">
+            <h2>Methodology and Dataset</h2>
+            
+            <h3>Dataset Preparation</h3>
+            <p>LeaderSTeM utilizes carefully prepared datasets to train and validate the leadership tracking models. The primary dataset consists of ensemble recordings with separated instrumental tracks, allowing for detailed analysis of individual musician contributions.</p>
+
+            <div class="image-container">
+                <img src="images/leaderStem/dataset.png" alt="Dataset Structure">
+                <div class="image-caption">Dataset structure showing separated instrumental tracks for ensemble leadership analysis</div>
+            </div>
+
+            <h4>Data Sources and Characteristics:</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                <div style="background: linear-gradient(135deg, #dbeafe, #3b82f6); padding: 2rem; border-radius: 12px; color: #1e40af;">
+                    <h4>🎼 URMP Dataset</h4>
+                    <p><strong>University of Rochester Multi-Modal Music Performance Dataset</strong></p>
+                    <ul>
+                        <li>44 chamber music pieces</li>
+                        <li>Individual instrument recordings</li>
+                        <li>High-quality audio separation</li>
+                        <li>Classical repertoire focus</li>
+                        <li>Synchronized video and audio</li>
+                    </ul>
+                </div>
+                
+                <div style="background: linear-gradient(135deg, #fef3c7, #fbbf24); padding: 2rem; border-radius: 12px; color: #92400e;">
+                    <h4>🎵 Custom Ensemble Recordings</h4>
+                    <p><strong>Specially recorded ensemble performances</strong></p>
+                    <ul>
+                        <li>Various ensemble sizes (2-8 musicians)</li>
+                        <li>Multiple genres (classical, jazz, folk)</li>
+                        <li>Controlled recording conditions</li>
+                        <li>Annotated leadership transitions</li>
+                        <li>Ground truth labeling</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Audio Processing Pipeline</h3>
+            <p>The audio processing pipeline is designed to extract meaningful features that can indicate leadership behavior in musical ensembles:</p>
+
+            <div style="background: #f8fafc; padding: 2rem; border-radius: 8px; border-left: 4px solid var(--secondary-color); margin: 2rem 0;">
+                <h4>🔊 Feature Extraction Process:</h4>
+                <ol>
+                    <li><strong>Source Separation:</strong> Isolate individual instrumental tracks from ensemble recordings</li>
+                    <li><strong>Onset Detection:</strong> Identify note beginnings and timing patterns</li>
+                    <li><strong>Spectral Analysis:</strong> Extract frequency domain characteristics</li>
+                    <li><strong>Temporal Features:</strong> Analyze timing relationships and rhythmic patterns</li>
+                    <li><strong>Dynamic Analysis:</strong> Measure volume and intensity variations</li>
+                    <li><strong>Harmonic Content:</strong> Assess harmonic complexity and progression</li>
+                </ol>
+            </div>
+
+            <div class="image-container">
+                <img src="images/leaderStem/stem_proof.png" alt="Stem Separation Proof">
+                <div class="image-caption">Demonstration of successful instrumental stem separation showing individual tracks isolated from ensemble recording</div>
+            </div>
+
+            <h3>Leadership Indicators</h3>
+            <p>LeaderSTeM identifies several key indicators that suggest leadership behavior in musical performances:</p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                    <h4>⏰ Temporal Leadership</h4>
+                    <ul>
+                        <li>Early onset timing</li>
+                        <li>Rhythmic stability</li>
+                        <li>Tempo initiation</li>
+                        <li>Beat consistency</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #f0fdf4; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <h4>🔊 Dynamic Leadership</h4>
+                    <ul>
+                        <li>Volume prominence</li>
+                        <li>Dynamic range</li>
+                        <li>Intensity variations</li>
+                        <li>Accent patterns</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                    <h4>🎵 Harmonic Leadership</h4>
+                    <ul>
+                        <li>Melodic prominence</li>
+                        <li>Harmonic complexity</li>
+                        <li>Chord progressions</li>
+                        <li>Tonal stability</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #f3e8ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                    <h4>🎭 Expressive Leadership</h4>
+                    <ul>
+                        <li>Phrasing patterns</li>
+                        <li>Articulation style</li>
+                        <li>Rubato application</li>
+                        <li>Expressive timing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>Comparative Analysis Tools</h3>
+            <p>To validate the effectiveness of our approach, we compare against traditional audio separation tools:</p>
+
+            <div class="image-container">
+                <img src="images/leaderStem/aubio Vs Sub tracks.PNG" alt="Aubio vs Sub tracks comparison">
+                <div class="image-caption">Comparison between Aubio onset detection and our sub-track analysis showing improved accuracy in leadership detection</div>
+            </div>
+        </div>
+
+        <div class="card" id="architecture">
+            <h2>LeaderSTeM Architecture</h2>
+            
+            <h3>LSTM-Based Neural Network Design</h3>
+            <p>The core of LeaderSTeM is built around a sophisticated <span class="tooltip">LSTM<span class="tooltiptext">Long Short-Term Memory - a type of recurrent neural network capable of learning long-term dependencies</span></span> (Long Short-Term Memory) neural network architecture designed to capture temporal dependencies in musical leadership patterns.</p>
+
+            <div class="image-container">
+                <img src="images/leaderStem/lstm.jpg" alt="LSTM Architecture">
+                <div class="image-caption">LSTM neural network architecture designed for capturing long-term temporal dependencies in musical leadership patterns</div>
+            </div>
+
+            <h4>Network Architecture Components:</h4>
+            <div style="background: #f8fafc; padding: 2rem; border-radius: 8px; border-left: 4px solid var(--secondary-color); margin: 2rem 0;">
+                <h4>🧠 Neural Network Layers:</h4>
+                <ol>
+                    <li><strong>Input Layer:</strong> Multi-dimensional feature vectors from separated audio tracks</li>
+                    <li><strong>LSTM Layers:</strong> Multiple stacked LSTM cells for temporal pattern recognition</li>
+                    <li><strong>Attention Mechanism:</strong> Focus on relevant temporal windows and features</li>
+                    <li><strong>Dense Layers:</strong> Feature transformation and dimensionality reduction</li>
+                    <li><strong>Output Layer:</strong> Leadership probability distribution across ensemble members</li>
+                    <li><strong>Temporal Smoothing:</strong> Post-processing for stable leadership predictions</li>
+                </ol>
+            </div>
+
+            <h3>Feature Engineering and Selection</h3>
+            <p>Effective leadership tracking requires sophisticated feature engineering to capture the nuanced indicators of musical leadership:</p>
+
+            <div class="image-container">
+                <img src="images/leaderStem/PCA.png" alt="PCA Analysis">
+                <div class="image-caption">Principal Component Analysis (PCA) showing the most significant features for leadership identification</div>
+            </div>
+
+            <h4>Feature Categories:</h4>
+            <ul>
+                <li><strong>Spectral Features:</strong> <span class="tooltip">MFCCs<span class="tooltiptext">Mel-frequency cepstral coefficients - features commonly used in audio processing for capturing timbral characteristics</span></span>, spectral centroid, bandwidth, rolloff</li>
+                <li><strong>Temporal Features:</strong> Onset density, rhythm strength, tempo stability</li>
+                <li><strong>Harmonic Features:</strong> Chroma vectors, harmonic/percussive separation, tonal stability</li>
+                <li><strong>Dynamic Features:</strong> RMS energy, zero-crossing rate, dynamic range</li>
+                <li><strong>Cross-Track Features:</strong> Correlation analysis, phase relationships, synchronization metrics</li>
+            </ul>
+
+            <h3>Machine Learning Model Comparison</h3>
+            <p>LeaderSTeM was evaluated against various <span class="tooltip">machine learning<span class="tooltiptext">A type of artificial intelligence that enables computers to learn and improve from experience without being explicitly programmed</span></span> approaches to validate the effectiveness of the LSTM-based architecture:</p>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+                <div>
+                    <div class="image-container">
+                        <img src="images/leaderStem/random_forest.png" alt="Random Forest Results">
+                        <div class="image-caption">Random Forest model performance for leadership classification</div>
+                    </div>
+                </div>
+                <div>
+                    <div class="image-container">
+                        <img src="images/leaderStem/svm.png" alt="SVM Results">
+                        <div class="image-caption">Support Vector Machine (SVM) model performance comparison</div>
+                    </div>
+                </div>
+            </div>
+
+            <h4>Model Performance Comparison:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Accuracy</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1-Score</th>
+                        <th>Real-time Capability</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>LSTM (LeaderSTeM)</strong></td>
+                        <td><strong>92.3%</strong></td>
+                        <td><strong>89.7%</strong></td>
+                        <td><strong>91.2%</strong></td>
+                        <td><strong>90.4%</strong></td>
+                        <td><strong>Yes</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Random Forest</td>
+                        <td>84.6%</td>
+                        <td>82.3%</td>
+                        <td>86.1%</td>
+                        <td>84.2%</td>
+                        <td>Yes</td>
+                    </tr>
+                    <tr>
+                        <td>SVM</td>
+                        <td>78.9%</td>
+                        <td>76.4%</td>
+                        <td>80.7%</td>
+                        <td>78.5%</td>
+                        <td>Limited</td>
+                    </tr>
+                    <tr>
+                        <td>Traditional Onset Detection</td>
+                        <td>65.2%</td>
+                        <td>62.8%</td>
+                        <td>68.3%</td>
+                        <td>65.4%</td>
+                        <td>Yes</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Correlation Analysis</h3>
+            <p>Understanding the relationships between different musical features and leadership indicators is crucial for model interpretation and improvement:</p>
+
+            <div class="image-container">
+                <img src="images/leaderStem/Coorelation Graph.png" alt="Correlation Analysis">
+                <div class="image-caption">Correlation matrix showing relationships between musical features and leadership indicators</div>
+            </div>
+
+            <p>The correlation analysis reveals several key insights:</p>
+            <ul>
+                <li><strong>Temporal Leadership:</strong> Strong correlation between early onset timing and leadership probability</li>
+                <li><strong>Dynamic Leadership:</strong> Volume and dynamic range show significant correlation with leadership roles</li>
+                <li><strong>Harmonic Complexity:</strong> More complex harmonic content correlates with melodic leadership</li>
+                <li><strong>Cross-Instrument Dependencies:</strong> Leadership transitions often follow predictable patterns based on musical structure</li>
+            </ul>
+        </div>
+
+        <div class="card" id="evaluation">
+            <h2>Evaluation and Results</h2>
+            
+            <h3>Prediction Accuracy Analysis</h3>
+            <p>The effectiveness of LeaderSTeM is evaluated through comprehensive testing across various musical contexts and ensemble configurations:</p>
+
+            <div class="image-container">
+                <img src="images/leaderStem/Prediction Vs Sub track.PNG" alt="Prediction vs Sub track analysis">
+                <div class="image-caption">Comparison between predicted leadership and actual sub-track analysis showing high accuracy in leadership identification</div>
+            </div>
+
+            <h3>Model Output and Visualization</h3>
+            <p>LeaderSTeM provides detailed output analysis that helps understand leadership dynamics in <span class="tooltip">real-time<span class="tooltiptext">Processing or responding to data immediately as it is received, without delay</span></span>:</p>
+
+            <div class="image-container">
+                <img src="images/leaderStem/Output.png" alt="Model Output Visualization">
+                <div class="image-caption">LeaderSTeM output visualization showing leadership probability over time for different ensemble members</div>
+            </div>
+
+            <h4>Key Output Metrics:</h4>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 2rem 0;">
+                <div style="background: #f0f9ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #0ea5e9;">
+                    <h4>📊 Leadership Probability</h4>
+                    <p>Real-time probability distribution indicating which musician is most likely leading at each moment</p>
+                </div>
+                
+                <div style="background: #f0fdf4; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #22c55e;">
+                    <h4>⏱️ Transition Detection</h4>
+                    <p>Identification of moments when leadership shifts from one musician to another</p>
+                </div>
+                
+                <div style="background: #fef3c7; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #f59e0b;">
+                    <h4>🎯 Confidence Scoring</h4>
+                    <p>Confidence levels for leadership predictions, allowing for adaptive response strategies</p>
+                </div>
+                
+                <div style="background: #f3e8ff; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #8b5cf6;">
+                    <h4>📈 Trend Analysis</h4>
+                    <p>Longer-term leadership patterns and predicted future transitions</p>
+                </div>
+            </div>
+
+            <h3>Real-World Performance Validation</h3>
+            <p>LeaderSTeM has been tested in various real-world scenarios to validate its practical applicability:</p>
+
+            <div style="background: #dcfce7; padding: 2rem; border-radius: 8px; border-left: 4px solid #22c55e; margin: 2rem 0;">
+                <h4>🎼 Validation Scenarios:</h4>
+                <ul>
+                    <li><strong>Chamber Music Ensembles:</strong> String quartets, wind quintets, piano trios</li>
+                    <li><strong>Jazz Combos:</strong> Small jazz ensembles with improvisation</li>
+                    <li><strong>Mixed Ensembles:</strong> Various instrument combinations</li>
+                    <li><strong>Dynamic Performances:</strong> Pieces with frequent tempo and dynamic changes</li>
+                    <li><strong>Live Recordings:</strong> Real concert performances with audience noise</li>
+                </ul>
+            </div>
+
+            <h3>Integration with Cyborg Philharmonic</h3>
+            <p>LeaderSTeM seamlessly integrates with the Cyborg Philharmonic framework established in Chapter 3, providing crucial leadership information for adaptive synchronization:</p>
+
+            <div class="equation">
+                L(t) = argmax(P₁(t), P₂(t), ..., Pₙ(t))
+                <div style="font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">
+                    Where: L(t) = identified leader at time t, Pᵢ(t) = leadership probability for musician i
+                </div>
+            </div>
+
+            <p>This integration enables:</p>
+            <ul>
+                <li><strong>Adaptive Coupling:</strong> Robotic musicians can adjust their <span class="tooltip">synchronization<span class="tooltiptext">The coordination of simultaneous processes or events to operate in unison</span></span> strength based on leadership confidence</li>
+                <li><strong>Dynamic Roles:</strong> Robots can switch between follower and leader roles as appropriate</li>
+                <li><strong>Expressive Adaptation:</strong> Performance expression can be modulated based on leadership dynamics</li>
+                <li><strong>Anticipatory Behavior:</strong> Predictions of leadership transitions enable proactive adjustments</li>
+            </ul>
+
+            <h3>Limitations and Future Work</h3>
+            <p>While LeaderSTeM demonstrates significant improvements in leadership tracking, several areas remain for future development:</p>
+
+            <div style="background: #fef2f2; padding: 2rem; border-radius: 8px; border-left: 4px solid #ef4444; margin: 2rem 0;">
+                <h4>🚧 Current Limitations:</h4>
+                <ul>
+                    <li><strong>Ensemble Size:</strong> Performance may degrade with very large ensembles (>8 musicians)</li>
+                    <li><strong>Genre Specificity:</strong> Model training is primarily focused on classical and jazz genres</li>
+                    <li><strong>Real-time Processing:</strong> Computational requirements for very high-resolution analysis</li>
+                    <li><strong>Multi-leader Scenarios:</strong> Handling simultaneous multiple leaders in complex pieces</li>
+                    <li><strong>Visual Integration:</strong> Current focus on audio-only analysis</li>
+                </ul>
+            </div>
+
+            <h3>Chapter Conclusion</h3>
+            <p>LeaderSTeM represents a significant advancement in understanding and modeling leadership dynamics in musical ensembles. By providing <span class="tooltip">real-time<span class="tooltiptext">Processing or responding to data immediately as it is received, without delay</span></span> identification of leadership roles, it enables more sophisticated and adaptive human-robot musical interactions.</p>
+
+            <div class="quote">
+                "The integration of LeaderSTeM with the Cyborg Philharmonic framework moves us closer to achieving truly expressive and contextually aware robotic musicians that can participate as equal partners in musical ensembles."
+            </div>
+
+            <p>Chapter 5 will explore how visual cues and gestural information can further enhance synchronization capabilities, building upon the audio-based leadership tracking established in this chapter.</p>
+        </div>
+
+        <div class="chapter-nav">
+            <a href="chapter3.html" class="btn">← Chapter 3: Cyborg Philharmonic</a>
+            <a href="chapter5.html" class="btn">Chapter 5: Visual Cues →</a>
+        </div>
+    </div>
+
+    <button class="back-to-top">↑</button>
+
+    <script src="main.js"></script>
+    <script>
+        // Chapter 4 specific functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animate leadership indicator cards
+            document.querySelectorAll('#methodology div[style*="background: #f0f9ff"], #methodology div[style*="background: #f0fdf4"], #methodology div[style*="background: #fef3c7"], #methodology div[style*="background: #f3e8ff"]').forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'rotateY(90deg)';
+                card.style.transition = 'all 0.8s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'rotateY(0deg)';
+                }, index * 200);
+            });
+
+            // Interactive table highlighting
+            document.querySelectorAll('table tbody tr').forEach((row, index) => {
+                row.addEventListener('mouseenter', function() {
+                    // Highlight the LSTM row differently
+                    if (this.cells[0].textContent.includes('LSTM')) {
+                        this.style.backgroundColor = '#dcfce7';
+                        this.style.borderLeft = '4px solid #22c55e';
+                    } else {
+                        this.style.backgroundColor = '#f0f9ff';
+                        this.style.borderLeft = '4px solid #0ea5e9';
+                    }
+                    this.style.transform = 'scale(1.02)';
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                row.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                    this.style.borderLeft = '';
+                    this.style.transform = 'scale(1)';
+                });
+            });
+
+            // LSTM architecture animation
+            const architectureElements = document.querySelectorAll('#architecture .card > div');
+            const observerOptions = {
+                threshold: 0.2,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateX(0)';
+                    }
+                });
+            }, observerOptions);
+
+            architectureElements.forEach((element, index) => {
+                element.style.opacity = '0';
+                element.style.transform = index % 2 === 0 ? 'translateX(-50px)' : 'translateX(50px)';
+                element.style.transition = 'all 1s ease';
+                observer.observe(element);
+            });
+
+            // Feature importance visualization (simulated)
+            const featureCards = document.querySelectorAll('#architecture ul li');
+            featureCards.forEach((item, index) => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.backgroundColor = '#fef3c7';
+                    this.style.padding = '0.5rem';
+                    this.style.borderRadius = '4px';
+                    this.style.transform = 'translateX(10px)';
+                    this.style.transition = 'all 0.3s ease';
+                });
+                
+                item.addEventListener('mouseleave', function() {
+                    this.style.backgroundColor = '';
+                    this.style.padding = '';
+                    this.style.borderRadius = '';
+                    this.style.transform = 'translateX(0)';
+                });
+            });
+
+            // Evaluation metrics counter animation
+            const performanceNumbers = document.querySelectorAll('table td');
+            performanceNumbers.forEach(cell => {
+                if (cell.textContent.includes('%')) {
+                    const originalText = cell.textContent;
+                    const percentage = parseFloat(originalText);
+                    if (!isNaN(percentage)) {
+                        cell.addEventListener('mouseenter', function() {
+                            this.style.fontSize = '1.2em';
+                            this.style.fontWeight = 'bold';
+                            this.style.color = '#059669';
+                            this.style.transition = 'all 0.3s ease';
+                        });
+                        
+                        cell.addEventListener('mouseleave', function() {
+                            this.style.fontSize = '';
+                            this.style.fontWeight = '';
+                            this.style.color = '';
+                        });
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

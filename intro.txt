@@ -1,0 +1,42 @@
+\pagenumbering{roman}  % make sure that front matter is numbered roman
+\hypersetup{urlcolor=black}{}
+\thispagestyle{empty}%
+    \null
+    \begin{center}
+            \huge\sc\expandafter{The Cyborg Assembler: Advanced algorithms for synchronizing interactive performances between humans and machines} % put in small caps
+    \end{center}
+    \vskip0.25cm%
+    \begin{center}
+        \textrm{By}\\
+        \vskip0.25cm%
+        \Large\textrm{\href{mailto:sutirtha38@gmail.com}{Sutirtha Chakraborty} \\\small{M.Tech, B.Tech}}
+
+    \end{center}
+    \vfill
+    \begin{center}
+         \Large\textbf{Thesis}\\
+         \vskip0.2cm
+         \textit{submitted in fulfilment of the requirements for the Degree of}\\
+         \vskip0.2cm
+          \Large\textbf{Doctor of Philosophy}
+
+	    \vskip0.25cm%
+           \includegraphics[width=0.5 \columnwidth]{images/maynooth.jpg}\\
+           \vskip0.25cm%
+           \textbf{Supervisor : Dr. Joseph Timoney}\\ 
+           \vskip1cm%
+            
+		Department of Computer Science\\
+		\href{https://www.maynoothuniversity.ie/}{Maynooth University}\\
+		Maynooth, Co. Kildare, Ireland.\\
+           February 2025\\
+        \vspace{1cm}
+    \end{center}
+    \vfill
+    \newpage
+    \thispagestyle{empty}
+    \mbox{}
+\hypersetup{urlcolor=blue}{}
+%%%%% Submition date if different from creation date
+% \submitdate{September 2013}
+\onehalfspacing

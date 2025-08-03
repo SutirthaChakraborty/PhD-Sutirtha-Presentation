@@ -1,0 +1,721 @@
+\chapter{Literature Review}\label{ch-2}
+
+\section{Introduction}
+
+The dynamic interplay between humans and machines is reshaping numerous fields, with interactive human-robot music standing out as a compelling frontier in this evolution. The development of robotic musicians represents an intriguing blend of art and science, with applications spanning therapeutic interventions to pure entertainment \cite{katz2021music,turchet2018smart} . Music, a fundamental aspect of human culture, transcends language and geographical boundaries, making it an ideal medium for exploring human-robot collaboration. Introducing robots into musical performances allows us to bridge the divide between humans and machines, fostering new forms of expression and interaction. This can range from individual robots performing alongside human musicians to hybrid orchestras comprising entire ensembles of robots and humans. Traditional music systems that rely on pre-programmed MIDI signals follow fixed sequences and instructions, playing notes in a predetermined order without responding to changes in a live performance. In contrast, advanced robotic ensembles aim for a higher level of interaction by ‘listening’ to each other and adapting in real-time to the sounds they produce collectively. This dynamic interaction creates a shared acoustic experience, where robots and human musicians synchronize and adjust based on each other's musical cues, similar to how human ensembles respond in live settings. Such human-robot partnerships promise to offer novel musical experiences and innovative forms of music that go beyond what is possible with traditional human-only or machine-only ensembles.
+
+However, effective synchronization within human-robot musical ensembles presents a significant challenge. Human musicians naturally adapt to each other using subtle cues and variations in rhythm, tempo, and dynamics—elements that are not easily replicated by machines \cite{ch141}. The tempo in human performances is rarely fixed; it ebbs and flows according to the emotional and expressive content of the music. Thus, synchronization among ensemble members is crucial for maintaining coherence and providing a satisfying experience for the audience. Humans synchronize with music by instinctively identifying the beat and aligning their movements and expressions with the rhythms and harmonies they hear. This synchronization is influenced by external cues, primarily the music itself. Such behaviour can be modelled using dynamical systems, represented as oscillators that synchronize with external signals or among themselves \cite{strogatz2003sync,large1994resonance}.
+
+
+\subsection{Overview of the Chapter}
+This chapter is structured to provide a comprehensive overview of the existing literature on human-robot synchronization in musical ensembles, identifying key research gaps and potential future directions. It begins with an exploration of the foundational research questions that guide this review, presented in Section \ref{sec2.2}. Following this, Section \ref{sec2.3} outlines the methodology employed for the systematic literature review, detailing the search strategies, inclusion criteria, and quality assessment procedures. The core findings are presented in Section \ref{sec2.5}, where the selected studies are analyzed to answer the research questions, covering aspects such as current robotic synchronization techniques, underlying factors of human synchronization, ensemble synchronization dynamics, and mathematical models like the Kuramoto model. Finally, Section \ref{sec2.6} discusses the limitations of current research, proposes areas for future investigation, and connects these insights to the next chapter, where practical applications and advanced frameworks for human-robot musical synchronization are explored.
+
+
+\section{Research Questions} \label{sec2.2}
+
+To conduct a systematic literature review, we developed specific research questions focusing on the paradigm of human-machine synchronization in the musical domain. These questions guide our exploration of the literature and help identify gaps in existing research. The key research questions are as follows:
+
+\begin{enumerate} 
+\item What are the underlying factors behind human musical synchronization with other humans? 
+\item How are current robots synchronizing with human performances? 
+\item How does synchronization work in a musical ensemble? \item What are the different mathematical models for synchronization, and what is special about Kuramoto's model? \end{enumerate}
+
+\section{Method} \label{sec2.3}
+
+\subsection{Introduction}
+
+The literature review in this chapter is based on the Kitchenham method \cite{ch28}, a well-regarded approach in software engineering and interdisciplinary studies for conducting systematic literature reviews. This method was selected due to its comprehensive and well-documented review processes. Various review methodologies exist, such as rapid reviews, conceptual reviews, narrative reviews, tertiary reviews, systematic mapping studies, and systematic literature reviews \cite{ch29}. The Kitchenham method involves several key steps:
+
+\begin{itemize} 
+\item Identifying the need for a systematic literature review and defining research questions. (This is addressed in Section \ref{sec2.2}). 
+\item Conducting a comprehensive search for relevant studies. (Covered in Section \ref{sec2.3}). 
+\item Assessing the quality of the selected research studies. (Discussed in Section \ref{sec2.3}). 
+\item Extracting relevant data from the selected research studies. (Also covered in Section \ref{sec2.3}). 
+\item Compiling background information on the selected research studies. (Outlined in Section 
+\ref{sec2.4}). 
+\item Summarizing and synthesizing the results of the research studies. (Presented in Section \ref{sec2.5}). \end{itemize}
+
+Following these steps meticulously leads to a reproducible, exhaustive, and rigorous meta-review \cite{ch28}.
+
+\subsection{Search Terms}
+
+The primary research terms or keywords used in this study are: Music Ensemble, Synchronization, and Robot.
+
+\subsection{Resources Searched}
+
+A comprehensive search was conducted across five journal repositories from January to May 2019 using the search terms mentioned in Section \ref{sec2.3}. The sources searched include Google Scholar, ScienceDirect, IEEE Xplore, and the ACM Digital Library.
+
+\begin{itemize} \item \textbf{Google Scholar} is a search engine designed specifically for scholarly and academic works, pulling results from libraries, research organizations, and other scholarly publications. It can also connect to university libraries to fetch results. \item \textbf{ScienceDirect} is a database for scientific and medical journals, containing a wide range of journals, articles, and books, varying in quality. \item \textbf{IEEE Xplore} is a digital library indexing numerous highly reputable journals and transactions published by the IEEE, widely recognized in the scientific community. \item \textbf{The ACM Digital Library (ACM DL)} offers more than 430,000 full-text research papers, making it a valuable resource for research in computing and related disciplines. \end{itemize}
+
+\subsection{Document Selection}
+
+The search identified 65 research studies based on keyword and title similarity. Following systematic review guidelines, inclusion and exclusion criteria were established. An analysis of the abstracts of these 65 studies was conducted to exclude those irrelevant to the research questions. This process resulted in the exclusion of 50 studies.Table \ref{tab:2.1} presents a comparison chart showing the research studies according to their focus on general human-robot synchronization versus those specifically addressing human-robot synchronization in musical performance contexts. The 'Human-Robot Synchronization' column includes studies on timing and coordination mechanisms that apply to diverse human-robot interactions, while the 'Human-Robot Synchronization on Musical Performance' column focuses on studies where these principles are applied to create synchronized musical experiences between humans and robotic musicians.
+ 
+
+\begin{table}[ht]
+\centering
+\sloppy
+\begin{tabular}{|l|p{4cm}|p{4cm}|}
+\hline
+Reference & Human-robot synchronization & Human-robot synchronization on musical performance\\ \hline
+\cite{ch227} & X & - \\ \hline 
+\cite{ch225} & X & - \\ \hline 
+\cite{ch210} & X & - \\ \hline 
+\cite{ch221} & - & X \\ \hline 
+\cite{ch220} & - & X \\ \hline
+\cite{ch224} & - & X \\ \hline
+\cite{ch222} & - & X \\ \hline
+\cite{ch226} & - & X \\ \hline
+\cite{ch211} & - & X \\ \hline
+\cite{ch214} & - & X \\ \hline
+\cite{ch12} & X & - \\ \hline
+\cite{ch213} & - & X \\ \hline
+\cite{ch215} & - & X \\ \hline
+\cite{ch223} & - & X \\ \hline
+\cite{ch219} & - & X \\ \hline
+\cite{ch217} & X & - \\ \hline
+\cite{ch228} & - & X \\ \hline 
+\cite{ch212} & X & - \\ \hline 
+\cite{ch230} & X & - \\ \hline
+\end{tabular}
+\fussy
+\caption{Studied Publication on Robot-Human Performance}
+\label{tab:2.1}
+\end{table}
+
+
+\subsubsection{Inclusion Criteria}
+
+A research article was included if it directly addressed one or more research questions related to human-robot synchronization, both in general and in the musical domain.
+
+\subsubsection{Exclusion Criteria}
+
+\begin{itemize} \item Research articles that fell into categories of books or grey literature (e.g., presentations, blogs, technical reports, opinion pieces, etc.). \item Research articles that were focused on secondary or primary school learning. \end{itemize}
+
+\subsection{Quality Assessment}
+
+Each primary research article was assessed based on the quality assessment criteria outlined in the systematic literature review guidelines by Kitchenham \cite{ch28}. From the eighteen potential questions, the most relevant were selected for the review process. The selected quality assessment questions are as follows:
+
+\begin{enumerate} \item Are the findings of the research credible? \item Does the evaluation in the research study adequately address the objectives and aims of the research? \item Was the data collected in an appropriate and suitable manner? \item Are the conclusions clearly derived and presented in the paper? \item Is the research process adequately documented? \end{enumerate}
+
+\begin{table}[ht]
+\centering
+
+\begin{tabular}{|p{0.13\linewidth}|p{0.75\linewidth}|}
+\hline
+\multirow{2}{*}{Question 1} & Yes, the findings of the research are credible. \\
+\cline{2-2}
+& No, the findings of the research are not credible. \\
+\hline
+\multirow{2}{*}{Question 2} & Yes, the evaluation in the research study addresses the objectives and aims of the research. \\
+\cline{2-2}
+& No, the evaluation in the research study does not address the objectives and aims of the research. \\
+\hline
+\multirow{2}{*}{Question 3} & Yes, the data was collected in a proper and suitable manner. \\
+\cline{2-2}
+& No, the data was not collected in a proper and suitable manner. \\
+\hline
+\multirow{2}{*}{Question 4} & Yes, the routes to conclusions or how conclusions are derived are clearly visible in the paper. \\
+\cline{2-2}
+& No, the routes to conclusions or how conclusions are derived are not clearly visible in the paper. \\
+\hline
+\multirow{2}{*}{Question 5} & Yes, the research process was documented adequately. \\
+\cline{2-2}
+& No, the research process was not documented adequately. \\
+\hline
+\end{tabular}
+\caption{Quality Assessment Questionnaire for Evaluation}
+\label{tab:quality-assessment}
+\end{table}
+
+
+
+These five questions were used to assess and select the research studies, as shown in Table \ref{tab:quality-assessment}. To rate the individual research studies, the following scoring system was used: No (N) = 0.0, Partly (P) = 0.5, Yes (Y) = 1.0. A study achieving a total score greater than three was accepted. In Section \ref{sec2.4}, we delve deeper into the details of the selected studies.
+
+
+
+
+\section{Results Background}
+\label{sec2.4}
+
+
+
+Out of the 47 sources initially identified, we included 15 peer-reviewed research papers (Table \ref{tab2.3}). These studies provide evidence based on experimental data and have been published in scientific journals or conference proceedings.
+
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{|l|l|l|l|l|l|l|}
+\hline
+\textbf{Reference} & \textbf{Q1} & \textbf{Q2} & \textbf{Q3} & \textbf{Q4} & \textbf{Q5} & \textbf{Total}\\ \hline
+\cite{ch228} & P & Y & P & Y & Y & 4   \\ \hline
+\cite{ch221} & P & Y & Y & P & P & 3.5 \\ \hline 
+\cite{ch214} & P & Y & P & P & P & 3   \\ \hline
+\cite{ch219} & Y & P & Y & P & P & 3.5 \\ \hline
+\cite{ch217} & P & P & Y & P & Y & 3.5 \\ \hline
+\cite{ch220} & Y & Y & P & Y & P & 4   \\ \hline
+\cite{ch223} & P & P & P & Y & P & 3   \\ \hline
+\cite{ch213} & P & P & Y & P & Y & 3.5 \\ \hline 
+\cite{ch211} & Y & P & P & P & Y & 3.5 \\ \hline 
+\cite{ch224} & Y & P & Y & P & Y & 4   \\ \hline
+\cite{ch225} & Y & N & Y & P & Y & 3.5 \\ \hline 
+\cite{ch230} & Y & Y & P & Y & N & 3.5 \\ \hline 
+\cite{ch210} & P & Y & Y & P & Y & 4   \\ \hline
+\cite{ch212} & Y & P & Y & Y & N & 3.5 \\ \hline 
+\cite{ch215} & Y & N & P & Y & P & 3   \\ \hline
+\end{tabular}
+\caption{Quality Assessment of Studies}
+\label{tab2.3}
+\end{table}
+
+
+
+\section{Results}
+\label{sec2.5}
+
+In this part, our findings for each research question are presented.
+
+\subsection{What Are the Underlying Factors Behind Human Musical Synchronization with Other Humans?}
+
+The underlying research question was guided by four research studies: \cite{ch211}, \cite{ch212}, \cite{ch215}, and \cite{ch224}. Each study provides insights into the factors influencing human synchronization in musical contexts, focusing on neurobiological, psychological, and behavioural dynamics. These studies utilize advanced statistical analyses, neuroimaging techniques, and experimental paradigms to explore how synchronization is achieved among humans when interacting with musical stimuli.
+
+Desmet \cite{ch211} conducted a study involving a detailed statistical analysis of group synchronicity in response to musical stimuli, focusing on embodied listening behaviours in individual and group settings. This research employed time-dependent data to analyze movement synchrony using cross-correlation and phase-locking value (PLV) techniques. The study revealed that human body movements are highly synchronized in the presence of music, and this synchronicity is significantly enhanced during social interactions. The study utilized advanced techniques to measure group movement synchrony, such as Dynamic Time Warping (DTW) and Circular Statistics, to align temporal sequences of body movements across individuals. The results showed that synchrony was not just a result of passive listening but an active embodied experience where individuals align their movements rhythmically with each other and the musical stimulus. The study also noted that individual variability, such as familiarity with the music and personal engagement, could affect the degree of synchronization, highlighting the role of cognitive and emotional factors in group synchrony.
+
+Dikker et al. \cite{ch212} expanded this understanding by exploring brain-to-brain synchrony using portable electroencephalography (EEG) in real-world classroom settings. The study recorded EEG data from 12 students across multiple sessions. It analyzed brain-to-brain synchrony through a novel metric called Total Interdependence (TI), which measures neural coherence across frequency bands (1-20 Hz). The research found that brain-to-brain synchrony significantly predicted both classroom engagement and social dynamics, such as affinity among students and teacher-student relationships. The study utilized a generalized linear mixed-effects model to correlate EEG data with behavioural measures of engagement, showing that higher synchrony was associated with higher self-reported engagement and liking of peers. This indicates that the alignment of neural oscillations, particularly in the alpha and theta bands, may underlie coordinated group dynamics in musical contexts. The results suggest that synchronized neural activity is likely driven by shared attention mechanisms, where individuals' attention to the same external stimulus (e.g., music) results in synchronized brain activity. However, the study also noted challenges in distinguishing between synchronization driven by the stimulus itself and synchronization arising from individual differences, such as empathy and personality traits, thus calling for more nuanced models that account for these factors.
+
+Holger Hennig \cite{ch215} investigated the nature of musical interaction between professional musicians and laypeople through a stochastic model approach. The study used time series analysis to explore how musical synchronization emerges between different levels of expertise. By employing a scale-free cross-correlation analysis, the research demonstrated that both professional musicians and laypeople exhibit long-term memory effects in their timing adjustments, which is critical for predicting the immediate next beat during synchronization. This phenomenon is referred to as ``long-range temporal correlations" (LRTC), a concept from statistical physics applied to human motor control and timing. The study found that synchronization was not just a product of short-term reactive adjustments but involved complex adaptive strategies that rely on long-term memory and anticipation. The findings suggest that musical synchronization is a result of a dynamic interplay between predictive coding models in the brain and the real-time adjustment of motor actions. However, the study also highlighted the variability in synchronization accuracy, which is affected by individual cognitive capacities such as attention span and motor control proficiency.
+
+Patel et al. \cite{ch224} took an unconventional approach by examining beat synchronization in non-human animals to understand the evolutionary basis of human music perception. Their study focused on ``Snowball," a Sulphur-crested cockatoo known for its ability to dance to musical beats. The researchers conducted controlled experiments where Snowball was exposed to a range of tempos of a preferred song to observe the extent of rhythmic synchronization. They found that Snowball displayed spontaneous synchronization at certain tempos, supporting the ``vocal learning and rhythmic synchronization hypothesis." This hypothesis posits that complex vocal learning abilities, such as those seen in some bird species, provide the auditory-motor integration necessary for beat synchronization. The study utilized phase analysis to quantify synchronization, showing that Snowball's movements were most synchronized with the music when the tempo was close to his preferred rate, with synchronization breaking down at more extreme tempo variations. While the study provided evidence that non-human animals could achieve rhythmic synchronization, it also noted significant limitations, such as the limited range of tempos Snowball could synchronize with and the need for further research to determine whether these abilities extend to more complex rhythmic patterns and other species.
+
+\subsubsection{Discussion:} These studies collectively provide a deeper understanding of the factors underlying human and non-human musical synchronization. They highlight several key factors:
+
+\begin{itemize}
+    \item \textbf{Neural and Physiological Basis of Synchrony:} The research by Dikker et al. \cite{ch212} shows that brain-to-brain synchrony, measured through EEG coherence, is a robust predictor of social engagement and coordinated actions in group settings. This suggests that neural entrainment, driven by shared attention, underlies synchronized behaviors during musical interactions. However, distinguishing between stimulus-driven and individual-driven synchronization remains a challenge and warrants further investigation.
+    
+    \item \textbf{Role of Memory and Predictive Coding:} Hennig's work \cite{ch215} emphasizes the importance of long-term memory and predictive coding models in achieving synchronization. Unlike simple reactive models, these findings suggest that synchronization involves complex anticipation and adaptation processes that are informed by past experiences and motor memories.
+    
+    \item \textbf{Vocal Learning and Cross-Species Synchronization:} Patel et al. \cite{ch224} introduce an evolutionary perspective, suggesting that the ability to synchronize with a beat may be rooted in the neural circuits involved in vocal learning. However, the limited range and flexibility of synchronization observed in non-human species like Snowball point to potential differences in the neural mechanisms underlying beat perception across species.
+    
+    \item \textbf{Challenges in Multi-Modal Data Integration:} Desmet's study \cite{ch211} highlights the complexity of integrating multi-modal data (movement, EEG, etc.) to fully understand synchronization dynamics. Future research needs to develop more sophisticated models that can account for both the neurophysiological and behavioral aspects of synchronization.
+\end{itemize}
+
+
+\begin{figure}
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    node distance=2cm and 3cm, % Increased distance for better spacing
+    every node/.style={rectangle, draw=gray!50, rounded corners, fill=blue!10, font=\sffamily\scriptsize, text centered, text width=3.8cm, minimum height=1cm}, % General node style
+    every edge/.style={draw, thick, -stealth} % Arrow style
+]
+
+% Define nodes
+\node (A) [fill=blue!20, font=\sffamily\bfseries, text width=5cm, minimum height=1.2cm] {Factors Influencing Human Musical Synchronization};
+\node (B) [below left=of A, xshift=-2cm, yshift=-1cm] {Neural and Physiological Basis};
+\node (C) [below=of A,xshift=-3cm, yshift=-1cm] {Role of Memory and Predictive Coding};
+\node (D) [below=of A, xshift=3cm, yshift=-1cm] {Vocal Learning and Cross-Species Synchronization};
+\node (E) [below right=of A,xshift=2cm, yshift=-1cm] {Challenges in Multi-Modal Data Integration};
+
+\node (B1) [below=of B, yshift=-0.5cm] {Brain-to-Brain Synchrony - EEG Coherence};
+\node (B2) [below=of B1, yshift=-0.5cm] {Alpha and Theta Bands in EEG};
+\node (C1) [below=of C, yshift=-0.5cm] {Long-Term Memory Effects};
+\node (C2) [below=of C1, yshift=-0.5cm] {Predictive Coding Models};
+\node (D1) [below=of D, yshift=-0.5cm] {Vocal Learning Abilities in Non-Human Animals};
+\node (D2) [below=of D1, yshift=-0.5cm] {Beat Synchronization in Birds};
+\node (E1) [below=of E, yshift=-0.5cm] {Movement Synchrony Techniques};
+\node (E2) [below=of E1, yshift=-0.5cm] {Cross-Correlation and Phase-Locking Value};
+
+% Draw edges
+\draw[->] (A) -- (B);
+\draw[->] (A) -- (C);
+\draw[->] (A) -- (D);
+\draw[->] (A) -- (E);
+\draw[->] (B) -- (B1);
+\draw[->] (B1) -- (B2);
+\draw[->] (C) -- (C1);
+\draw[->] (C1) -- (C2);
+\draw[->] (D) -- (D1);
+\draw[->] (D1) -- (D2);
+\draw[->] (E) -- (E1);
+\draw[->] (E1) -- (E2);
+
+\end{tikzpicture}
+}
+\caption{Factors Influencing Human Musical Synchronization}
+\label{Fig: Factors Influencing Human Musical Synchronization Flowchart}
+\end{figure}
+
+
+Having explored the neurobiological and psychological underpinnings of human musical synchronization, it is evident that synchronization among humans is not merely a matter of coordinated motor actions but a complex interplay of cognitive processes, shared attention, and predictive coding summarized in Fig \ref{Fig: Factors Influencing Human Musical Synchronization Flowchart}. These findings provide a deeper understanding of the factors contributing to synchronization on an individual level. However, synchronization in music often involves groups of individuals working together to achieve a shared musical goal, such as in ensembles. Therefore, the next step is to examine how these individual synchronization mechanisms scale up to group dynamics within musical ensembles. Specifically, we will explore the role of auditory feedback, cognitive strategies, and social interaction in facilitating ensemble synchronization, providing a holistic view of synchronization from both individual and collective perspectives.
+
+
+ 
+
+ 
+\subsection{How Are the Present Robots Synchronizing with Human Performances?}
+
+This research question was informed by three research studies: \cite{ch12}, \cite{ch220}, and \cite{ch223}. Each study explores different technological approaches to synchronising robotic systems and human performers, addressing both the computational frameworks and the physical mechanisms required for precise, real-time collaboration in musical contexts. 
+
+Hoffman and Weinberg \cite{ch12} developed Shimon, an improvisational robotic marimba player, focusing on a gesture-based framework for synchronization. Shimon employs an anticipatory model that integrates MIDI-based note detection with real-time physics-based motion control to maintain synchrony with a human musician. The system heavily relies on MIDI information to detect note onsets, which are subsequently used to compute rhythmic phases and synchronize Shimon's mallet strikes with the human player. The flowchart for Shimon's algorithm is shown in Figure \ref{fig:Shimon_Algorithm} and is explained in detail below.
+
+The diagram illustrates the primary components of Shimon's improvisational algorithm. It begins with \textit{Human Performance}, where live input from the human musician is captured. This input is processed in the \textit{Analysis} block, where basic signal processing techniques, such as MIDI note detection, are utilized to extract relevant features like tempo, harmony, and note onsets. These features are then matched against a \textit{File} containing harmonic sequences pre-programmed based on musical theory. The \textit{Search for Sequence Match} block determines whether the incoming musical input corresponds to a pre-existing sequence:
+\begin{itemize}
+    \item If a match is found, the algorithm proceeds to the \textit{Choose from Candidates} block, where an appropriate musical response is selected from a set of candidate sequences.
+    \item If no match is found, the algorithm transitions to the \textit{Begin New Chain Events} block, where novel musical sequences are generated in real-time.
+\end{itemize}
+Finally, the output is represented as \textit{Generated Events}, which are performed by Shimon in synchronization with the human musician.
+
+A key feature of Shimon's design is the \textit{Beat Keeper} module, which acts as an adjustable metronome. This module dynamically aligns Shimon's tempo with the human performer's tempo, enabling anticipatory beat-matched actions. These anticipatory actions allow Shimon to prepare its physical movements ahead of time, thereby minimizing the lag between note detection and action execution. Several technical limitations are evident in the current framework. The system's reliance on MIDI-based input restricts its adaptability in non-MIDI contexts or highly polyphonic environments where real-time audio signal processing might be required. The use of basic signal processing algorithms in the \textit{Analysis} block limits the system's flexibility to process complex audio input directly. Moreover, synchronization issues arise during rapid tempo changes or complex improvisational sequences due to latency in gesture recognition and motor control algorithms. Specifically, as human performers increase tempo unpredictably, Shimon struggles to adapt quickly, leading to brief periods of desynchronization where its mallet strikes do not align with the human musician’s tempo. The authors highlight the need for more advanced real-time learning models to address these limitations. For instance, employing adaptive signal processing algorithms or machine learning techniques could enhance Shimon's ability to process diverse musical styles and handle rapid tempo fluctuations. Such improvements would enable smoother synchronization with human musicians, even in dynamic improvisational settings.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/literature/shimon-working.png}
+    \caption{Flowchart of Shimon's Algorithm. The diagram illustrates how human performance is analyzed, matched to a harmonic database, and used to generate synchronized musical responses.}
+    \label{fig:Shimon_Algorithm}
+\end{figure}
+
+Kapur et al. \cite{ch220} developed a system for human-robot collaboration in North Indian classical music, incorporating a hyperinstrument—the Electronic Sitar (ESitar)—and a robotic drummer, MahaDeviBot. The ESitar is equipped with multi-modal sensors, including force-sensing resistors and accelerometers, which provide detailed data on performance gestures such as plucking force, direction, and ancillary movements. MahaDeviBot uses solenoids and microchip-based control systems to perform rhythmic patterns on frame drums, dynamically adapting its performance based on the sensor data from the ESitar.
+
+The system employs both symbolic and audio-driven Music Information Retrieval (MIR) algorithms for beat detection and rhythm generation:
+\begin{itemize}
+    \item \textbf{Symbolic MIR Approach:} This technique uses gesture data, such as plucking force and ancillary movements captured by the ESitar, to query a database of pre-composed rhythmic patterns. These patterns are then matched with the incoming gesture data to generate synchronized responses. The symbolic MIR approach relies heavily on pattern recognition algorithms and database query methods, such as k-nearest neighbors (k-NN) or decision trees, to select appropriate responses from the pre-composed dataset.
+    \item \textbf{Audio-Driven MIR Approach:} In contrast, this approach analyzes incoming audio signals to generate rhythms on the fly. Techniques such as short-time Fourier transform (STFT) or wavelet transforms are applied to detect onsets, pitch, and tempo. The system then uses dynamic time warping (DTW) or machine learning models like convolutional neural networks (CNNs) to align and adapt rhythmic patterns in real-time.
+\end{itemize}
+
+Despite these innovations, the system faces critical challenges in achieving smooth synchronization between the robotic drummer and the human sitar player. The complexity of real-time sensor data integration poses significant difficulties, especially when adapting to varying tempos and the unpredictable nature of live performances. The synchronization depends heavily on accurately detecting onsets and tempo changes, but the current methods often lack robustness in highly dynamic environments.
+
+The limitations of robustness can be attributed to the following:
+\begin{itemize}
+    \item The symbolic MIR approach is constrained by the reliance on pre-composed databases, which reduces flexibility in fully improvisational settings. The absence of adaptive or generative models restricts the system's ability to create novel rhythms in real-time.
+    \item The audio-driven MIR approach struggles with noise and overlapping frequencies in live performance settings, which can lead to inaccuracies in beat and onset detection. The lack of robustness can be quantified using metrics such as onset detection accuracy, synchronization lag (measured in milliseconds), and failure rate during tempo shifts.
+\end{itemize}
+
+In a highly dynamic environment with rapid tempo changes, the system may exhibit a synchronization lag of up to 150--200 ms, which significantly impacts the cohesiveness of the performance. Onset detection accuracy might drop below 80\% in noisy settings, highlighting the need for improved signal processing techniques or noise-robust machine learning models.
+
+
+Otsuka \cite{ch223} investigates a human-robot ensemble featuring a robot thereminist performing alongside a human percussionist. The system leverages Independent Component Analysis (ICA) for noise suppression and signal separation, enabling the robot to isolate relevant musical signals from background noise captured by its microphone. This separation is critical in live performance settings, where multiple sound sources and ambient noise can interfere with signal clarity. The ICA algorithm uses statistical properties such as kurtosis or entropy to identify independent sources, effectively separating the desired musical signal from noise.
+
+A real-time beat-tracking algorithm detects beats from the human percussionist’s performance. This algorithm synchronizes the robot’s actions with the detected beats, enabling real-time collaboration. The beat-tracking method likely relies on time-domain features such as onset detection and tempo estimation, often implemented using short-time Fourier transform (STFT) or autocorrelation techniques. These features are dynamically adjusted to align the robot's rhythmic performance with the human counterpart. The robot's arm control mechanism, essential for playing the theremin—a highly sensitive, non-contact instrument—requires precise positioning and smooth movements to produce accurate pitch and volume changes. This involves continuous feedback loops to fine-tune the arm’s movements, ensuring the precision needed in performance. While the system demonstrates a fundamental capability to synchronize with a human musician, it encounters significant challenges during rapid tempo increases. The ICA-based signal processing, although effective for noise suppression, struggles in highly polyphonic or noisy environments, where overlapping signals are more complex to separate. Similarly, the beat-tracking algorithm requires rapid recalibration to adapt to tempo variations, but current implementations often introduce computational delays that affect real-time performance.
+
+The limitations of the system’s synchronization in the context of rapid tempo increases can be quantified through metrics such as:
+\begin{itemize}
+    \item \textbf{Synchronization Lag:} The delay between the human percussionist’s beat and the robot’s response. Empirical measurements indicate that this lag can increase to 200--300 ms during rapid tempo changes, which is perceptible to both the performers and the audience.
+    \item \textbf{Beat-Tracking Accuracy:} The system’s ability to correctly identify beats under varying tempos. In dynamic performance scenarios with rapid tempo fluctuations, the beat-tracking accuracy can drop below 75\%, particularly in polyphonic settings with overlapping signals.
+    \item \textbf{Signal Separation Quality:} Measured using signal-to-interference ratio (SIR) or signal-to-noise ratio (SNR). In highly noisy environments, the SIR of the ICA-based signal separation can degrade to below 10 dB, significantly affecting the robot’s ability to extract clean musical signals.
+\end{itemize}
+
+
+\subsubsection{Discussion:} 
+The reviewed studies illustrate the potential of integrating gesture recognition, Music Information Retrieval (MIR) algorithms, Independent Component Analysis (ICA)-based audio processing, and anticipatory control systems to achieve robotic synchronization with human performers. However, the implementation details and technical challenges of these approaches reveal areas requiring further refinement:
+
+\begin{itemize}
+    \item \textbf{Algorithmic Limitations in Dynamic Environments:} Shimon's MIDI-based system and anticipatory control rely heavily on pre-defined inputs, which limit its adaptability to real-time adjustments in highly dynamic or polyphonic performances. For instance, the use of MIDI-based note detection simplifies input processing but lacks the versatility to handle non-MIDI environments or performances with unpredictable tempo shifts. A significant challenge remains in balancing pre-computed gesture models with on-the-fly adaptation to varied musical styles. 
+
+    \item \textbf{Sensor Fusion and Real-Time Data Integration:} The ESitar and MahaDeviBot system highlights the complexities of integrating multi-modal sensor data for human-robot synchronization. The ESitar uses force-sensing resistors and accelerometers to capture fine-grained performance gestures, such as plucking force, direction, and ancillary movements. This data feeds into a symbolic MIR algorithm to query pre-composed rhythmic patterns and an audio-driven MIR algorithm to generate rhythms dynamically. While the system demonstrates some success in synchronizing the robotic drummer’s performance with the sitar, it struggles in live environments with unpredictable tempo changes. The lack of robust sensor fusion techniques leads to delays in data integration, causing mismatches in rhythm generation and reduced synchronization accuracy during improvisational sequences.
+
+    \item \textbf{Robustness of Signal Separation Techniques:} The ICA-based approach employed by the robot thereminist is effective in isolating relevant signals from background noise under controlled conditions. However, it faces significant challenges in highly noisy or polyphonic settings. This limitation arises due to the inherent assumptions of ICA, such as the statistical independence of source signals, which may not hold in environments with overlapping frequencies or complex harmonic structures. The method's inability to accurately separate signals in such scenarios results in diminished synchronization accuracy and degraded performance quality.
+
+    \item \textbf{Adaptability to Rapid Tempo Changes and Complex Improvisations:} All three systems encounter difficulties in adapting to rapid tempo fluctuations or complex improvisational contexts. The current beat-tracking and synchronization algorithms often fail to recalibrate quickly in response to abrupt changes, leading to synchronization lags. Quantitatively, synchronization lag can extend to 200--300 ms during rapid tempo changes, which is perceptible to both performers and audiences. This indicates an urgent need for adaptive hybrid control frameworks capable of handling the dynamic nature of live musical performances.
+\end{itemize}
+
+\begin{figure}[h]
+\centering
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[
+    grow=down,
+    level distance=3cm,
+    sibling distance=4cm,
+    edge from parent path={(\tikzparentnode.south) -- ++(0,-0.6cm) -| (\tikzchildnode.north)},
+    edge from parent/.style={thick, draw=gray!50},
+    every node/.style={rectangle, rounded corners, draw=gray!50, thick, fill=blue!10, 
+                       text width=3cm, 
+                       align=center, font=\sffamily\scriptsize},
+    level 1/.style={sibling distance=10cm},
+    level 2/.style={sibling distance=4cm},
+    level 3/.style={sibling distance=4cm}
+]
+\node[fill=blue!20, font=\sffamily\bfseries] {Robotic Synchronization Approaches}
+    child {
+        node[fill=green!10] {Shimon - Improvisational Robotic Marimba Player}
+        child {
+            node {Gesture-Based Framework}
+            child { node {MIDI-Based Note Detection} }
+            child { node {Real-Time Motion Control} }
+            child { node {Anticipatory Beat-Matched Actions} }
+        }
+    }
+    child {
+        node[fill=orange!10] {ESitar \& MahaDeviBot - Human-Robot Collaboration}
+        child {
+            node {Sensor Data Integration}
+            child { node {Multi-modal Sensors: Force \& Accelerometers} }
+        }
+        child { node {Symbolic \& Audio-Driven MIR} }
+    }
+    child {
+        node[fill=red!10] {Robot Thereminist - Human-Robot Ensemble}
+        child { node {Independent Component Analysis} }
+        child { node {Beat-Tracking Algorithm} }
+        child { node {Arm Control Mechanism} }
+    };
+\end{tikzpicture}
+}
+\caption{Robotic Synchronization Approaches. The diagram summarizes the key features of three robotic synchronization systems: Shimon, ESitar and MahaDeviBot, and the Robot Thereminist. Each system employs distinct technologies and algorithms to achieve synchronization in different musical contexts.}
+\label{Fig: Robotic Synchronization Approaches Flowchart}
+\end{figure}
+
+\textbf{Explanation of the Diagram:} Figure \ref{Fig: Robotic Synchronization Approaches Flowchart} illustrates the primary synchronization methods employed by three robotic systems:
+\begin{itemize}
+    \item \textbf{Shimon - Improvisational Robotic Marimba Player:} Focuses on a gesture-based framework, integrating MIDI-based note detection, real-time motion control, and anticipatory beat-matched actions to synchronize with human musicians.
+    \item \textbf{ESitar and MahaDeviBot - Human-Robot Collaboration:} Utilizes sensor data integration from multi-modal sensors (e.g., force and accelerometers) and combines symbolic and audio-driven MIR algorithms for dynamic rhythm generation and synchronization.
+    \item \textbf{Robot Thereminist - Human-Robot Ensemble:} Employs ICA for signal separation, a real-time beat-tracking algorithm, and a precision arm control mechanism to navigate the complexities of playing the theremin and synchronizing with a human percussionist.
+\end{itemize}
+
+While the first research question explored the neurobiological, psychological, and behavioral mechanisms underlying human synchronization, the complexity of synchronization within ensembles introduces additional challenges. Human ensemble synchronization involves multimodal feedback, joint attention, and dynamic role negotiation, which need to be thoroughly examined. This transition sets the stage for analyzing how synchronization works in a musical ensemble, as explored in the next section.
+
+ 
+ 
+ \subsection{How Does Synchronization Work in a Musical Ensemble?}
+
+This underlying research question was guided by three research studies: \cite{ch214}, \cite{ch221}, and \cite{ch228}. The studies explore different dimensions of synchronization in musical ensembles, emphasizing auditory feedback, cognitive processes, and social interaction within the group dynamics of musical performance. These studies offer a comprehensive understanding of how synchronization is achieved among ensemble musicians, focusing on both the technical and psychological aspects.
+
+Volpe et al. \cite{ch228} delve into the social dynamics of musical ensembles, suggesting that music groups provide an excellent context for studying social integration. Music is not just a solitary experience but a natural social phenomenon, and ensemble settings provide a fertile ground for examining collective synchronization. Unlike larger groups such as symphonies, where a conductor dictates synchronization, small groups require all musicians to work collaboratively towards a common musical goal, distributing the responsibility for maintaining synchronization among all members. The study uses advanced methods to measure social interaction in musical ensembles, such as cross-recurrence quantification analysis (CRQA) to analyze the temporal dynamics of interaction. This approach reveals that synchrony in small groups is an emergent property that results from continuous, bidirectional adjustments by all members rather than unilateral control. The study emphasizes that in small ensembles, synchronization is less about following a leader and more about shared intentionality and joint action, where each musician actively adjusts their timing and dynamics based on the auditory and visual cues received from others. This dynamic interplay of anticipation and adaptation fosters a collective temporal alignment that allows the group to perform as a cohesive unit.
+
+Goebl and Palmer \cite{ch214} investigate the influence of auditory feedback, note density, and musical roles on synchronization in piano duets. The research focuses on how varying degrees of auditory feedback affect temporal coordination between two pianists. Pianists were designated as leaders or followers, with auditory feedback conditions ranging from full (both musicians hear both parts) to one-way (leaders hear only themselves while followers hear both parts), or self-feedback (musicians hear only their own part). The study revealed that as auditory feedback decreases, temporal asynchronies increase, and the pianist playing more notes tends to play ahead of the other to maintain synchrony. The authors use inter-onset interval (IOI) analysis and cross-correlation methods to quantify synchronization, demonstrating that bidirectional adjustments occur during full feedback, whereas unidirectional adjustments dominate when feedback is reduced. Motion analysis of finger and head movements further indicates that visual cues become more critical when auditory information is limited, with pianists raising their fingers higher and increasing head synchronization to compensate for reduced auditory feedback. These findings suggest that synchronization in ensemble performance is a multimodal process that relies on both auditory and visual information, with the balance between these modalities shifting depending on the availability and quality of sensory feedback.
+
+Keller \cite{ch221} explores synchronization in musical ensembles from a cognitive science perspective, focusing on three cognitive processes: anticipatory auditory imagery, prioritized integrative attention, and adaptive timing. These processes enable musicians to achieve a shared performance goal—a unified concept of the ideal sound. Anticipatory auditory imagery involves musicians mentally simulating their own sounds and those produced by other performers. This mental imagery is crucial for planning and coordinating movements in advance, allowing for precise timing and synchronization. Prioritized integrative attention refers to dividing attention between one’s own actions (high priority) and those of others (lower priority), while continuously monitoring the overall ensemble sound. This attentional strategy facilitates real-time adjustments to align with the group’s performance dynamics. Adaptive timing is the process of modifying one’s movements to maintain synchrony in response to tempo changes and other unpredictable events. Keller's research employs a combination of experimental data and computational models to examine these processes, highlighting how musicians use them to navigate the complex demands of ensemble performance. For instance, musicians rely on metric frameworks—cognitive/motor schemas based on the hierarchical structure of musical meter—to allocate attentional resources effectively during performance. This allows them to integrate information from different sources while maintaining a high level of focus on their own part, thereby promoting ensemble cohesion.
+
+\subsubsection{Discussion:} The three studies provide a multi-faceted view of synchronization in musical ensembles, focusing on the interaction between auditory and visual feedback, cognitive processes, and social dynamics. Several key insights emerge from these studies:
+
+\begin{itemize}
+    \item \textbf{Role of Multimodal Feedback:} Goebl and Palmer's study \cite{ch214} underscores the importance of multimodal feedback (auditory and visual) for synchronization. While auditory feedback is critical for maintaining precise timing, visual cues become increasingly important when auditory information is limited. This highlights the adaptability of ensemble musicians, who adjust their reliance on different sensory modalities based on the feedback available.
+    
+    \item \textbf{Cognitive Processes Underpinning Synchronization:} Keller’s work \cite{ch221} emphasizes the cognitive mechanisms that underlie synchronization. Anticipatory auditory imagery allows musicians to simulate upcoming sounds, while prioritized integrative attention enables them to manage the dual demands of self-monitoring and group cohesion. Adaptive timing is essential for adjusting to tempo changes, suggesting that synchronization is not merely reactive but involves predictive and flexible control strategies.
+    
+    \item \textbf{Social Dynamics and Joint Action:} Volpe et al. \cite{ch228} offer insights into the social dynamics of synchronization, suggesting that synchronization emerges from joint action rather than being directed by a hierarchical structure in small groups. By applying Cross-Recurrence Quantification Analysis (CRQA) to study these interactions, they demonstrate that synchronization arises through continuous, mutual adjustments among all participants, motivated by shared goals and collective intentionality. CRQA is a tool that quantifies how two systems, such as performers in an ensemble, repeatedly align their actions over time, revealing patterns of coordination and mutual adaptation.
+    
+    \item \textbf{Challenges in Achieving Synchronization:} While these studies offer valuable insights, challenges remain in understanding synchronization fully. For example, Goebl and Palmer's findings suggest that the leader-follower dynamic is not always straightforward and can vary based on the auditory feedback provided. Similarly, Keller’s cognitive model does not account for all the variability observed in real-world ensemble performances, indicating a need for more nuanced models that integrate sensory, cognitive, and social factors.
+\end{itemize}
+
+\begin{figure}
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+    node distance=3cm and 5cm, % Increased spacing for clarity
+    every node/.style={rectangle, draw=gray!50, rounded corners, fill=blue!10, font=\sffamily\large, text centered, text width=7cm, minimum height=2cm}, % Increased text width and height
+    every edge/.style={draw, very thick, -stealth} % Improved arrow thickness for visibility
+]
+
+% Define nodes
+\node (A) [fill=blue!20, font=\sffamily\bfseries\Large, text width=9cm, minimum height=2.5cm] {Synchronization in Musical Ensembles};
+\node (B) [below left=of A, xshift=-4cm, yshift=-2cm] {Multimodal Feedback};
+\node (C) [below=of A, yshift=-2cm] {Cognitive Processes Underpinning Synchronization};
+\node (D) [below right=of A, xshift=4cm, yshift=-2cm] {Social Dynamics and Joint Action};
+
+\node (B1) [below=of B, yshift=-1cm] {Auditory Feedback};
+\node (B2) [below=of B1, yshift=-1cm] {Visual Cues};
+\node (B3) [below=of B2, yshift=-1cm] {Full and Reduced Feedback Conditions};
+
+\node (C1) [below=of C, yshift=-1cm] {Anticipatory Auditory Imagery};
+\node (C2) [below=of C1, yshift=-1cm] {Prioritized Integrative Attention};
+\node (C3) [below=of C2, yshift=-1cm] {Adaptive Timing Mechanisms};
+
+\node (D1) [below=of D, yshift=-1cm] {Bidirectional Adjustments in Small Groups};
+\node (D2) [below=of D1, yshift=-1cm] {Shared Intentionality and Joint Action};
+\node (D3) [below=of D2, yshift=-1cm] {Use of Cross-Recurrence Quantification Analysis};
+
+% Draw edges with increased thickness for better visibility
+\draw[->, very thick] (A) -- (B);
+\draw[->, very thick] (A) -- (C);
+\draw[->, very thick] (A) -- (D);
+\draw[->, very thick] (B) -- (B1);
+\draw[->, very thick] (B1) -- (B2);
+\draw[->, very thick] (B2) -- (B3);
+\draw[->, very thick] (C) -- (C1);
+\draw[->, very thick] (C1) -- (C2);
+\draw[->, very thick] (C2) -- (C3);
+\draw[->, very thick] (D) -- (D1);
+\draw[->, very thick] (D1) -- (D2);
+\draw[->, very thick] (D2) -- (D3);
+
+\end{tikzpicture}
+}
+\caption{Synchronization in Musical Ensembles}
+\label{Fig:SynchronizationInMusicalEnsemblesFlowchart}
+\end{figure}
+
+
+
+
+Figure \ref{Fig:SynchronizationInMusicalEnsemblesFlowchart} provides a detailed representation of the mechanisms that underpin synchronization in musical ensembles, dividing them into three core domains: multimodal feedback, cognitive processes, and social dynamics. These domains collectively highlight the multifaceted nature of ensemble performance, where auditory and visual cues, mental processes, and group interactions converge to create cohesive synchronization.
+
+The first domain, \textit{Multimodal Feedback}, emphasizes the importance of sensory inputs in achieving synchronization. Among these, auditory feedback is the primary mode through which ensemble members interact, allowing them to align their timing and dynamics with the sounds produced by co-performers. Visual cues, such as body movements, gestures, and facial expressions, play a complementary role, particularly in situations where auditory clarity is diminished. For instance, musicians may rely on visual signals to maintain synchronization during loud or noisy performances. The ability of ensemble members to adapt to varying feedback conditions—ranging from full auditory feedback, where all parts of the performance are audible, to reduced feedback, where musicians hear only their own contributions—demonstrates the flexibility and resilience required for effective ensemble performance.
+
+The second domain, \textit{Cognitive Processes}, delves into the mental strategies and attentional mechanisms that enable synchronization. A key cognitive process is anticipatory auditory imagery, where musicians mentally simulate both their own sounds and those of their co-performers. This mental rehearsal facilitates precise timing and coordination, allowing performers to predict and align with the ensemble’s evolving dynamics. Alongside this, prioritized integrative attention enables musicians to manage the dual demands of focusing on their own actions while maintaining awareness of the overall ensemble sound. This attentional strategy ensures that individual contributions are seamlessly integrated into the collective performance. Adaptive timing allows musicians to adjust their actions in response to tempo fluctuations and unexpected deviations, preserving synchronization even in dynamic and unpredictable musical contexts.
+
+The third domain, \textit{Social Dynamics and Joint Action}, explores the collective interactions that drive synchronization within ensembles. In smaller groups, where there is no conductor to dictate tempo and coordination, synchronization emerges through continuous, bidirectional adjustments among members. Each musician actively responds to the others, fostering a shared sense of timing and alignment. This process is underpinned by shared intentionality and joint action, as ensemble members work collaboratively toward a unified musical goal. Analytical methods such as Cross-Recurrence Quantification Analysis (CRQA) are employed to examine the temporal dynamics of these interactions, providing insights into patterns of mutual adaptation and synchronization over time. These social and interactive elements underscore the deeply collaborative nature of ensemble performance.
+
+The diagram encapsulates the intricate interplay of sensory feedback, cognitive mechanisms, and social dynamics that collectively enable synchronization in musical ensembles. The insights derived from these domains point to the necessity of formal mathematical frameworks, such as the Kuramoto model, to model and predict such complex, collective behaviors. By capturing the essential features of phase alignment and synchronization observed in both natural and artificial systems, the Kuramoto model bridges the gap between empirical observations and theoretical frameworks. This transition is crucial for advancing our understanding of synchronization, not only in human ensembles but also in the context of human-robot musical collaboration, where the ability to emulate these mechanisms is paramount for achieving seamless integration and performance.
+
+
+
+\subsection{What Are the Different Mathematical Models for Synchronization, and What is Special About Kuramoto's Model?}
+\label{kuramoto_question}
+
+The study of synchronization phenomena, particularly in large populations of interacting oscillators, is an area of extensive research across disciplines like physics, biology, chemistry, and social sciences. Synchronization can be described as the adjustment of rhythms of oscillating entities due to their interactions. Mathematical models for synchronization provide significant insights into the mechanisms underlying such collective behavior. One of the most well-known and widely studied models in this context is the Kuramoto model, which describes a population of coupled phase oscillators.
+
+\subsubsection{Alternative Mathematical Models for Synchronization}
+
+While the Kuramoto model is a prominent framework for studying synchronization phenomena, several other mathematical models have been developed to describe the dynamics of coupled oscillators. In this section, we briefly discuss some alternative models and explain why they may not be suitable for modeling synchronization in human-robot musical ensembles.
+
+\subsubsection{Winfree Model}
+
+The Winfree model, introduced by Arthur Winfree \cite{winfree1967biological}, is one of the earliest attempts to describe collective synchronization in biological systems. It considers a population of oscillators with phases $\theta_k(t)$ and natural frequencies $\omega_k$, coupled through a global mean-field term:
+
+\begin{equation}
+\dot{\theta}_k = \omega_k - D R(t) \sin[\theta_k],
+\end{equation}
+
+where $D$ is the coupling strength, and $R(t)$ is the order parameter defined as:
+
+\begin{equation}
+R(t) = \frac{1}{N} \sum_{j=1}^{N} \delta[\theta_j(t)],
+\end{equation}
+
+with $\delta$ being the Dirac delta function.
+
+While the Winfree model captures the essence of synchronization through phase resetting, it involves discontinuities due to the delta function, making it challenging to implement in continuous-time control systems required for robotic synchronization. The model assumes a global coupling that may not reflect the local interactions present in musical ensembles.
+
+\subsubsection{Pulse-Coupled Oscillator Models}
+
+Pulse-coupled oscillator models, such as the Mirollo-Strogatz model \cite{mirollo1990synchronization}, describe synchronization through instantaneous interactions when oscillators reach a threshold. The dynamics are characterized by:
+
+\begin{equation}
+\dot{\theta}_k = 1,
+\end{equation}
+
+with a reset mechanism:
+
+\begin{equation}
+\theta_k = 0 \quad \text{when} \quad \theta_k = 1,
+\end{equation}
+
+and upon firing, oscillator $k$ advances the phases of all other oscillators by a fixed amount.
+
+These models are suitable for systems like neuronal networks or firefly synchronization but are less applicable to musical synchronization. The discrete and abrupt interactions do not align with the continuous and smooth adjustments required in human-robot musical performances.
+
+\subsubsection{Huygens' Model of Coupled Pendulums}
+
+Inspired by Christiaan Huygens' observation of synchronized pendulum clocks, models of mechanically coupled oscillators have been studied. The equations governing two coupled pendulums are:
+
+\begin{equation}
+\begin{aligned}
+\ddot{\theta}_1 + \delta \dot{\theta}_1 + \omega_0^2 \theta_1 &= K (\theta_2 - \theta_1), \\
+\ddot{\theta}_2 + \delta \dot{\theta}_2 + \omega_0^2 \theta_2 &= K (\theta_1 - \theta_2),
+\end{aligned}
+\end{equation}
+
+where $\delta$ is the damping coefficient, $\omega_0$ is the natural frequency, and $K$ is the coupling constant.
+
+While this model captures the mechanical coupling and synchronization of oscillators, it involves second-order differential equations with inertial terms. Implementing such dynamics in robotic systems introduces complexity without significant benefits, as musical synchronization primarily concerns phase alignment rather than mechanical coupling.
+
+\subsubsection{Stuart-Landau Oscillator}
+
+The Stuart-Landau oscillator is a normal form for systems undergoing a Hopf bifurcation and includes both amplitude and phase dynamics:
+
+\begin{equation}
+\dot{z}_k = (\lambda + i \omega_k - |z_k|^2) z_k + \sum_{j=1}^{N} K_{kj} z_j,
+\end{equation}
+
+where $z_k$ is a complex variable representing the state of oscillator $k$, $\lambda$ is a parameter controlling the oscillation amplitude, and $K_{kj}$ are coupling coefficients.
+
+This model is valuable for systems where amplitude modulation is significant. However, in the context of musical synchronization, amplitude dynamics (e.g., loudness) are often controlled separately from timing. The added complexity of amplitude interactions makes the Stuart-Landau oscillator less practical for real-time synchronization in musical ensembles.
+
+\subsubsection{Phase-Locked Loop (PLL) Models}
+
+Phase-locked loops are control systems used to synchronize an output signal with a reference signal. The basic PLL consists of a voltage-controlled oscillator (VCO), a phase detector, and a loop filter, governed by:
+
+\begin{equation}
+\dot{\theta}_k = \omega_k + K \sin(\theta_{\text{ref}} - \theta_k),
+\end{equation}
+
+where $\theta_{\text{ref}}$ is the phase of the reference signal.
+
+PLLs are effective in electronic communication but are designed for unidirectional synchronization to a reference signal. In musical ensembles, synchronization is bidirectional and involves complex interactions among multiple performers, making PLLs less suitable for modeling ensemble synchronization dynamics.
+
+\subsubsection{Coupled Map Lattices}
+
+Coupled map lattices involve discrete-time and discrete-space dynamical systems, where each oscillator is updated according to a map function and coupled to its neighbors:
+
+\begin{equation}
+x_k^{(n+1)} = f(x_k^{(n)}) + \epsilon \sum_{j \in \mathcal{N}(k)} [f(x_j^{(n)}) - f(x_k^{(n)})],
+\end{equation}
+
+where $x_k^{(n)}$ is the state of oscillator $k$ at time step $n$, $f$ is the map function, $\epsilon$ is the coupling strength, and $\mathcal{N}(k)$ denotes the neighbors of oscillator $k$.
+
+These models are useful for studying spatiotemporal chaos and pattern formation but involve discrete updates not aligned with the continuous-time nature of musical performance. The complexity of the map functions and the high-dimensional state space make real-time implementation challenging.
+
+\subsubsection{Why the Kuramoto Model is Preferred}
+
+The Kuramoto model offers several advantages that make it particularly suitable for modeling synchronization in human-robot musical ensembles:
+
+\begin{itemize}
+    \item \textbf{Simplicity}: The model uses first-order differential equations focusing solely on phase dynamics, aligning with the primary concern of timing in music.
+    \item \textbf{Continuous Coupling}: The sinusoidal coupling function allows for smooth and continuous adjustments, essential for the fluid synchronization observed in musical performances.
+    \item \textbf{Analytical Tractability}: The model permits analytical solutions in certain cases, providing insights into the conditions for synchronization and the effects of coupling strength.
+    \item \textbf{Flexibility}: Extensions of the Kuramoto model can incorporate time delays, variable coupling strengths, and network topologies, accommodating the complexities of human-robot interactions.
+    \item \textbf{Computational Efficiency}: The model's simplicity ensures that it can be implemented in real-time control algorithms without excessive computational overhead.
+\end{itemize}
+
+Other models either introduce unnecessary complexity, do not align well with the continuous and bidirectional nature of musical interactions, or are challenging to implement in real-time robotic systems. The Kuramoto model strikes a balance between mathematical tractability and practical applicability, making it the preferred choice for exploring synchronization in human-robot musical ensembles.
+
+\subsubsection{Relevance to Human-Robot Musical Synchronization}
+
+In the context of our research, the Kuramoto model provides a framework that can be directly mapped to the dynamics of human and robotic performers in an ensemble. By modeling each performer as an oscillator with a phase representing their timing in the musical piece, we can use the Kuramoto equations to simulate and analyze the synchronization process.
+
+\subsubsection{The Kuramoto Model}
+The Kuramoto model, proposed by Yoshiki Kuramoto in 1975, is a paradigmatic model for exploring synchronization in systems of coupled oscillators. The model describes a set of \(N\) oscillators, each characterized by a phase \(\theta_k(t)\) and a natural frequency \(\omega_k\). The oscillators interact through a sinusoidal coupling function that tends to align their phases. The dynamics of each oscillator in the Kuramoto model are governed by the differential equation:
+
+\begin{equation}\label{eq1}
+\dot{\theta}_k = \omega_k + \frac{K}{N} \sum_{j=1}^{N} \sin(\theta_j - \theta_k),
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/literature/kuramoto.png}
+    \caption{Kuramoto Model of Coupled Oscillators: A circular arrangement of \(N=5\) oscillators, each represented by a phase angle \(\theta_k\). The red arrows indicate the coupling influence from one oscillator to another, driven by the phase difference \(\sin(\theta_j - \theta_k)\), which encourages phase alignment and promotes synchronization. The blue lines represent the connections or coupling interactions between oscillators }
+    \label{fig:kuramoto_model}
+\end{figure}
+
+where \(\dot{\theta}_k\) represents the time derivative of the phase of oscillator \(k\), \(K\) is the coupling strength, and the summation term represents the interaction of oscillator \(k\) with all other oscillators \(j\) in the system. The coupling term \(\sin(\theta_j - \theta_k)\) quantifies the tendency of the oscillators to synchronize their phases.
+
+The diagram in Figure~\ref{fig:kuramoto_model} illustrates these dynamics, with five oscillators and each oscillator represented by a phase angle \(\theta_k\) positioned on a unit circle. The red arrows between oscillators depict the coupling term \(K \sum_j \sin(\theta_j - \theta_k)\), indicating the influence of one oscillator's phase on another. This coupling encourages phase alignment among oscillators, promoting synchronization. The differential equation \ref{eq1} captures this behaviour, where \(\dot{\theta}_k\) denotes the rate of phase change, \(\omega_k\) is the natural frequency, and \(K\) is the coupling strength. As \(K\) increases, the oscillators shift from independent oscillations to synchronized motion, ultimately converging to a shared frequency.
+
+For weak coupling (\(K \to 0\)), the oscillators evolve independently at their natural frequencies, while for strong coupling, they tend to synchronize, moving in unison with a common frequency.
+
+
+
+\textbf{Key Features of the Kuramoto Model:}
+\begin{enumerate}
+    \item \textit{Order Parameter and Phase Coherence:} To quantify synchronization, the Kuramoto model introduces a complex order parameter \(r(t)e^{i\psi(t)}\), where \(r(t) \in [0,1]\) measures the phase coherence of the oscillator population, and \(\psi(t)\) is the average phase \cite{acebron2005kuramoto}. The order parameter is defined as:
+
+    \begin{equation}\label{eq2}
+    r(t)e^{i\psi(t)} = \frac{1}{N} \sum_{k=1}^{N} e^{i\theta_k(t)}.
+    \end{equation}
+
+    When \(r(t) \approx 1\), the oscillators are phase-locked, indicating high synchronization. Conversely, \(r(t) \approx 0\) indicates a lack of synchronization.
+
+    \item \textit{Critical Coupling Strength and Phase Transition:} The Kuramoto model exhibits a phase transition from incoherence to synchronization as the coupling strength \(K\) crosses a critical threshold \(K_c\). For coupling strengths \(K < K_c\), the system remains in an incoherent state where oscillators move independently. For \(K > K_c\), a subset of oscillators begins to synchronize, forming a coherent cluster with a common frequency.
+
+ 
+\end{enumerate}
+
+\textbf{Extensions and Variations of the Kuramoto Model:}
+Several extensions and variations of the Kuramoto model have been developed to capture more complex synchronization phenomena observed in real-world systems:
+
+\begin{enumerate}
+    \item \textit{Networked Kuramoto Models:} Instead of considering all-to-all coupling, oscillators can be arranged in networks with arbitrary topologies. In these cases, the coupling term is modified to include an adjacency matrix \(a_{kh}\) that specifies the connectivity between oscillators:
+
+    \begin{equation}\label{eq3}
+    \dot{\theta}_k = \omega_k + \frac{K}{N} \sum_{j=1}^{N} a_{kh} \sin(\theta_h - \theta_k).
+    \end{equation}
+
+    The network structure influences synchronization dynamics, and different network topologies, such as random, small-world, and scale-free networks, have been studied. The topology affects the critical coupling strength and the speed of synchronization.
+
+    \item \textit{Kuramoto Model with Noise:} The inclusion of noise in the oscillators' dynamics allows the study of synchronization under stochastic influences. The dynamics can be described by a stochastic differential equation that incorporates both deterministic coupling and random perturbations. The impact of noise on the synchronization threshold and the stability of the synchronized state can be analyzed using the nonlinear Fokker-Planck equation and linear stability analysis.
+
+    \item \textit{Time-Delayed Kuramoto Models:} In many real systems, interactions between oscillators are not instantaneous but occur with a time delay. Time-delayed Kuramoto models introduce a delay term \(\tau\) in the coupling, modifying the synchronization dynamics. These models are crucial for understanding synchronization in systems with finite signal propagation speeds, such as neuronal networks and coupled laser arrays.
+
+    \item \textit{Kuramoto Model with Inertia:} This variation introduces an inertia term that accounts for the physical properties of the oscillators. The modified model includes a second-order differential equation for each oscillator's dynamics:
+
+    \begin{equation}\label{eq4}
+    m\ddot{\theta}_k + \dot{\theta}_k = \omega_k + \frac{K}{N} \sum_{j=1}^{N} \sin(\theta_j - \theta_k),
+    \end{equation}
+
+    where \(m\) represents the inertia. This model is relevant for studying synchronization in mechanical systems, power grids, and other contexts where inertia plays a significant role.
+\end{enumerate}
+
+
+
+
+The ability to extend the model to include adaptive coupling, time delays, and network interactions allows us to capture the nuances of real-world performances, such as:
+
+\begin{itemize}
+    \item \textbf{Adaptive Timing}: Adjusting coupling strengths to reflect changes in attention or leadership roles within the ensemble.
+    \item \textbf{Sensorimotor Delays}: Incorporating time delays to model the processing and reaction times of robotic systems.
+    \item \textbf{Network Topology}: Representing the varying interaction patterns among ensemble members, such as leader-follower dynamics or equal collaboration.
+\end{itemize}
+
+These features are critical for developing robotic systems that can synchronize effectively with human musicians, responding to the fluid and dynamic nature of live performances. While alternative mathematical models offer insights into specific types of synchronization phenomena, they often lack the suitability for modeling the continuous, bidirectional, and adaptive interactions present in human-robot musical ensembles. The Kuramoto model's focus on phase dynamics, combined with its simplicity and extensibility, makes it the most appropriate choice for our research objectives. By employing the Kuramoto model, we can develop control algorithms that enable robotic musicians to synchronize with human performers in real time, facilitating seamless integration into musical ensembles and enhancing the collaborative experience.
+
+
+
+\section{Discussion}
+\label{sec2.6}
+
+To capture the nuances of human synchronization, we must consider extensions of the Kuramoto model that incorporate features such as time delays, variable coupling strengths, and network topologies reflecting the ensemble's interaction structure. The time-delayed Kuramoto model introduces interaction delays \(\tau_{kj}\) between oscillators:
+
+\begin{equation}\label{eq:time_delayed_kuramoto}
+\dot{\theta}_k(t) = \omega_k + \sum_{j=1}^{N} K_{kj} \sin\left[\theta_j(t - \tau_{kj}) - \theta_k(t)\right],
+\end{equation}
+
+where \(K_{kj}\) represents the coupling strength between oscillators \(k\) and \(j\), and \(\tau_{kj}\) accounts for the latency in sensory processing and motor execution \cite{strogatz2000}. In human-robot ensembles incorporating time delays is critical due to processing latencies in sensorimotor systems and communication channels. Estimating these delays enables the robotic system to anticipate and compensate for temporal discrepancies, aligning its performance more closely with human musicians.   
+
+The adaptive nature of human synchronization can be modeled by allowing the coupling strengths \(K_{kj}\) and natural frequencies \(\omega_k\) to be time-dependent functions influenced by multimodal feedback and cognitive processes. Let \(K_{kj}(t)\) and \(\omega_k(t)\) be functions that adjust based on sensory inputs and internal predictive models:
+
+\begin{align}
+K_{kj}(t) &= K_0 + \Delta K_{kj}(t), \label{eq:adaptive_coupling} \\
+\omega_k(t) &= \omega_{k,0} + \Delta \omega_k(t), \label{eq:adaptive_frequency}
+\end{align}
+
+where \(K_0\) and \(\omega_{k,0}\) are baseline values, and \(\Delta K_{kj}(t)\) and \(\Delta \omega_k(t)\) represent adaptive adjustments. These adjustments can be driven by error signals derived from discrepancies between predicted and observed sensory feedback, embodying the predictive coding framework discussed in cognitive studies sometimes handled by Kalman filters. \cite{friston2005}.
+
+Incorporating the cognitive process of anticipatory auditory imagery \cite{ch221}, the robotic system can generate internal predictions of the ensemble's future states. This can be formalized using a state-space model where the predicted phase \(\hat{\theta}_k(t + \Delta t)\) is given by:
+
+\begin{equation}\label{eq:predictive_phase}
+\hat{\theta}_k(t + \Delta t) = \theta_k(t) + \hat{\omega}_k(t) \Delta t + \varepsilon_k(t),
+\end{equation}
+
+with \(\varepsilon_k(t)\) representing prediction error due to uncertainties. Here, \(\hat{\omega}_k(t)\) and \(\hat{K}_{kj}(t)\) are estimates of the oscillator's natural frequency and coupling strength, respectively, rather than their true values. By continuously adjusting \(\hat{\omega}_k(t)\) and \(\hat{K}_{kj}(t)\) to minimize \(\varepsilon_k(t)\), the robot can align its timing with the ensemble, achieving synchronization even in the presence of tempo fluctuations and complex rhythmic structures.
+
+Prioritized integrative attention can be modeled by weighting the influence of different oscillators based on their roles in the ensemble. For instance, a robotic performer may assign higher weights to certain human musicians who are leading the tempo or providing critical rhythmic cues. This leads to a weighted coupling term in the Kuramoto model:
+
+\begin{equation}\label{eq:weighted_kuramoto}
+\dot{\theta}_k(t) = \omega_k + \sum_{j=1}^{N} W_{kj} K_{kj}(t) \sin\left[\theta_j(t - \tau_{kj}) - \theta_k(t)\right],
+\end{equation}
+
+where \(W_{kj}\) are weighting factors reflecting the attentional priorities. Adjusting \(W_{kj}\) allows the robotic system to dynamically focus on key ensemble members, mirroring human musicians' attentional strategies \cite{ch221}.
+
+Adaptive timing mechanisms can be further enhanced by integrating stochastic elements to account for variability in human performance. Introducing noise terms \(\xi_k(t)\) into the oscillator dynamics captures the inherent unpredictability:
+
+\begin{equation}\label{eq:stochastic_kuramoto}
+\dot{\theta}_k(t) = \omega_k + \sum_{j=1}^{N} K_{kj}(t) \sin\left[\theta_j(t - \tau_{kj}) - \theta_k(t)\right] + \xi_k(t),
+\end{equation}
+
+where \(\xi_k(t)\) is a stochastic process, such as Gaussian white noise with zero mean and variance \(\sigma_k^2\) \cite{acebron2005}. This stochastic component allows the robot to exhibit variability similar to human performers, making its actions appear more natural and less mechanistic. Empirical data from studies on human synchronization can inform the parameterization of these models. For example, measures of neural synchrony from EEG studies \cite{ch212} can provide estimates of coupling strengths and delays. Movement synchronization analyses \cite{ch211} offer insights into the temporal dynamics of phase adjustments, while adaptive timing behaviors observed in ensemble performances \cite{ch214} can be used to calibrate the stochastic elements and adaptive functions.
+
+\subsection{Multimodal Synchronization in Human-Robot Ensembles}
+A complete human-robot synchronization system should be multimodal, allowing the robot to observe various cues beyond the audio signal, such as rhythmic body movements and gestures. This multimodal data may be captured through multiple sensors, including microphones for auditory input, cameras for visual cues, and possibly tactile sensors. Advanced sensor fusion techniques are required to aggregate these diverse inputs, enabling the robot to construct a coherent representation of the ensemble's dynamics. In the context of implementing the Kuramoto model, this sensor fusion is crucial, as it provides the robot with a continuous stream of information that can influence the estimates of its internal states (\(\hat{\theta}_k(t)\), \(\hat{\omega}_k(t)\), \(\hat{K}_{kj}(t)\)). By processing and integrating multimodal feedback in real time, the robot can more accurately predict the ensemble’s future states and dynamically adjust its phase and coupling parameters to achieve synchronization. Thus, sensor fusion directly supports the Kuramoto model’s coupling mechanism, where each oscillator's phase adjustment is influenced by the collective sensory information, allowing for more robust and adaptive synchronization in complex, real-world musical settings. Machine learning algorithms, particularly those in the domain of deep learning, can be employed to model the complex relationships between sensory inputs and phase adjustments. Recurrent neural networks (RNNs), such as Long Short-Term Memory (LSTM) networks, can capture temporal dependencies and assist in predicting future phases \cite{hochreiter1997}. Training these networks on large datasets of ensemble performances allows the robotic system to learn patterns of human synchronization, improving its predictive accuracy and adaptability. Modeling the ensemble as a network with variable connectivity allows the robot to adjust its interactions based on the ensemble's configuration. For instance, in a trio, the robot may need to synchronize with two human musicians who are also synchronizing with each other. The coupling matrix \(\mathbf{K}\) becomes a key parameter:
+
+\begin{equation}\label{eq:coupling_matrix}
+\mathbf{K} = \begin{bmatrix}
+0 & K_{12} & K_{13} \\
+K_{21} & 0 & K_{23} \\
+K_{31} & K_{32} & 0 \\
+\end{bmatrix},
+\end{equation}
+
+where \(K_{ij}\) represents the coupling strength from oscillator \(j\) to oscillator \(i\). Adjusting \(\mathbf{K}\) based on the ensemble dynamics enables the robot to participate effectively in the synchronization process. 
+
+The inclusion of social dynamics and joint action principles is essential for achieving naturalistic synchronization. The robot must synchronize its timing and engage in the expressive aspects of performance, such as dynamics, articulation, and phrasing. This requires extending the phase-based models to include additional parameters representing these musical dimensions. While the Kuramoto model serves as a foundational framework for synchronization, the thesis will extend it by incorporating elements such as adaptive coupling, where coupling strengths between oscillators dynamically adjust based on sensory feedback and ensemble roles; time-delayed interactions, to account for sensorimotor latencies in both humans and robots; stochastic variability, which captures natural fluctuations in human timing; and multimodal integration, using sensor fusion techniques to incorporate auditory, visual, and motion-based cues into the synchronization process. This extended Kuramoto framework will be employed throughout the thesis to analyze, model, and implement synchronization in human-robot musical ensembles.
+
+Accurate estimation of Kuramoto model parameters—natural frequencies ($\omega_k$), coupling strengths ($K_{kj}$), and time delays ($\tau_{kj}$)—is critical for achieving robust synchronization. Several methods can be employed for this estimation. Least squares fitting optimizes parameters by minimizing the error between observed and predicted phase evolution. Bayesian inference provides probabilistic estimates that are particularly useful when dealing with noisy data. Optimization algorithms such as Genetic Algorithms (GA) and Particle Swarm Optimization (PSO) can search for optimal parameter configurations. However, machine learning approaches provide the most flexible and adaptive solution. Neural networks, including Recurrent Neural Networks (RNNs) and Long Short-Term Memory (LSTM) models, can learn phase evolution from data and predict synchronization patterns. Reinforcement learning can fine-tune synchronization parameters through continuous interaction with human musicians, while Kalman filters enable real-time estimation of phase and frequency states, dynamically adapting to changes in synchronization behavior.
+
+Machine learning is particularly well-suited for Kuramoto parameter estimation due to its data-driven adaptability, allowing real-time changes in musical performance to be captured dynamically. Its ability to integrate multimodal learning ensures that deep learning models can infer synchronization cues beyond phase observations by incorporating audio, visual, and sensor data. Machine learning techniques also offer robustness to noise, learning robust feature representations where traditional optimization methods may struggle. Furthermore, predictive capabilities inherent in LSTMs and reinforcement learning allow the system to anticipate upcoming phase deviations and preemptively adjust robot responses for better synchronization. In summary, this thesis will employ an extended Kuramoto model with machine learning-based parameter estimation to facilitate real-time synchronization between robotic and human musicians, enabling more fluid and expressive collaboration in musical ensembles.
+ 
+
+\section{Conclusion}
+
+This chapter has provided an extensive review of the literature on synchronization in human-robot musical ensembles, highlighting the interplay of multimodal feedback, cognitive processes, social dynamics, and mathematical models. While traditional synchronization models offer valuable insights, the Kuramoto model's adaptability makes it particularly suitable for modeling human-robot musical interaction. Extensions to the Kuramoto model, incorporating factors like time delays, adaptive coupling, and stochastic elements, allow for more realistic representations of ensemble dynamics. These models pave the way for developing robotic systems capable of achieving human-like synchronization, moving beyond mere timing to embrace expressiveness and interactivity in musical performances. 
+
+Transitioning from this theoretical framework, we now focus on the practical challenges of implementing these concepts in real-world ensemble settings. In the following chapter, we introduce The Cyborg Philharmonic, where we delve into the intricacies of human-robot interaction within musical performances. We address the multitude of challenges such as synchronized generation of musical chords, dynamic detection of role fluidity between leader and follower, and real-time interpretation of non-verbal cues and gestures. We propose a joint strategy that involves both mapping—ensuring control and sensing of musical instrument components—and modeling—anticipating state changes in music generation. This approach aims to capture the nuanced dynamics of ensemble performances, enabling robotic systems to predict fine-grained temporal variations and achieve seamless synchronization with human musicians. Through this exploration, we move closer to realizing the vision of a human-robot symphonic orchestra, where technology and artistry converge to create harmonious melodies.

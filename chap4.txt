@@ -1,0 +1,670 @@
+\chapter{LeaderSTeM: Audio-Based Ensemble Leadership Tracking}\label{ch-4}
+
+\section{Introduction}
+
+The art of musical ensemble performance is a complex interplay of synchronization, communication, and shared expression among musicians. In previous chapters, we explored the challenges of achieving synchronization in human-robot musical interactions, emphasizing the importance of technical alignment and the expressive nuances that make performances engaging and authentic. Chapter \ref{ch-2} delved into the underlying factors of human musical synchronization, highlighting how musicians rely on subtle cues—both auditory and visual—to maintain cohesion within an ensemble. Chapter \ref{ch-3} introduced the Cyborg Philharmonic framework, a framework for integrating synchronization algorithms with predictive modeling to enable robots to participate in musical ensembles in a more human-like manner.
+
+A key aspect that was introduced is the dynamic leader-follower relationship inherent in certain types of musical ensembles. Unlike static systems or conductor-led groups, ensembles without a single, consistent leader often experience fluid transitions of leadership. Here, different musicians may take the lead at various moments based on the musical context. For instance, in a fugue, each voice or instrument introduces and passes the theme to others, creating a shifting focus that depends on who carries the main motif. This dynamic leadership is essential for expressive performances, enabling ensembles to navigate tempo changes, phrasing, and emotional intensity collectively. Understanding and adapting to these leader-follower dynamics is crucial for any system aiming to achieve naturalistic synchronization in human-robot musical collaborations. Musical ensembles are intricate systems characterized by continuous interaction and adaptation among their members. The synchronization within these groups extends beyond mere temporal alignment; it encompasses expressive timing, dynamic balance, and cohesive interpretation of the musical piece. Central to achieving such synchronization is the leader-follower dynamic, a fluid relationship where leadership roles may shift among ensemble members depending on the musical context \cite{ch221}.
+
+The tempo leader in an ensemble sets the pace and often influences the expressive nuances of the performance. This leadership is critical during tempo changes, ritardandos, accelerandos, and rubato passages, where precise coordination is required to maintain the ensemble's cohesion. Thus leader's role involves not only keeping time but also conveying expressive intentions that shape the ensemble's collective interpretation \cite{keller2008joint}.
+
+Understanding and identifying the tempo leader is essential for several reasons:
+
+\begin{itemize} 
+\item \textbf{Maintaining Synchronization:} The leader provides a reference point for timing, allowing other musicians to align their entries, articulations, and dynamic changes appropriately \cite{ch214}. 
+\item \textbf{Facilitating Expressive Cohesion:} The leader's expressive gestures influence the ensemble's interpretation of phrasing, dynamics, and articulation, contributing to a unified performance \cite{timmers2014synchronization}. 
+\item \textbf{Enabling Adaptive Interaction:} In ensembles where leadership roles shift, the ability of musicians to recognize and adapt to the current leader enhances the group's flexibility and responsiveness \cite{ch228}. 
+\end{itemize}
+ 
+ Robots must be capable of not only following a human leader but also adapting to changes in leadership roles. This requires advanced capabilities in real-time analysis and interpretation of musical cues to adjust their performance accordingly \cite{ch219}. As discussed in Chapter \ref{ch-3}, the Cyborg Philharmonic framework addresses synchronization through multimodal integration and predictive modeling and the dynamic identification of the tempo leader remains a critical component for achieving seamless human-robot collaboration. The importance of leader-follower dynamics extends to various ensemble types and genres. In small chamber groups, leadership is often shared, with musicians taking cues from one another \cite{goodman2002ensemble}. In jazz ensembles, the leader may change frequently during improvisational sections, requiring heightened sensitivity to auditory cues \cite{doffman2013groove}. Understanding these dynamics is fundamental for any system aiming to replicate or integrate into human musical interactions.
+
+
+Existing methods for leader identification frequently depend on visual cues such as gestures or musical scores, which may not always be available or sufficient, especially in scenarios where only audio data is accessible. This gap highlights the need for an alternative (and demonstrably robust) method to identify the tempo leader within an ensemble using audio features alone, thereby enhancing synchronization and allowing robotic musicians to adapt to the evolving dynamics of live performances. In response to this challenge, this chapter introduces the LeaderSTeM model—a machine learning approach designed to dynamically identify the tempo leader in a musical ensemble using only audio-derived features. By analyzing the real-time tempo (beats per minute, BPM), pitch, and amplitude of individual instrument tracks, LeaderSTeM discerns which musician is currently leading the ensemble's tempo at any given moment. By focusing solely on audio features, the model addresses scenarios where visual data may be limited or unavailable, such as audio-only recordings or performances where visual obstructions exist. It serves as an integral component of the Cyborg Philharmonic framework, extending the dynamic tempo adaptation capabilities and enhancing the robot’s ability to engage in ensembles with the same fluidity and responsiveness as human musicians.
+
+
+\subsection{Overview of the Chapter}
+
+The primary objective of this chapter is to develop and validate the LeaderSTeM model for dynamic leader identification in musical ensembles using audio features alone. To achieve this, the chapter will:
+ 
+\begin{enumerate}
+    \item \textbf{Contextualize the Importance of Leader Identification:}
+    \begin{itemize}
+        \item Reiterate the significance of dynamic leader-follower relationships in musical ensembles and how they impact synchronization and expressiveness.
+        \item Highlight the limitations of existing methods that rely on visual cues or assume static leadership.
+    \end{itemize}
+
+    \item \textbf{Present the LeaderSTeM Model:}
+    \begin{itemize}
+        \item Introduce the conceptual framework of LeaderSTeM, detailing how it leverages machine learning techniques to analyze audio features from individual instrument tracks.
+        \item Explain the rationale for selecting specific audio features (tempo, pitch, amplitude) and how they contribute to leader identification.
+    \end{itemize}
+
+    \item \textbf{Describe the Experimental Methodology:}
+    \begin{itemize}
+        \item Detail the dataset preparation process using the MUSDB18 dataset, including how individual stems (sub-tracks) are extracted and processed.
+        \item Outline the machine learning models explored (Random Forest, Support Vector Machine, Long Short-Term Memory networks) and justify the selection of the LSTM model based on performance metrics.
+    \end{itemize}
+
+    \item \textbf{Demonstrate Model Performance:}
+    \begin{itemize}
+        \item Present experimental results showcasing the effectiveness of LeaderSTeM in identifying the tempo leader across different musical pieces.
+        \item Use specific case studies to illustrate how the model adapts to tempo changes and dynamic leadership shifts within an ensemble.
+    \end{itemize}
+
+   \item \textbf{Analyze and Interpret Findings:} 
+   \begin{itemize} 
+   \item Discuss the implications of the results for human-robot synchronization, emphasizing how audio-based leader identification enhances the robot's ability to integrate into musical ensembles. 
+   \item Briefly outline current limitations, with detailed improvements explored in subsequent chapters and the future work section. 
+   \end{itemize}
+
+
+
+    \item \textbf{Set the Stage for Incorporating Visual Cues:}
+    \begin{itemize}
+        \item Recognize that while audio features provide valuable insights, integrating visual cues could further enhance leader identification accuracy.
+    \end{itemize}
+\end{enumerate}
+
+
+By the end of this chapter, we aim to demonstrate that the LeaderSTeM model effectively identifies the dynamic tempo leader in musical ensembles using audio features alone. This contributes to the thesis's overarching goal by enhancing robotic musicians' synchronisation capabilities, allowing for more natural and expressive human-robot musical interactions. In subsequent research, the findings will also provide a foundation for integrating additional modalities, such as visual cues, further refining the collaborative potential between humans and robots in musical contexts.
+
+
+\section{Background and Literature Review}
+
+
+\subsection{Previous Work on Leader Identification}
+
+Research on leader identification in musical ensembles has predominantly focused on visual cues and non-verbal communication among musicians. These studies have highlighted the significance of gestures, body movements, and eye contact in conveying leadership intentions and facilitating synchronization.
+
+Glowinski et al. \cite{glowinski2012analysis} conducted an extensive study on a string quartet to analyze leadership behaviors. They utilized motion capture technology to record the musicians' movements and applied Granger causality analysis to determine the directional influence among ensemble members. The findings indicated that the leader exerted a significant impact on the timing and expressive dynamics of the group, with leadership behaviors manifesting through distinctive body movements and gestures.
+
+Similarly, Timmers et al. \cite{timmers2014synchronization} explored synchronization and leadership in a string quartet by examining auditory and visual cues. Through repeated performances of the same piece, they observed that the first violinist often assumed the leadership role. Visual cues, such as bowing movements and eye contact, were critical in establishing synchronization, especially at the beginning of the performance and during tempo changes. Their study underscored the importance of non-verbal communication in ensemble coordination.
+
+Kawase \cite{kawase2014assignment} investigated the assignment of leadership roles in piano duets. By manipulating the designated leader in the performance, the study examined how gaze behaviors and mutual eye contact contributed to synchronization. The results showed that leaders exhibited shorter gaze durations toward their partners, relying more on auditory feedback once synchronization was established. Followers, on the other hand, maintained longer gaze durations, indicating a reliance on visual cues to align their performance.
+
+% In the realm of human-computer interaction, Otsuka and colleagues \cite{ch223} developed a beat-tracking robot designed to synchronize with human musicians using a coupled oscillator model. This model allows the robot to predict the timing of the human musician's actions, enabling precise synchronization by reducing onset timing errors. The system includes a real-time beat-tracking module and a predictive ensemble model that estimates the onset of each beat, using oscillators to mirror and anticipate the human drummer’s rhythm. Compared to previous methods, which adjusted tempo based on intervals alone, this model offers enhanced synchronization by proactively predicting the timing of each beat. Experiments demonstrated the model’s effectiveness, with onset errors reduced by 38\% with a metronome and by 14\% with a human drummer. This approach underscores the value of predictive modeling for precise timing alignment in robot-human ensembles, particularly in challenging environments with fluctuating tempos. Future extensions of this work include scaling the model for multiple robots and incorporating visual cue recognition to enrich the synchronization process through multimodal interaction, broadening the application of this model to various ensemble types.
+
+
+
+From a technological perspective, various studies have explored machine learning approaches for synchronization and musical analysis, though leader identification using audio features alone has not been explicitly addressed. Martin et al. \cite{martin2017deep} developed deep learning models aimed at creating interactive musical experiences, specifically in improvisational settings using touch-screen interfaces. Their approach leverages artificial neural networks to interpret gestural inputs, which then guide synchronization and timing within the musical system. However, their focus was on controlling synchronization through direct, controlled inputs rather than adapting to the dynamic and emergent leader-follower roles typical in natural ensemble settings.
+
+Dixon \cite{dixon2001automatic} introduced algorithms for automatic tempo and beat extraction from expressive performances, with a primary aim of tracking tempo consistency within a piece. While effective at identifying tempo and beat placement, Dixon's system is designed for beat tracking rather than ensemble interaction and thus does not consider or accommodate leader-follower dynamics that emerge in musical groups. As a beat-tracking algorithm, it was not intended for use in leader identification or ensemble synchronization. Studies into small ensemble groups, such as string quartets, reveal how musicians rely on non-visual signals to maintain cohesion and interpret leadership transitions. These cues are subtle and multifaceted, rooted in sensorimotor and social mechanisms that are continuously adapted in real-time \cite{royalsoc2016,frontiers2020}. Research highlights the role of sensorimotor circuits, specifically those involved in mirror neuron activities, in anticipating and coordinating actions during ensemble performances, emphasizing the importance of auditory responses beyond simple rhythm tracking \cite{royalsoc2020}. This insight points to a tried to study systems like LeaderSTeM, which can dynamically track shifts in leadership within audio-only contexts, providing a level of responsiveness that simple beat-tracking algorithms like those of Dixon \cite{dixon2001automatic} do not address.
+
+
+\subsection{Gap Analysis}
+
+The literature reveals a clear gap in methods for leader identification that utilize audio features alone, particularly in real-time and dynamic contexts. The limitations of existing approaches can be summarized as follows:
+
+\begin{itemize} 
+ 
+\item \textbf{Assumption of Static Leadership:}  A fixed leader throughout the performance, ignoring the dynamic nature of leadership roles in many ensembles. This static approach fails to capture the real-time shifts that occur in response to musical phrasing and expressive intentions.
+\item \textbf{Limited Use of Audio Features for Leader Identification:} While audio processing techniques are employed for beat tracking and tempo estimation, they often do not extend to identifying the tempo leader within an ensemble. The potential of audio features such as tempo fluctuations, dynamic changes, and expressive timing has not been fully exploited for leader identification.
+\end{itemize}
+
+Addressing these gaps is critical for advancing synchronization in human-robot musical ensembles. By developing methods that can identify the tempo leader using audio features alone, it becomes possible to create systems that are more adaptable, responsive, and capable of integrating into a variety of performance settings. Figure~\ref{fig:stems_vs_groundtruth} illustrates how four different stems (drums, bass, vocals, and others) each produce their own estimated beats per minute (BPM), compared against a stable ground truth of 120 BPM. Although one might expect a shared tempo across all instruments, in practice the drum part tends to stay closest to this ground truth, with the bass only slightly more variable. Meanwhile, vocals and certain other instruments can diverge significantly, reflecting how melodic lines or ornamental parts may not align strictly to a beat. Segments of silence (represented by gaps where the BPM is undefined) further complicate the analysis. Whenever the presumed leader, such as the drum or bass, becomes silent, the sense of a stable underlying tempo can be lost. Consequently, vocals or background instruments often provide inconsistent cues regarding the primary pulse. The phenomenon shown here underscores the inherent ambiguity in determining which stem actually dictates the ensemble’s BPM. Even if two stems share a coherent rhythm most of the time, occasional silences, syncopations, or expressive phrasing can produce divergent tempo readings, making it difficult to pinpoint a single leader for the entire track.
+
+ 
+
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\textwidth]{images/leaderStem/stem_proof.png}
+    \caption{Comparison of a stable ground truth BPM (dashed line) against each stem (colored lines). The drums (top-left) and bass (top-right) typically track the beat more closely than vocals (bottom-left) and other instruments (bottom-right). Silences in each stem appear as gaps. These variations and absences highlight the complexity of defining a single, consistent tempo leader within the ensemble.}
+    \label{fig:stems_vs_groundtruth}
+\end{figure}
+
+ The LeaderSTeM model proposed in this thesis directly addresses these gaps by leveraging machine learning techniques to analyze audio-derived features for dynamic leader identification.
+ 
+
+\section{LeaderSTeM Model}
+
+The LeaderSTeM (LSTM based deep learning) model is a machine learning framework developed to dynamically identify the tempo leader within a musical ensemble using audio features alone. Building upon the synchronization challenges addressed in the Cyborg Philharmonic framework introduced in Chapter \ref{ch-3}, LeaderSTeM specifically tackles the problem of leader following without relying on visual cues. This capability is crucial for robotic musicians to adapt their timing and expressive parameters in real time, ensuring cohesive integration with human performers. We will be describing in details the working of LeaderSTeM as shown in the flowchart \ref{LeaderSTeM_flowchart}.
+
+ 
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc}
+
+\begin{tikzpicture}[
+    node distance=1.8cm and 1.8cm,
+    every node/.style={font=\small},
+    startstop/.style={rectangle, rounded corners, draw, align=center, fill=blue!20, minimum width=3cm, minimum height=1cm},
+    process/.style={rectangle, draw, align=center, fill=green!20, minimum width=3cm, minimum height=1cm},
+    subproc/.style={rectangle, draw, align=center, fill=orange!20, minimum width=3cm, minimum height=1cm},
+    decision/.style={diamond, draw, align=center, fill=yellow!20, aspect=2.5, inner sep=0.2cm},
+    arrow/.style={-{Stealth[length=2mm]}, thick}
+]
+
+% Level 1: Input
+\node[startstop] (input) {Input Audio Tracks\\(MUSDB18 Dataset)};
+
+% Level 2: Preprocessing
+\node[process, below=of input] (preproc) {Dataset Preparation\\\footnotesize{Stem Extraction using Stempeg \& Librosa}};
+\draw[arrow] (input) -- (preproc);
+
+% Level 3: Feature Extraction
+\node[process, below=of preproc] (feature) {Feature Extraction\\\footnotesize{Tempo (Aubio), Pitch (YIN), Amplitude (RMS)}};
+\draw[arrow] (preproc) -- (feature);
+
+% Level 4: Machine Learning Model Development
+\node[process, below=of feature] (ml) {Machine Learning Model\\Development \& Evaluation};
+\draw[arrow] (feature) -- (ml);
+
+% Sub-process: Model Selection Details
+\node[subproc, below left=of ml, xshift=-1cm] (models) {SVM,LSTM,RF};
+\draw[arrow] (ml) -- (models);
+\node[subproc, below right=of ml, xshift=1cm] (tuning) {Hyperparameter Tuning};
+\draw[arrow] (ml) -- (tuning);
+\draw[arrow] (models) -- node[above, align=center]{LSTM Selected\\(for sequential data)} (ml);
+
+% Level 5: Training Procedure
+\node[process, below=of ml] (training) {Training Model};
+\draw[arrow] (ml) -- (training);
+\draw[arrow] (tuning) -- (training);
+
+% Level 6: Leader Identification Module
+\node[process, below=of training] (leaderID) {Dynamic Leader Identification\\\footnotesize{Follow the leader's BPM}};
+\draw[arrow] (training) -- (leaderID);
+
+% Level 7: Integration into Framework
+\node[process, below=of leaderID] (integration) {Integration into Cyborg Philharmonic\\\footnotesize{Adaptive Control for Robot Synchronization}};
+\draw[arrow] (leaderID) -- (integration);
+
+% Level 8: Output
+\node[startstop, below=of integration] (output) {Output Leader Signal\\for Real-Time Synchronization};
+\draw[arrow] (integration) -- (output);
+
+% Annotations on the left side for clarity
+\node[above=0.3cm of input] (a1) {Step 1: Input};
+\node[above=0.3cm of preproc] (a2) {Step 2: Preprocessing};
+\node[above=0.3cm of feature] (a3) {Step 3: Feature Extraction};
+\node[above=0.3cm of ml] (a4) {Step 4: Model Development};
+\node[above=0.3cm of training] (a5) {Step 5: Model Training};
+\node[above=0.3cm of leaderID] (a6) {Step 6: Leader Detection};
+\node[above=0.3cm of integration] (a7) {Step 7: Framework Integration};
+\node[above=0.3cm of output] (a8) {Step 8: Output};
+\label{LeaderSTeM_flowchart}
+\end{tikzpicture}
+
+
+
+\subsection{Technical Approach}
+
+The development of the LeaderSTeM model involved several key steps:
+
+\begin{itemize}
+    \item \textbf{Dataset Preparation}: Utilizing the MUSDB18 dataset to simulate ensemble scenarios.
+    \item \textbf{Feature Extraction}: Extracting relevant audio features (tempo, pitch, amplitude) from individual instrument tracks.
+    \item \textbf{Machine Learning Techniques}: Evaluating different models and selecting Long Short-Term Memory (LSTM) networks for temporal modeling.
+    \item \textbf{Model Architecture}: Designing a specific LSTM architecture tailored to the leader identification task.
+    \item \textbf{Hyperparameter Tuning}: Optimizing the model parameters to enhance performance.
+\end{itemize}
+
+Each of these steps is detailed in the following sections.
+
+\subsection{Dataset Preparation}
+
+The MUSDB18 dataset \cite{rafii2017musdb18} was selected for developing and testing the LeaderSTeM model due to its comprehensive collection of professionally produced music tracks. The dataset contains 150 full-length songs across various genres, including pop, rock, jazz, and hip-hop. Each song is provided in a multitrack format, consisting of four isolated stems:
+
+\begin{itemize}
+    \item Vocals
+    \item Drums
+    \item Bass
+    \item Other Instruments (accompaniment)
+\end{itemize}
+
+These stems allow for independent analysis of individual instrument tracks, which is essential for the LeaderSTeM model to identify the tempo leader based on audio features. By utilizing the MUSDB18 dataset, the model benefits from a rich and varied set of musical pieces, providing a robust foundation for training and evaluation. To prepare the dataset for the model, the following steps were undertaken as given in the algorithm \ref{Algo: Data prep LeaderSTeM}:
+
+\begin{algorithm}[H]
+\caption{Dataset Preparation and BPM Extraction Using AUBIO}
+\label{Algo: Data prep LeaderSTeM}
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+
+\Input{$audio\_filename$: Audio file from MUSDB18 dataset}
+\Output{$bpm\_data$, $time\_data$: BPM and time data for each instrument stem}
+
+\BlankLine
+\SetKwProg{Fn}{Procedure}{:}{}
+\Fn{\textsc{MakeDataset}($audio\_filename$)}{
+    Initialize paths for saving temporary audio files and BPM data\;
+    Read stems from the given $audio\_filename$ using Stempeg\footnote{Python library for STEM audio files \url{https://github.com/faroit/stempeg}} \;
+    Convert each stem to a separate temporary wav file using Librosa\footnote{A Python library for feature extraction  \cite{mcfee2015librosa}}\;
+    \BlankLine
+    
+    \ForEach{stem $i$ from 0 to 4}{
+        Extract BPM and timing data using \textsc{AubioRun} procedure\;
+        Save BPM data to text file as $filename + \textbf{i} + \textbf{bpm.txt}$\;
+        Save timing data to text file as $filename + \textbf{i} + \textbf{time.txt}$\;
+        \BlankLine
+    }
+    Delete all temporary wav files\;
+    \Return $bpm\_data$, $time\_data$\;
+}
+\BlankLine
+
+\SetKwProg{Fn}{Procedure}{:}{}
+\Fn{\textsc{AubioRun}($wav\_file$, $sample\_rate$)}{
+    Initialize FFT size ($win\_s$) and hop size ($hop\_s$)\;
+    Create Aubio source from the given wav file\;
+    Initialize Aubio tempo detection\;
+    Create callback function for PyAudio stream to process audio frames\;
+    \BlankLine
+    \While{PyAudio stream is active}{
+        Extract audio frames and detect beats using Aubio\;
+        Calculate BPM from beat intervals and append to BPM list\;
+        Append timing information to the timing list\;
+    }
+    Close PyAudio stream and return BPM and timing data lists\;
+    \Return $bpm\_list$, $time\_list$\;
+}
+
+\BlankLine
+
+Read list of audio filenames from input text file\;
+\ForEach{filename in list}{
+    Execute \textsc{MakeDataset}($filename$)\;
+}
+\end{algorithm}
+ 
+ The algorithm presented in Algorithm~\ref{Algo: Data prep LeaderSTeM} describes a comprehensive procedure for preparing an audio dataset and extracting rhythmic features—specifically BPM (beats per minute) and corresponding timing data—from individual instrument stems in the MUSDB18 dataset. In the initial phase, the procedure \textsc{MakeDataset} is invoked with an audio filename as input. This procedure begins by initializing the necessary file paths for saving temporary audio files and BPM data. It then reads the multi-stem audio file using the Stempeg library, which isolates the distinct instrument stems (e.g., vocals, drums, bass, and other instruments). Each of these stems is converted into a separate temporary WAV file using Librosa, a Python library well-suited for feature extraction from audio signals. 
+
+Once the stems have been converted into WAV format, the algorithm enters a loop that processes each stem individually. For each stem, it calls the \textsc{AubioRun} procedure to extract BPM and timing information. Within \textsc{AubioRun}, key parameters—such as the FFT window size (win\_s) and hop size (hop\_s)—are initialized to set the resolution for the audio analysis. An Aubio source is then created for the given WAV file, and the tempo detection module in Aubio is initialized. To facilitate real-time processing, a callback function is set up using PyAudio, which continuously extracts audio frames from the stream. As these frames are processed, Aubio detects beats, and the time intervals between beats are used to calculate the BPM. Both the BPM values and the corresponding timing information are appended to separate lists. After processing all frames for a particular stem, the PyAudio stream is closed, and the BPM and timing lists are returned. Back in the \textsc{MakeDataset} procedure, these lists are saved to text files with filenames that include the stem index (e.g., \texttt{filename\_0\_bpm.txt} and \texttt{filename\_0\_time.txt}), ensuring that the data for each stem is organized and easily identifiable. Once all stems have been processed, the algorithm deletes the temporary WAV files to conserve storage space. Finally, the procedure returns the compiled BPM and timing data, and the main routine iterates over a list of audio filenames, applying \textsc{MakeDataset} to each file. This entire process produces a comprehensive dataset that captures the rhythmic dynamics of each instrument stem, which is then used in the LeaderSTeM model for dynamic tempo leader identification in musical ensembles.
+ 
+
+\begin{itemize}
+    \item \textbf{Separation of Stems}: Each full mix was decomposed into its four constituent stems using the provided multitrack files.
+    \item \textbf{Selection of Tracks}: Choosing tracks that exhibit tempo variations and dynamic changes to test the model's adaptability.
+    \item \textbf{Data Splitting}: Dividing the dataset into training (80\%) and testing (20\%) sets, maintaining a balance of genres and styles.
+\end{itemize}
+
+
+
+\subsection{Feature Extraction}
+
+In the context of leader following dataset preparation as mentioned in flowchart \ref{Algo: Data prep LeaderSTeM} , the selection of tempo, pitch, and amplitude as primary features reflects their specific relevance to ensemble dynamics. \textbf{Tempo} (BPM) is foundational in establishing synchronization, as it directly represents the rhythmic pulse of each instrument, making it essential for tracking timing shifts that often signal changes in leadership. Unlike other rhythmic descriptors, such as onset density or rhythm complexity, tempo provides a direct and quantifiable measure of time alignment, helping to distinguish the leader who may influence the ensemble’s timing. \textbf{Pitch} (Fundamental Frequency) contributes by offering insight into the melodic prominence of each instrument. In ensemble settings, the leading instrument or voice frequently introduces new melodic elements or variations, which are key for guiding other performers. While other features like timbre or spectral centroid could provide additional tonal information, they lack the consistency of pitch in indicating leadership roles, as they are often tied more to instrument identity rather than musical prominence. \textbf{Amplitude} (Volume Level) serves as a crucial indicator of dynamic intensity, highlighting instruments that temporarily assume prominence through increased volume. Loudness is often associated with leadership, particularly in passages where one part must carry the ensemble’s focus. Other features, such as harmonic richness or spectral flux, are informative for tonal quality but do not reliably reflect dynamic dominance within an ensemble context.
+
+Together, tempo, pitch, and amplitude encapsulate the temporal, melodic, and dynamic characteristics needed to identify leader roles effectively, aligning with the interactive and expressive demands of ensemble music. These features were extracted in realtime using the \texttt{Aubio} library \cite{aubio}, a toolkit designed for real-time audio analysis. The specific methods applied include:
+
+\textbf{Tempo Extraction}:
+\begin{itemize}
+    \item Utilized the tempo function in Aubio to estimate the BPM of each stem.
+    \item Applied a window size of 1024 samples and a hop size of 512 samples for frame-wise analysis.
+    \item Chosed the default onset detection method (complex domain) for accurate beat tracking.
+\end{itemize}
+
+\textbf{Pitch Extraction}:
+\begin{itemize}
+    \item We used the pitch function with the YIN algorithm \cite{mauch2014pyin}, suitable for polyphonic signals and realtime inference.
+    \item Extracted the fundamental frequency in Hertz (Hz) for each frame.
+    \item Implemented post-processing to filter out octave errors and spurious detections.
+\end{itemize}
+
+\textbf{Amplitude Extraction}:
+\begin{itemize}
+    \item Calculated the root mean square (RMS) energy of each frame to represent the amplitude.
+    \item Normalized the amplitude values to a consistent scale across all stems.
+\end{itemize}
+
+\subsection{Machine Learning Techniques}
+
+Several machine learning models were evaluated to determine the most effective approach for leader identification:
+\begin{itemize}
+\item \textbf{Support Vector Machines (SVM)}:
+\begin{itemize}
+    \item SVMs are effective for classification tasks but are limited in handling sequential dependencies \cite{suthaharan2016support}.
+    \item It was tested with radial basis function (RBF) kernels. The RBF SVM works by mapping the input data into a higher-dimensional feature space, where the classes can be separated by a hyperplane.
+    \item \textbf{Diagram Explanation of Fig: \ref{fig:SVM}}:
+    \begin{itemize}
+        \item The SVM diagram illustrates a classification problem in a two-dimensional space, where data points are separated into two classes (e.g., red circles and blue squares).
+        \item \textit{Decision Boundary}: This is the central line separating the two classes. SVM aims to maximize the distance between this boundary and the nearest data points from each class.
+        \item \textit{Margin}: Defined as the space between the two hyperplanes (one for each class), the margin represents the region around the decision boundary that SVM maximizes for better separation of classes.
+        \item \textit{Support Vectors}: These are the critical data points closest to the decision boundary that help define the margin. Changing their positions would directly impact the boundary's placement.
+    \end{itemize}
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/leaderStem/svm.png}  
+    \caption{An SVM diagram showing the decision boundary, margin, hyperplanes for two classes, and support vectors that define the margin. Source: \cite{svm2025}}
+    \label{fig:SVM}
+\end{figure}
+
+\item \textbf{Random Forests}:
+\begin{itemize}
+    \item Random Forest is an ensemble learning technique that aggregates multiple decision trees to improve classification accuracy and reduce overfitting \cite{hastie2009random}.
+    \item It operates by building several decision trees during training, each learning from a subset of the data, and then combines their outputs.
+    \item As illustrated in Figure~\ref{fig:Randomforest}, the Random Forest model generates multiple decision trees (Tree-1, Tree-2, ..., Tree-n), each independently classifying an instance into a specific class (e.g., Class-A or Class-B). The final classification is determined by majority voting among the trees, where the class with the most votes is assigned as the "Final-Class."
+    \item This approach is particularly effective for feature importance analysis, as each tree’s decisions highlight different aspects of the data. However, Random Forests struggle with time-series data, as they lack the ability to capture temporal dependencies.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/leaderStem/random_forest.png}  
+    \caption{A Random Forest model with multiple decision trees, each voting for a class. The final classification is determined by majority voting among the trees. Source:\cite{randomforest2020}}
+    \label{fig:Randomforest}
+\end{figure}
+
+\item \textbf{Long Short-Term Memory (LSTM) Networks}:
+\begin{itemize}
+    \item LSTM networks, a specialized form of Recurrent Neural Network (RNN), are designed to address the issue of learning long-term dependencies in sequential data \cite{egan2017long}.
+    \item Figure~\ref{fig:LSTM} illustrates the structure of an LSTM cell, which consists of several gates that control the flow of information:
+        \begin{itemize}
+            \item \textit{Forget Gate} (\(\sigma\)): Decides which information from the previous cell state \( c_{t-1} \) to discard.
+            \item \textit{Input Gate} (\(\sigma\)): Decides which new information to add to the current cell state.
+            \item \textit{Output Gate} (\(\sigma\)): Determines which parts of the cell state should be output to the next time step as hidden state \( h_t \).
+            \item \textit{Activation Functions} (\(\tanh\) and \(\sigma\)): Used to control the transformations within the gates, allowing the cell to retain or forget information as needed.
+        \end{itemize}
+    \item This gating mechanism enables LSTM cells to maintain and update a "memory" over time, making them highly suitable for modeling sequential data and capturing temporal patterns. As shown in Figure~\ref{fig:LSTM}, information flows through these gates, allowing the LSTM network to selectively keep or discard information over time.
+    \item LSTMs demonstrated superior performance on time-series data compared to non-sequential models like Random Forests due to their capability of modeling temporal dependencies.
+\end{itemize}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/leaderStem/lstm.jpg}  
+   \caption{An LSTM cell structure, showing the flow of information through the forget, input, and output gates to capture long-term dependencies in sequential data. Source:\cite{lstm2025}}
+    \label{fig:LSTM}
+\end{figure}
+
+
+
+The decision to select LSTM networks was based on their ability to model the temporal dynamics inherent in musical performances. Unlike SVMs and Random Forests, LSTMs can learn from sequences of data, making them ideal for analyzing how features evolve over time \cite{EasyChair:14882}. 
+\end{itemize}
+
+\subsection{Model Architecture}
+
+The architecture of the LeaderSTeM model was carefully designed to balance complexity and performance. The final model after consists of a three-layered LSTM network after fine-tuning and parameter optimization, followed by a dense output layer as shown in Fig \ref{fig:lstm-architecture} and given below :
+
+\begin{itemize}
+    \item \textbf{Input Layer}:
+    \begin{itemize}
+        \item Receives sequences of extracted features for each stem.
+        \item Input shape: (time steps, feature dimensions), where feature dimensions include tempo, pitch, and amplitude.
+    \end{itemize}
+    \item \textbf{First LSTM Layer}:
+    \begin{itemize}
+        \item Contains 445 units.
+        \item Returns sequences to pass temporal information to the next layer.
+        \item Activation function: Hyperbolic tangent (tanh).
+        \item Recurrent activation: Sigmoid function.
+    \end{itemize}
+    \item \textbf{Second LSTM Layer}:
+    \begin{itemize}
+        \item Contains 481 units.
+        \item Continues processing the temporal dynamics.
+        \item Same activation functions as the first layer.
+    \end{itemize}
+    \item \textbf{Third LSTM Layer}:
+    \begin{itemize}
+        \item Contains 37 units.
+        \item Outputs the final sequence representation.
+        \item Same activation functions.
+    \end{itemize}
+    \item \textbf{Dense Output Layer}:
+    \begin{itemize}
+        \item Contains one unit.
+        \item Activation function: Linear (since the task is regression-based, predicting the likelihood of each stem being the leader).
+    \end{itemize}
+\end{itemize}
+
+
+
+\begin{figure}[h!]
+    \centering
+    \begin{tikzpicture}[node distance=2cm, font=\small]
+
+    % LSTM Cells
+    \node (input) [draw, rectangle, text width=3cm, align=center] {Input: Features (Tempo, Pitch, Amplitude)};
+    \node (lstm1) [below of=input, draw, rectangle, text width=3cm, align=center] {LSTM Layer 1 (445 units)};
+    \node (lstm2) [below of=lstm1, draw, rectangle, text width=3cm, align=center] {LSTM Layer 2 (481 units)};
+    \node (lstm3) [below of=lstm2, draw, rectangle, text width=3cm, align=center] {LSTM Layer 3 (37 units)};
+    \node (output) [below of=lstm3, draw, rectangle, text width=3cm, align=center] {Dense Output Layer (1 unit)};
+
+    % Arrows
+    \draw[->] (input) -- (lstm1);
+    \draw[->] (lstm1) -- (lstm2);
+    \draw[->] (lstm2) -- (lstm3);
+    \draw[->] (lstm3) -- (output);
+
+    % Gates and activation
+    \node (forget) [right of=lstm1, xshift=2cm, draw, rectangle, text width=2cm, align=center] {Forget Gate};
+    \node (input_gate) [right of=lstm2, xshift=2cm, draw, rectangle, text width=2cm, align=center] {Input Gate};
+    \node (output_gate) [right of=lstm3, xshift=2cm, draw, rectangle, text width=2cm, align=center] {Output Gate};
+    \draw[->] (lstm1) -- (forget);
+    \draw[->] (lstm2) -- (input_gate);
+    \draw[->] (lstm3) -- (output_gate);
+
+    \end{tikzpicture}
+    \caption{LSTM Architecture for LeaderSTeM Model}
+    \label{fig:lstm-architecture}
+\end{figure}
+
+\subsection{Hyperparameter Tuning}
+
+To enhance the model's performance, extensive hyperparameter tuning was conducted using various optimization algorithms:
+
+\textbf{Search Space}:
+\begin{itemize}
+    \item Learning Rate: Explored values between 0.001 and 0.1.
+    \item Number of Units: For each LSTM layer, values ranged from 2 to 512 units.
+\end{itemize}
+
+\textbf{Optimization Algorithms}:
+
+Selecting an optimal hyperparameter configuration is critical for the effectiveness and efficiency of the LeaderSTeM model, especially given its complex structure and high-dimensional data input. To achieve this, three advanced optimization algorithms—Bayesian Optimization (Ax Search), Tree-structured Parzen Estimator (HyperOpt), and Sequential Model-based Algorithm Configuration (SMAC)—were chosen for their unique strengths in navigating the hyperparameter space \cite{liaw2018tune}.
+
+\begin{itemize}
+    \item \textbf{Bayesian Optimization (Ax Search)}: This method is valuable for efficiently exploring complex hyperparameter spaces by modeling the objective function as a probabilistic process. Bayesian Optimization estimates the most promising regions to sample next, balancing exploration of new configurations with the exploitation of known successful ones. In the context of this, Ax Search helps to find hyperparameters that maximize the model's performance on tempo and amplitude tracking while minimizing mean squared error (MSE). This ensures that the LeaderSTeM model remains both accurate and computationally feasible, critical for real-time applications in leader identification.
+
+    \item \textbf{Tree-structured Parzen Estimator (HyperOpt)}: HyperOpt employs a probabilistic approach to guide the hyperparameter search, using a Tree-structured Parzen Estimator to predict regions likely to yield better performance. HyperOpt’s strength lies in handling discrete and continuous variables, which suits the LeaderSTeM model’s requirements given its mix of variable types (e.g., layer units, learning rate). In this context, HyperOpt helps optimize the model's depth and unit distribution across layers, which is crucial for processing the temporal dependencies inherent in leader-follower dynamics. 
+
+    \item \textbf{Sequential Model-based Algorithm Configuration (SMAC)}: SMAC is particularly effective in narrowing down promising hyperparameter regions through sequential learning, updating its model with each evaluation. This approach is beneficial for LeaderSTeM as it allows rapid convergence toward high-performance configurations by focusing on hyperparameters that contribute most to the model’s synchronization capabilities. For LeaderSTeM, SMAC supports optimizing parameters that influence the LSTM's sequential processing, improving accuracy in leader identification across diverse ensemble settings.
+\end{itemize}
+
+The use of these optimization algorithms allows the LeaderSTeM model to reach its potential in leader identification by identifying hyperparameters that enhance the model's accuracy, speed, and responsiveness. This optimization is essential for real-time performance in dynamic musical settings, where the model must adapt fluidly to shifts in tempo, pitch, and amplitude.
+
+\textbf{Evaluation Metrics}:
+\begin{itemize}
+    \item Models were evaluated based on the Mean Squared Error (MSE) on the validation set described in section \ref{MSE and MAE} below.
+    \item Early stopping was implemented to prevent overfitting \cite{caruana2000overfitting}.
+\end{itemize}
+
+\subsection{Training Procedure}
+
+The training process involved the following steps:
+
+\textbf{Data Normalization}:
+\begin{itemize}
+    \item All input features were normalized to have zero mean and unit variance.
+\end{itemize}
+
+\textbf{Sequence Preparation}:
+\begin{itemize}
+    \item Input data was segmented into sequences of fixed length (e.g., 100 time steps) to capture temporal dependencies.
+\end{itemize}
+
+\textbf{Model Compilation}:
+\begin{itemize}
+    \item The model was compiled the model with the Adam optimizer and the selected learning rate.
+\end{itemize}
+
+\textbf{Model Training}:
+\begin{itemize}
+    \item During training, we trained the model on the training set, validating on a held-out portion of the data.
+\end{itemize}
+
+\section{Experimental Results and Model Performance}
+
+\subsection{Evaluation Methodology}
+
+To assess the effectiveness of the LeaderSTeM model in identifying the tempo leader within musical ensembles, a series of experiments were conducted using the test set derived from the MUSDB18 dataset. The evaluation focused on:
+
+\begin{itemize}
+    \item \textbf{Model Accuracy}: Measuring how accurately the model predicts the tempo leader at each time step compared to the ground truth.
+    \item \textbf{Adaptability to Tempo Changes}: Analyzing the model's responsiveness to tempo variations and dynamic shifts in leadership roles.
+    \item \textbf{Comparative Analysis}: Comparing the performance of LeaderSTeM with other machine learning models, specifically Support Vector Machines (SVM) and Random Forests, to highlight its advantages.
+\end{itemize}
+
+The primary metric used for evaluation was the Mean Squared Error (MSE) between the predicted leader signal and the ground truth leader signal derived from the full mix track's tempo. Additional metrics included the Mean Absolute Error (MAE) and qualitative assessments through case studies.
+
+\subsection{Ground Truth Generation}
+
+Since the ground truth leader signal is not explicitly provided in the dataset, it was necessary to establish a method for determining the actual tempo leader at each time step as shown in the Fig:\ref{fig:dataset} . The following approach was employed:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/leaderStem/dataset.png} % Update with correct path
+    \caption{Generating the data for LeaderSTeM model.}
+    \label{fig:dataset}
+\end{figure}
+
+
+\textbf{Full Mix Tempo Analysis}:
+\begin{itemize}
+    \item The full mix track's tempo was extracted using the same method applied to the individual stems.
+    \item The tempo (BPM) of the full mix served as a reference for the ensemble's overall tempo.
+\end{itemize}
+
+\textbf{Correlation with Individual Stems}:
+\begin{itemize}
+    \item At each time step, the tempo of each stem was compared to the full mix tempo.
+    \item The stem whose tempo most closely matched the full mix tempo was considered the tempo leader at that moment.
+    \item A binary leader signal was generated for each stem, indicating leadership (1) or non-leadership (0) at each time step.
+\end{itemize}
+
+This method assumes that the tempo leader is the instrument most influencing the ensemble's overall tempo, as reflected in the full mix track. While this assumption is practical, it may not be perfectly accurate, so several steps were taken to quantify and validate its reliability. To demonstrate the assumption's practical value, an ensemble cohesion metric was calculated by measuring tempo coherence (i.e., variance of tempo deviations between instruments and the full mix). Low variance indicates an alignment between the leader and the ensemble, supporting the assumption, while high variance may indicate cases where the assumption does not hold. Potential errors in the tempo tracking algorithm were also considered. The algorithm’s error rate was quantified by comparing its output to annotated tempo data, with the root mean square error (RMSE) used as benchmarks for accuracy. A sensitivity analysis was conducted by introducing simulated errors in the tempo data to assess how such inaccuracies could impact the suitability of the ground truth. This analysis provides insight into the model's robustness to minor tracking errors, demonstrating the strengths and limitations of the approach in various scenarios.To further enhance the reliability of the ground truth, other audio features (e.g., amplitude, pitch) were cross-referenced with tempo. When the leading instrument in tempo also exhibited greater amplitude or harmonic prominence, this strengthened the ground truth assumption. For cases with higher tracking errors, confidence weights were applied to these sections when evaluating model performance, qualifying the ground truth without assuming perfect tempo accuracy.
+
+\subsection{Model Performance Metrics}
+
+The performance of the LeaderSTeM model was evaluated using several key metrics to assess both the overall prediction accuracy and the specific identification of the tempo leader for each time step.
+
+\subsubsection{Mean Squared Error (MSE) and Mean Absolute Error (MAE)}
+\label{MSE and MAE}
+The Mean Squared Error (MSE) and Mean Absolute Error (MAE) are crucial metrics for evaluating the accuracy of predictions in model assessment \cite{hodson2022root}. 
+
+The MSE quantifies the average squared difference between the predicted and the ground truth leader signals, thereby penalizing larger errors more significantly as the errors are squared. It is defined as:
+
+\[
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2
+\]
+
+where \( y_i \) represents the ground truth leader signal, \( \hat{y}_i \) is the model's prediction, and \( n \) is the number of observations. A lower MSE indicates a closer fit to the ground truth, emphasizing consistency across the time series.
+
+The MAE measures the average absolute difference between the predicted and ground truth signals. Unlike MSE, the MAE is less sensitive to large outliers because it does not square the errors. It is expressed as:
+
+\[
+\text{MAE} = \frac{1}{n} \sum_{i=1}^{n} |y_i - \hat{y}_i|
+\]
+
+The MAE provides a straightforward measure of prediction accuracy with lower values indicating smaller deviations from the ground truth. Unlike MSE, which can disproportionately emphasize larger errors due to squaring, MAE treats all errors equally, offering a more balanced view of model performance.
+
+
+
+\subsubsection{Accuracy}
+
+Accuracy measures the proportion of time steps where the model correctly identifies the tempo leader. Defined as the percentage of correct predictions over the total number of time steps, accuracy offers a direct evaluation of the model's precision in leader identification:
+
+\[
+\text{Accuracy} = \frac{\text{Number of Correct Predictions}}{\text{Total Number of Predictions}} \times 100\%
+\]
+
+High accuracy indicates that the model frequently identifies the correct leader, making this metric suitable for evaluating the model's overall performance across time steps.
+
+\subsection{Overall Results}
+
+The LeaderSTeM model demonstrated strong performance on the test set:
+
+\begin{itemize}
+    \item \textbf{MSE}: 245
+    \item \textbf{MAE}: 12.7
+    \item \textbf{Accuracy}: 87.5\%
+\end{itemize}
+
+These results indicate that the model is generally effective in identifying the tempo leader in musical ensembles. The relatively low MSE and MAE values suggest that the model’s predictions align closely with the ground truth on average, though minor errors may still occur, especially in dynamically complex passages. The high accuracy of 87.5\% underscores the model's capacity to capture temporal patterns and audio feature relationships that correspond with leadership roles across a variety of musical contexts. However, it is worth noting that while the model performs well in most cases, achieving a fully naturalistic interpretation of leadership dynamics in musical ensembles may require further refinement. The results imply that LeaderSTeM successfully addresses the key aspects of tempo leader identification, yet there is room for improvement, particularly in handling rapid or ambiguous shifts in leadership roles. This balanced performance provides a promising foundation for real-time synchronization in human-robot musical collaborations, supporting the overall thesis objectives.
+
+\subsection{Comparative Analysis with Other Models}
+
+To highlight the advantages of the LeaderSTeM model, it was compared with SVM and Random Forest models trained on the same dataset and features.
+
+\textbf{Support Vector Machine (SVM)}:
+\begin{itemize}
+    \item \textbf{MSE}: 560
+    \item \textbf{MAE}: 23.4
+    \item \textbf{Accuracy}: 65.2\%
+    \item \textbf{Observation}: The SVM struggled to capture temporal dependencies, leading to lower accuracy and higher error rates.
+\end{itemize}
+
+\textbf{Random Forest}:
+\begin{itemize}
+    \item \textbf{MSE}: 480
+    \item \textbf{MAE}: 19.8
+    \item \textbf{Accuracy}: 71.3\%
+    \item \textbf{Observation}: While Random Forests performed better than SVMs, they still fell short compared to the LSTM-based LeaderSTeM model due to the lack of sequence modeling.
+\end{itemize}
+
+The superior performance of the LeaderSTeM model underscores the importance of modeling temporal dependencies in leader identification tasks, aligning with previous findings in time-series analysis \cite{bock2016joint}.
+
+\subsection{Case Study: ``A Classic Education – NightOwl"}
+
+To illustrate the model's effectiveness in a practical context, the track ``A Classic Education – NightOwl" from the MUSDB18 dataset was selected for a detailed case study. This track was chosen because it features significant tempo changes and dynamic shifts in leadership roles, providing a rigorous test for the model as shown in Fig \ref{fig:LSTM_prediction}.
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{images/leaderStem/Prediction Vs Sub track.PNG}  
+   \caption{LeaderSTeM Prediction for ’A Classic Education – NightOwl’}
+    \label{fig:LSTM_prediction}
+\end{figure}
+
+
+
+
+
+\subsubsection{Track Analysis}
+
+
+
+\begin{table}[H]
+\centering
+
+\adjustbox{max width=\textwidth}{%
+\begin{tabularx}{\textwidth}{|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|>{\raggedright\arraybackslash}X|}
+\hline
+\textbf{Section} & \textbf{Ground Truth Leader} & \textbf{Model Prediction} & \textbf{Explanation} \\ \hline
+\textbf{Initial Section (0:00 - 1:30)} & Vocals & Correctly identifies vocals as the leader & The vocals dominate the tempo and dynamics, setting the pace for the ensemble. \\ \hline
+\textbf{Middle Section (1:30 - 3:00)} & Transition to bass and drums & Accurately shifts leadership identification to bass and drums & The tempo slowdown is initiated by the rhythm section, and the model adapts to this change. \\ \hline
+\textbf{Instrumental Interlude (3:00 - 4:00)} & Accompaniment instruments & Correctly identifies accompaniment as the leader & Harmonic instruments take the lead during this section, and the model captures the shift. \\ \hline
+\textbf{Final Section (4:00 - End)} & Vocals, bass, and drums collectively lead with an increasing tempo & Recognizes the collaborative leadership, with slight fluctuations among the three stems & The model reflects the shared leadership, indicating its sensitivity to complex dynamics. \\ \hline
+\end{tabularx}%
+}
+\caption{LeaderSTeM Model Predictions vs. Ground Truth for ``A Classic Education – NightOwl"}
+\label{tab:LeaderSTeM_predictions}
+\end{table}
+
+\begin{table}[H]
+\centering
+
+\adjustbox{max width=\textwidth}{%
+\begin{tabularx}{0.5\textwidth}{|>{\centering\arraybackslash}X|>{\centering\arraybackslash}X|}
+\hline
+\textbf{Metric} & \textbf{Value} \\ \hline
+MSE & 210 \\ \hline
+MAE & 10.5 \\ \hline
+Accuracy & 91.2\% \\ \hline
+\end{tabularx}%
+}
+\caption{Performance Metrics for ``A Classic Education – NightOwl"}
+\label{tab:performance_metrics}
+\end{table}
+
+
+These metrics demonstrate the model's high accuracy in adapting to tempo changes and leadership shifts within the track.
+
+ 
+\section{Discussion}
+
+Despite its strengths, the LeaderSTeM model has limitations that warrant consideration for refinement and guiding future research. One primary constraint is its reliance on high-quality audio feature extraction. The model depends on accurately capturing tempo, pitch, and amplitude from audio signals, but in noisy environments or when recordings are of poor quality, this extraction can be compromised, ultimately affecting model performance. Instrumental overlap presents another challenge. When multiple instruments share similar pitch ranges or dynamics, distinguishing between them becomes difficult, often leading to misidentification of the tempo leader in complex, densely textured musical passages. The model's design also assumes that individual instrument tracks, or stems, are available for feature extraction. In live performances or certain types of recordings, however, obtaining isolated stems may not be feasible, limiting the model’s broader applicability in less controlled environments.
+
+The LeaderSTeM model also demonstrates limitations in handling complex leadership dynamics. In musical sections where leadership is shared or intentionally ambiguous, it may struggle to accurately identify the current leader, highlighting the subjectivity in musical interpretation and the intrinsic complexity of ensemble dynamics. Furthermore, when leadership roles shift rapidly, the model may exhibit latency in adapting to these changes, which could potentially disrupt synchronization during critical transitions in a performance. A key concern related to the model's generalization capability and overfitting risks also emerges. LeaderSTeM was trained and tested on the MUSDB18 dataset, a valuable resource, but one that may not represent the full spectrum of musical styles and ensemble configurations. Consequently, the model’s performance on genres or settings outside this dataset remains untested, raising questions about its generalizability. Additionally, with complex models like LSTMs, there is an inherent risk of overfitting to the training data, and despite employing measures like early stopping and validation monitoring, there remains a possibility that overfitting could impact its ability to generalize effectively to new data. The model’s computational complexity and associated resource requirements pose practical limitations. Real-time implementation necessitates significant computational resources, including access to GPUs, which could be challenging in resource-constrained environments. Latency is also a concern; while the model is designed for real-time processing, any delays in feature extraction or prediction could hinder synchronization, underscoring the need for further optimization to ensure low latency and smooth integration into live performances. Addressing these limitations would enhance the robustness and adaptability of the LeaderSTeM model across varied musical contexts. Musical expression involves subtle variations in timing, dynamics, and articulation that are often conveyed through visual gestures in addition to auditory output. Audio-only models may miss these nuances, as they cannot perceive the physical movements that accompany expressive playing. For instance, a musician might signal an upcoming tempo change or dynamic shift through a preparatory gesture or body movement before it is audible \cite{williamon2002co}. Without access to visual cues, robotic musicians
+may fail to anticipate these changes, resulting in less cohesive performances.
+ 
+ \section{Conclusion}
+
+While the LeaderSTeM model has demonstrated significant effectiveness in identifying the tempo leader within musical ensembles using audio features alone, it is essential to recognize that integrating visual cues could further enhance the accuracy and robustness of leader identification. Visual information, such as gestures, body movements, and facial expressions, plays a crucial role in human communication and coordination during musical performances. By integrating visual cues, the LeaderSTeM model aims to achieve a more holistic understanding of leadership dynamics within musical ensembles. This integration aligns with the Cyborg Philharmonic framework's emphasis on multimodal synchronization (Chapter \ref{ch-3}), further enhancing the capabilities of robotic musicians to interact naturally and expressively with human performers. It will also enhance the accuracy and effectiveness of the LeaderSTeM model. Visual information complements audio features, providing additional insights into leadership intentions, expressive nuances, and coordination signals within musical ensembles. By addressing these challenges, the model can achieve greater robustness and applicability across diverse performance settings.The exploration of visual cues sets the stage for the subsequent Chapter \ref{ch-5}, which will delve deeper into the methodologies and implications of integrating visual and audio-based methods.  

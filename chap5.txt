@@ -1,0 +1,792 @@
+\chapter{Visual Cues}\label{ch-5}
+
+\section{Introduction}\label{sec:introduction}
+ 
+
+The integration of robotic systems into musical ensembles presents a multifaceted challenge that extends beyond technical synchronization to encompass expressive and interactive dimensions of performance. Previous chapters have explored the significance of audio-based synchronization and the development of models like LeaderSTeM for dynamic leader identification using audio features alone. While these approaches have demonstrated considerable success, they primarily focus on auditory information and may not fully capture the richness of human musical interaction, which often relies heavily on visual cues. Visual communication plays a pivotal role in musical ensembles, serving as an essential medium for conveying expressive intentions, coordinating timing, and facilitating non-verbal interactions among musicians. Body movements, gestures, facial expressions, and eye contact are integral components of ensemble performance, contributing to the overall cohesion and expressiveness of the group. Studies have shown that visual cues play a crucial role in ensemble coordination, affecting timing, synchronization, and expressive delivery \cite{keller2010individual, d2012leadership}. For instance, conductors use gestures to convey tempo, dynamics, and expressive intentions to the orchestra, while chamber musicians rely on subtle movements and eye contact to synchronize entries and adjust phrasing. Audience members also perceive and interpret these visual cues, enhancing their overall performance experience \cite{vuoskoski2016crossmodal}.  Visual cues can significantly enhance synchronization models by enabling predictive insights into performers’ movements, thereby allowing for anticipatory adjustments. Without these cues, human-robot collaboration in musical contexts may lack the responsiveness needed for fluid, real-time interaction. Musical performance is inherently a multimodal experience, engaging not only auditory senses but also visual perceptions. Musicians often exhibit expressive body movements that are closely tied to the music they produce. These movements can convey emotional content, emphasize rhythmic elements, and facilitate communication among ensemble members. Neglecting visual information in the design of synchronization models for robotic musicians may lead to less effective integration and a diminished capacity to engage in expressive musical interaction.
+  
+
+This chapter aims to address this gap by exploring the integration of only visual cues into the synchronization framework for human-robot musical ensembles. By incorporating visual information, we seek to enhance the robot's ability to interpret and respond to the multifaceted communication that occurs in ensemble settings, thereby achieving a more natural and expressive interaction with human musicians.
+
+
+
+\subsection{Benefits of Multimodal Synchronization}
+
+\subsubsection{Complementarity of Modalities}
+
+Audio and visual cues often provide complementary information. For instance, while audio signals convey precise timing and pitch information, visual cues can indicate expressive intent and provide context for ambiguous auditory signals. By fusing these modalities, synchronization models can leverage the strengths of each to compensate for the weaknesses of the other, resulting in a more robust overall system \cite{oreilly2019perceptual}. Research in multisensory integration supports the benefits of combining auditory and visual information. Studies have shown that multimodal perception enhances accuracy and reaction times in tasks involving temporal judgments \cite{fujisaki2004recalibration}. In musical contexts, musicians use multisensory information to achieve tighter synchronization and improve ensemble cohesion \cite{goebl2009synchronization}.
+\subsubsection{Enhanced Accuracy in Beat and Tempo Detection}
+
+Integrating visual cues with audio data can improve the accuracy of beat and tempo detection. Visual signals, such as repetitive body movements, gestures, or instrument motions, often align with the musical beat and can reinforce or clarify auditory information \cite{burger2014influences}. By combining modalities, synchronization models can cross-validate cues from different sources, reducing errors caused by ambiguities or noise in a single modality. Incorporating visual cues allows the robot to participate in the non-verbal communication that is integral to ensemble performance. By recognizing and responding to gestures, facial expressions, and body language, the robot can engage more naturally with human musicians. This engagement fosters a sense of mutual understanding and collaboration, improving the overall quality of the performance \cite{steen2013adaptation}.
+
+\subsubsection{Improved Leader Identification}
+
+Visual cues play a crucial role in leader identification within ensembles. Leaders often exhibit more pronounced or deliberate movements that signal their intentions to other musicians \cite{chang2019rhythm}. By analyzing these visual signals, a robotic musician can more effectively identify the current leader and adjust its performance accordingly. This capability enhances the robot's responsiveness to dynamic leadership changes and supports more cohesive ensemble interaction. Visual cues enable anticipatory synchronization by allowing the robot to predict upcoming musical events based on musicians' preparatory movements. For example, a conductor's gesture indicates not only the timing but also the character of the upcoming music \cite{luck2006ensemble}. By interpreting these gestures, the robot can adjust dynamics, articulation, and timing in advance, leading to more expressive and synchronized performances.
+
+\subsubsection{Resilience to Acoustic Challenges}
+
+In noisy or acoustically challenging environments, visual cues provide a reliable source of information that is unaffected by sound quality issues. This resilience enhances the robustness of synchronization models, ensuring consistent performance across different settings. For instance, in outdoor performances or venues with poor acoustics, visual cues become particularly valuable for maintaining synchronization.
+
+ 
+
+\subsubsection{Alignment with Human Perceptual Processes}
+
+Humans process auditory and visual information simultaneously and integrate these modalities to perceive and interact with the world. By emulating this multimodal processing, robotic musicians can align more closely with human perceptual and cognitive processes. This alignment enhances the naturalness of the interaction and can lead to more intuitive and effective collaboration \cite{shams2008benefits}. In addition to interpreting human visual cues, incorporating visual synchronization models can inform the robot's own expressive movements. By understanding the relationship between movement and musical expression, the robot can generate gestures that complement the music and enhance its stage presence. This capability contributes to a more engaging performance for both the ensemble and the audience \cite{knight2015expressive}.
+
+
+
+\subsection{Purpose of the Chapter}
+
+The primary objective of this chapter is to investigate methods for extracting and utilizing just the visual cues from musicians' body movements to improve synchronization between human and robotic performers. We will examine techniques for converting video data into motion signals that can be analyzed alongside audio information, enabling a multimodal approach to synchronization. Specifically, we will explore two methodologies: Motiongrams and Pose Estimation, both of which offer distinct advantages in capturing and representing musicians' movements.
+\subsection{Overview of the Chapter}
+
+The chapter is structured as follows:
+
+\begin{enumerate}
+    \item \textbf{Background and Literature Review}: We begin by discussing the role of visual cues in musical performance, highlighting previous research on the connection between body movements and rhythm perception. We will review existing methods for visual rhythm analysis and identify challenges and gaps in current research.
+    \item \textbf{Motivation for Incorporating Visual Cues}: We will articulate the limitations of audio-only approaches, referencing the findings from previous chapters, and discuss the theoretical and practical benefits of visual cues into synchronization models.
+    \item \textbf{Methodology}: This section provides a detailed description of the proposed approach for integrating visual cues. We will introduce the dataset used for experimentation, explain the data preprocessing steps, and elaborate on the techniques employed for converting video data into analyzable motion signals.
+    \item \textbf{Results and Analysis}: We will present the experimental results, comparing the performance of the Motiongram and Pose Estimation methods. The analysis will focus on the effectiveness of each method in different musical contexts and discuss the implications of the findings for human-robot synchronization.
+    \item \textbf{Discussion}: This section delves into the integration of visual cues into the existing synchronization framework, examines the advantages and challenges of multimodal approaches, and considers the potential impact on the overall performance of robotic musicians in ensemble settings.
+    \item \textbf{Future Work}: We will outline possible directions for enhancing the accuracy and applicability of visual cue integration, including advanced machine learning techniques and real-time implementation strategies.
+    \item \textbf{Conclusion}: The chapter concludes with a summary of the key contributions and their significance in advancing the field of human-robot musical interaction.
+\end{enumerate}
+ 
+
+\subsection{Challenges in Working with Visual Cues}
+
+Incorporating visual cues into synchronization models presents several challenges:
+
+\begin{itemize}
+    \item \textbf{Complexity of Visual Data}: Video data is high-dimensional and computationally intensive to process in real-time. Extracting meaningful information from body movements requires sophisticated algorithms capable of handling variability in lighting, camera angles, occlusions, and individual differences among musicians.
+    \item \textbf{Variability of Movements}: Musicians' movements can vary widely based on instrument type, personal style, and performance context. Identifying consistent patterns that correlate with musical beats and expressive elements is a non-trivial task.
+    \item \textbf{Synchronization with Audio Data}: Combining visual and auditory information necessitates precise temporal alignment and fusion strategies to ensure that cues from both modalities contribute effectively to synchronization discussed in Chapter \ref{ch-6}.
+\end{itemize}
+
+Despite these challenges, recent advances in computer vision and machine learning offer promising avenues for overcoming these obstacles. Techniques such as pose estimation, optical flow analysis, and deep learning models have shown potential in capturing and interpreting human movements in various contexts \cite{cao2019openpose, zhang2020view}.
+ 
+
+\section{Background and Literature Review}
+
+The integration of visual cues into synchronization models for human-robot musical ensembles necessitates a comprehensive understanding of the role that visual information plays in musical performance. This section reviews the existing literature on the significance of visual cues in ensemble settings, examines previous methods for visual rhythm analysis, and identifies the challenges and gaps that motivate the current research.
+
+\subsection{The Role of Visual Cues in Musical Performance}
+
+\subsubsection{Body Movements and Expressivity}
+
+Musical performance is a multimodal experience wherein expressive body movements play a critical role in communicating artistic intent. Beyond the auditory domain, musicians employ a range of visual gestures—such as head nods, torso sways, and nuanced arm movements—to convey interpretive decisions and emotional states. Recent studies have reinforced that these bodily expressions not only enhance the aesthetic experience for audiences but also facilitate intra-ensemble coordination \cite{bishop2022beyond,chang2017body}. For example, Bishop \textit{et al.} demonstrated that predictable gesture patterns emerge as ensemble members rehearse together, thereby reinforcing shared musical intentions. Similarly, Chang \textit{et al.}  showed that visual cues, including body sway and subtle gesture variations, significantly contribute to the anticipatory processes required for precise synchronization in ensemble performance. These findings suggest that such ancillary movements are purposefully employed, rather than being mere byproducts of performance, and they serve as a vital mechanism for establishing leader–follower dynamics (Livingstone \textit{et al.}). This indicates that the interplay between auditory and visual modalities is essential for expressive communication and robust coordination among musicians.
+
+
+
+\subsubsection{Visual Perception and Audience Engagement}
+
+From the audience's perspective, visual cues can also enhance the overall experience of a musical performance. Vuoskoski et al. \cite{vuoskoski2016crossmodal} demonstrated that cross-modal interactions between auditory and visual stimuli influence the perception of expressivity. Audiences perceive performances as more expressive when visual cues align with the music's emotional content. This interplay suggests that visual elements are essential for fully capturing the essence of a performance.
+
+\subsection{Existing Methods for Visual Rhythm Analysis}
+\subsubsection{Motion Capture and Gesture Analysis}
+
+Motion capture technology has been employed to study musicians' movements in detail. Wanderley et al. \cite{wanderley2005musical} analyzed clarinetists' ancillary gestures using motion capture systems. The study categorized gestures into instrumental (directly related to sound production) and ancillary (not directly related but contributing to expressivity). By quantifying these movements, researchers gained insights into the specific roles that gestures play in musical interpretation, such as enhancing phrasing and emotional emphasis. However, implementing motion capture in typical performance settings presents notable challenges, such as the need for specialized equipment, controlled lighting, and minimal occlusion, making it impractical for many live performances. Roda et al. \cite{roda2018measuring} used motion capture to examine conductor-musician synchronization. By capturing the conductor's baton movements and the musicians' responses, the study analyzed temporal alignment and communication effectiveness. The results revealed that precise conductor gestures improve synchronization accuracy among ensemble members, as musicians could better anticipate tempo and dynamic changes through visual cues. These approaches underscore the utility of precise motion data in understanding ensemble coordination but also highlight the logistical constraints of using motion capture in dynamic, live performance environments.
+
+\subsubsection{Pose Estimation Techniques} \label{subsubsection Pose Estimation Techniques}
+
+Pose estimation is a computer vision technique used to detect and track the positions of human body joints (e.g., head, shoulders, elbows) from video sequences, extracting 2D coordinates that represent the relative positions of key body points over time. By estimating the locations of joints, pose estimation provides a "skeleton" of body movement, making it particularly useful for analyzing activities in video data. Unlike traditional motion capture, which often requires specialized and invasive equipment attached to the performer, pose estimation is "non-invasive" and relies solely on video, making it less disruptive and more suitable for real-world or live performance settings \cite{vrigkas2015review}. This technique requires sufficient video quality in terms of resolution, bandwidth, and frame rate to ensure accurate joint detection. In practice, video-based pose estimation methods provide an alternative to motion capture that does not require participants to wear sensors, allowing for more natural and unrestricted movements. For these reasons, researchers prefer video-based pose estimation in situations where motion capture equipment is impractical or where a non-invasive approach is essential.
+
+In practice, video-based pose estimation methods provide an alternative to motion capture that does not require participants to wear sensors, allowing for more natural and unrestricted movements. For these reasons, researchers prefer video-based pose estimation in situations where motion capture equipment is impractical or where a non-invasive approach is essential. The algorithms for video-based pose estimation have evolved rapidly from early approaches based on handcrafted features to sophisticated deep learning–based methods. Notably, OpenPose \cite{cao2017realtime} introduced a real-time, multi-person 2D pose estimation framework using Part Affinity Fields, which set the stage for subsequent innovations. Shortly after, region-based methods such as  AlphaPose \cite{fang2017rmpe} further improved detection accuracy by localizing human regions before estimating keypoints. More recently, frameworks like Mediapipe \cite{lugaresi2019mediapipe} have enabled efficient, on-device pose estimation, while architectures such as HRNet \cite{sun2019high} have pushed the state-of-the-art by maintaining high-resolution representations throughout the network. These advancements have not only improved accuracy and speed but have also broadened the applicability of pose estimation to real-world and mobile scenarios.
+
+\begin{table}[ht]
+\centering
+\caption{Key Milestones in the Evolution of Video-Based Pose Estimation Algorithms}
+\begin{tabular}{|c|l|p{7cm}|}
+\hline
+\textbf{Year} & \textbf{Algorithm} & \textbf{Description} \\ \hline
+2017 & OpenPose \cite{cao2017realtime} & Introduced real-time multi-person 2D pose estimation using Part Affinity Fields to jointly detect keypoints and associate them with individuals. \\ \hline
+2017 & AlphaPose \cite{fang2017rmpe} & Presented a region-based approach for multi-person pose estimation that improved accuracy by refining detected human regions prior to keypoint localization. \\ \hline
+2019 & Mediapipe \cite{lugaresi2019mediapipe} & Developed as an end-to-end framework, enabling efficient, real-time pose estimation on mobile and embedded devices with robust performance. \\ \hline
+2019 & HRNet \cite{sun2019high} & Introduced a high-resolution network architecture that preserves detailed spatial information throughout the model, leading to significant improvements in pose estimation accuracy. \\ \hline
+\end{tabular}
+\label{tab:evolution}
+\end{table}
+
+
+To perform pose estimation, we employed OpenPose, a robust and widely used model that utilizes Part Affinity Fields (PAFs) to identify and connect multiple human body keypoints in real time \cite{cao2017realtime}. OpenPose is considered a state-of-the-art method in pose estimation due to its accuracy and its ability to detect multiple individuals in complex scenes. Alternative models, such as Mediapipe \cite{lugaresi2019mediapipe} and HRNet \cite{sun2019high}, are also available; however, \textbf{OpenPose} is particularly valued for its balanced trade-off between performance and computational efficiency.
+
+In our experimental framework, each musician was modeled as an independent oscillator. Specifically, we derived a one-dimensional (1D) motion signal for each participant by averaging the displacements of the 25 body keypoints (denoted by the set $\mathcal{K}$) generated by OpenPose for every video frame. These keypoints—which include the head, shoulders, elbows, wrists, hips, knees, and ankles—capture the essential joints and extremities corresponding to fundamental body movements during performance (see Fig.~\ref{fig:openpose keypoints}). Although averaging body movements is an assumption, it is justified in this context because overall upper-body motion—particularly from the arms and torso—has been shown to synchronize closely with musical beats and expressive intent \cite{keller2010individual}. By recording the inter-keypoint distances over time relative to each performer’s body center, we obtained a detailed temporal profile of each musician's motion that enables the analysis of rhythmic and expressive dynamics.
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\textwidth]{images/visual/openpose.png}
+\caption{Illustration of keypoints used in pose estimation, showing 25 specific body landmarks, including joints and extremities, labeled with corresponding numbers and names.}
+\label{fig:openpose keypoints} 
+\end{figure}
+
+    
+Two different approaches were tested with pose estimation:
+\begin{itemize}
+    \item \textbf{First Frame as a Reference:} This method uses the initial frame as a fixed baseline, calculating the displacement of each keypoint relative to this starting position. It captures the overall, cumulative change in body posture over time.
+    \item \textbf{Spatial Derivative of Keypoints:} This approach computes the differences between consecutive frames, focusing on instantaneous changes in the positions of keypoints. It is sensitive to rapid and transient movements.
+\end{itemize}
+
+Comparing these two approaches is necessary because each method provides complementary information about movement dynamics. The first-frame reference approach gives an absolute measure of displacement that can be useful for assessing long-term changes in posture, while the spatial derivative method is better suited for capturing the fine-grained, rapid motions that often correspond to expressive gestures and rhythmic variations. By evaluating both, we can determine which method (or combination thereof) most reliably reflects the temporal characteristics of musical performance, offers robustness against noise and drift, and is computationally efficient for real-time or post hoc analysis.
+
+
+In the \textbf{first frame as a reference technique}, the initial frame of the video was used as a reference point to calculate the motion of each musician. By comparing subsequent frames to this reference, an average motion value was computed, generating a one-dimensional (1D) signal for each musician, as depicted in the lower panel of Figure~\ref{poseestimation_merged}. This 1D signal represents the relative motion of each participant by capturing variations in keypoint positions at each time step. Specifically, this approach measures the variances in keypoint coordinates over time, calculated using Equation~\ref{eq:keypoint_variance}\footnote{$L_2(\cdot, \cdot)$ represents the $L_2$ norm between two points or the Euclidean distance.}, where $k \in \mathbb{R}^2$ represents each keypoint, $\Bar{k}$ is the average position of the keypoints, and $n$ denotes the total number of keypoints in the set $\mathcal{K}$.
+
+Figure~\ref{poseestimation_merged} illustrates this process in two panels. The upper panel (a) shows a single video frame with each musician's body overlaid by detected keypoints, representing each musician as an independent oscillator. The lower panel (b) displays the resulting 1D motion signals derived from pose estimation for each musician, where the first frame is used as a baseline. The variations in each line indicate the spatial derivatives of the keypoints for each participant, showing how each musician's movements deviate from the initial frame over time. This method treats each musician as a unique signal source, with the overall complexity of motion signals increasing as the number of participants grows.
+
+    
+\begin{equation}
+\sigma_{t} = \frac{\sum_{i=1}^{n} {L_2(k_i,\Bar{k}})}{n} \in \mathbb{R}
+\label{eq:keypoint_variance}
+\end{equation}
+    
+The \textbf{spatial derivative} was used in the second technique to generate the average motion signal of each individual by comparing each frame's keypoints $\mathcal{K}_t$ with its previous frame, similar to optical flow \cite{fleet2006optical}. Given that the points had already been localized, there was no need to calculate the intensity-based image gradients (the rate of change in pixel intensity values across an image, essentially representing how brightness or colour values vary from one pixel to another). The spatial derivative, $\Delta \boldsymbol{k}$, was calculated for each keypoint $\in \mathcal{K}_t$ using Equation~\ref{eq:image_gradient}, where $k$ is each keypoint on the image plane. 
+    
+To get a measurement of how much motion was associated with each keypoint at time-step $dt$, the magnitude of the vector $\Delta \boldsymbol{k}$ was calculated, and an overall average $ \mu_t $ for all the keypoints $\Delta \boldsymbol{k}_i$ at that time-step $n$ was found, as given in Equation~\ref{eq:image_gradient_magnitude_avg}.
+    
+\begin{equation}
+\Delta \boldsymbol{k} = k(t+dt) - k(t) \in \mathbb{R}^2 
+    \label{eq:image_gradient}
+\end{equation}
+    
+\begin{equation}
+\mu_t(\Delta \boldsymbol{\mathcal{K}})= \frac{\sum_{i=1}^{n} {\lVert \Delta \boldsymbol{k}_i \rVert }}{n} \in \mathbb{R}
+\label{eq:image_gradient_magnitude_avg}
+\end{equation}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\textwidth]{images/visual/poseestimation merged.png}
+\caption{The upper panel shows a frame of the video of the musicians where each musician is considered as an oscillator, and the lower frame gives the average motion calculated by pose estimation on each musician based on the first frame as a reference and the spatial derivative of keypoints from each participant \label{poseestimation_merged}}
+\end{figure}
+
+
+\subsubsection{Optical Flow and Motiongrams} \label{subsubsection motiongram}
+
+Optical flow analysis computes the apparent motion of objects between frames in a video sequence by measuring changes in pixel intensity across time. Jensenius \cite{jensenius2006motiongrams} introduced the concept of motiongrams, which visualize motion by calculating the average pixel intensity changes across frames, as shown in Fig.~\ref{fig:Motiongrams_basic} and Fig.~\ref{fig:Motiongrams}. Motiongrams provide a spatiotemporal representation of movement that can be analyzed to detect rhythmic patterns, making them useful for studying the motion dynamics of performers. Davis and Agrawala \cite{davis2018visual} leveraged optical flow to study visual rhythms in dance performances. By extracting motion signals from video data, they identified periodic patterns corresponding to beats and choreographic structures. Although focused on dance, the methodology demonstrates the potential for applying optical flow in musical performance analysis to capture rhythmic and expressive elements. The motiongrams are computed using Equation~\ref{eq:motiongram}, where $I(x,y,t)$ represents the pixel intensity at spatial coordinates $(x,y)$ at time $t$, and $I(x,y,t+dt)$ is the pixel intensity at the same location in the next frame after a small time interval $dt$. The absolute difference $| I(x,y,t+dt) - I(x,y,t) |$ calculates the intensity change between consecutive frames, highlighting areas of motion. This operation is performed across all pixels in the frame, yielding a motion image in $\mathbb{R}^{n \times m}$, where $n \times m$ corresponds to the dimensions of the frame. The resulting motion image is then averaged over time to generate the motiongram, providing a visual summary of movement dynamics over the duration of the video.
+\begin{equation}
+  I(t+ dt) = | I(x,y,t+dt) - I(x,y,t) | \in \mathbb{R}^{n \times m}
+  \label{eq:motiongram}
+\end{equation}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\columnwidth]{images/visual/motiongram_image}
+\caption{An overview of the process of creating a motiongram. The upper-left most panel shows a motion image, which represents the average pixel intensity changes across frames, capturing areas of motion over time. The mean intensity values of each row (for horizontal motion) and column (for vertical motion) in the motion image are calculated and displayed along the top and left sides. These mean values are extracted as 1-pixel-wide columns (for horizontal motion) and rows (for vertical motion), which are then stacked sequentially to create the running motiongram. The resulting motiongram, shown in the right panel, provides a condensed spatiotemporal representation of movement patterns across the duration of the video.  
+\label{fig:Motiongrams_basic}}
+\end{figure}
+
+ \subsection{Challenges and Gaps in Current Research}
+
+\subsubsection{Computational Complexity and Real-Time Processing}
+
+Processing high-dimensional video data in real-time is computationally intensive. Techniques like motion capture and pose estimation require significant computational resources, which may not be feasible for real-time synchronization in live performances. OpenPose, while effective, can be resource-intensive when tracking multiple performers simultaneously \cite{cao2019openpose}.
+
+\subsubsection{Variability in Movements}
+
+Musicians exhibit diverse movement styles influenced by their instruments, personal expressiveness, and cultural backgrounds. This variability complicates the development of generalized models for movement analysis. For example, string players may exhibit more pronounced movements than wind players due to the physical demands of their instruments \cite{palmer2009movement}. Capturing consistent patterns across different performers and instrument types remains challenging.
+ 
+ 
+
+\subsection{Recent Advancements and Emerging Technologies}
+
+\subsubsection{Deep Multimodal Learning}
+
+Recent research has explored deep learning models that integrate multiple modalities. Zhang et al. \cite{zhang2020view} proposed a view adaptive neural network for skeleton-based human action recognition, which adapts to different viewpoints and captures spatiotemporal dynamics. Applying similar architectures to musical performance could enhance the fusion of audio and visual data. Ngiam et al. \cite{ngiam2011multimodal} introduced multimodal deep learning models that learn representations from audio and video inputs jointly. These models can capture correlations between modalities, potentially improving synchronization and leader identification.
+
+\subsubsection{Real-Time Pose Estimation Optimization}
+
+Efforts have been made to optimize pose estimation algorithms for real-time applications. Cheng et al. \cite{cheng2020higherhrnet} developed HigherHRNet, which improves the accuracy and speed of multi-person pose estimation and Mediapipe by Google \cite{lugaresi2019mediapipe}. Such advancements make it more feasible to incorporate visual cues into live performance settings.
+
+\subsubsection{Gesture Recognition and Machine Learning}
+
+Advances in gesture recognition algorithms have improved the ability to interpret expressive movements. Garcia et al. \cite{garcia2019conducting} applied machine learning techniques to classify conductor gestures and translate them into tempo and dynamics instructions for virtual orchestras.
+ 
+
+\section{Motivation for Incorporating Visual Cues}
+
+\subsection{Limitations of Audio-Only Approaches}
+\subsubsection{Challenges in Ambiguous or Complex Acoustic Environments}
+
+Audio-based synchronization models depend on the clarity and fidelity of auditory signals. In live performance settings, especially with multiple instruments and ambient noise, the acoustic environment can be complex and challenging to parse. Overlapping frequencies, reverberation, and background noise can impede the accurate extraction of tempo, pitch, and dynamic information from audio signals \cite{paulus2010audio}. These factors can lead to synchronization errors, latency, or misinterpretation of musical cues.
+
+
+\subsubsection{Difficulty in Leader Identification During Silent Passages}
+
+In ensemble performances, there are moments when one or more musicians have rests or play very softly, making it challenging to detect their contributions through audio alone. During these passages, visual cues become crucial for coordination. Musicians often use eye contact, nods, or hand gestures to signal entries, cut-offs, or changes in tempo \cite{bishop2018communication}. Audio-only models cannot access this information, limiting their ability to maintain synchronization during such transitions.
+
+\subsubsection{Limited Responsiveness to Spontaneous Changes}
+
+Human ensembles frequently engage in spontaneous tempo fluctuations, rubato, and expressive timing, which are negotiated through mutual visual and auditory awareness \cite{chang2017body}. Audio-only approaches may struggle to adapt to these spontaneous changes promptly, as they rely on detecting auditory cues after they occur, making them inherently reactive. This reactive nature can introduce delays in synchronization. In contrast, visual cues allow musicians to anticipate and prepare for changes before they become audible. This anticipation occurs because visual cues, such as preparatory gestures, body movements, or eye contact, provide early indicators of upcoming tempo or dynamic shifts. For example, a conductor’s raised hand or a musician’s physical preparation to play can signal an imminent change, enabling other musicians to adjust in advance, thus facilitating a more seamless and synchronized performance.
+
+\subsubsection{Challenges in Complex Polyphonic Textures}
+
+In performances involving multiple simultaneous melodies or complex polyphonic textures, separating individual audio streams to analyze each musician's contribution becomes computationally intensive and error-prone \cite{ewert2014audio}. Source separation techniques, which attempt to isolate individual instruments from a combined audio signal, face inherent limitations, especially in real-time applications where processing speed and accuracy are critical. Visual cues can assist in disambiguating individual contributions by providing complementary information about which musician is playing and their specific physical actions, thereby enhancing interpretive accuracy. Research has shown that visual information, such as observing hand movements or body posture, allows both humans and automated systems to better associate sounds with specific musicians in an ensemble \cite{bishop2018collaborative}. For instance, motion-based tracking can indicate when a particular musician is actively engaged, distinguishing their contribution within the polyphonic texture. Studies on multimodal synchronization have demonstrated that incorporating visual data significantly improves performance in environments where auditory cues alone are insufficient or challenging to separate. This evidence supports the notion that visual cues provide essential supplementary information in complex musical contexts, enhancing the accuracy and robustness of synchronization models.
+
+
+\subsubsection{Dependence on Accurate Audio Feature Extraction}
+
+Audio-based models rely heavily on the accurate extraction of features such as tempo (beats per minute), pitch, and amplitude. Inaccuracies in feature extraction can significantly impact the performance of synchronization models. Factors such as microphone placement, acoustics, and instrument timbre variations can affect the quality of the extracted features \cite{dixon2007air}. Visual cues offer an alternative source of information that is not affected by these acoustic variables.
+
+
+\section{Methodology}
+\label{Methodology_visual}
+The successful integration of visual cues into synchronization frameworks for human-robot musical ensembles requires a systematic and rigorous methodological approach. This section details the methodologies employed in this research to extract and utilize visual cues from video data of ensemble performances. The goal is to develop techniques that can effectively convert visual information into motion signals that correlate with musical beats and expressive elements. We describe the dataset used, data preprocessing steps, signal processing techniques, and the strategies for comparing visual cues with audio beats.
+
+\subsection{Overview of the Proposed Approach}
+
+Our approach aims to create a multimodal synchronization framework that integrates visual cues with audio data to enhance the synchronization of robotic musicians with human ensembles as shown in Fig \ref{fig:vis_methodology}. The methodology involves several key steps:
+
+\begin{itemize}
+    \item \textbf{Dataset Selection and Preparation:} Choosing an appropriate dataset that contains synchronized audio and video recordings of ensemble performances.
+    \item \textbf{Data Preprocessing:} Aligning audio and video data temporally and preparing them for analysis.
+    \item \textbf{Conversion of Video to Motion Signals:} Extracting motion information from video data using Motiongrams and Pose Estimation techniques.
+    \item \textbf{Signal Processing and Feature Extraction:} Processing the motion signals to identify rhythmic patterns and features corresponding to musical beats.
+    \item \textbf{Comparison with Audio Beats:} Aligning the visual motion signals with audio beats to evaluate synchronization accuracy.
+    \item \textbf{Evaluation Metrics:} Defining metrics to assess the performance of the visual cue integration.
+\end{itemize}
+
+The following subsections provide a detailed explanation of each step, including the rationale behind methodological choices, implementation details, and considerations for scalability and robustness.
+ 
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[node distance=1cm, font=\small]
+
+% Nodes
+\node (start) [draw, rectangle, rounded corners, text width=6cm, align=center] {Start};
+\node (dataset) [below of=start, draw, rectangle, text width=6cm, align=center] {Select Dataset (URMP Dataset)};
+\node (preprocess) [below of=dataset, draw, rectangle, text width=6cm, align=center] {Data Preprocessing (Audio and Video Alignment)};
+\node (motion) [below of=preprocess, draw, rectangle, text width=6cm, align=center] {Convert Video to Motion Signals};
+\node (motiongram) [below of=motion, draw, rectangle, text width=6cm, align=center] {Apply Motiongram Technique};
+\node (pose) [below of=motiongram, draw, rectangle, text width=6cm, align=center] {Apply Pose Estimation Technique};
+\node (signal) [below of=pose, draw, rectangle, text width=6cm, align=center] {Signal Processing and Feature Extraction};
+\node (comparison) [below of=signal, draw, rectangle, text width=6cm, align=center] {Compare Visual and Audio Beats};
+\node (evaluation) [below of=comparison, draw, rectangle, text width=6cm, align=center] {Evaluate Synchronization Performance};
+\node (end) [below of=evaluation, draw, rectangle, rounded corners, text width=6cm, align=center] {End};
+
+% Arrows
+\draw[->] (start) -- (dataset);
+\draw[->] (dataset) -- (preprocess);
+\draw[->] (preprocess) -- (motion);
+\draw[->] (motion) -- (motiongram);
+\draw[->] (motiongram) -- (pose);
+\draw[->] (pose) -- (signal);
+\draw[->] (signal) -- (comparison);
+\draw[->] (comparison) -- (evaluation);
+\draw[->] (evaluation) -- (end);
+
+\end{tikzpicture}
+\caption{Methodology Flowchart for Visual Cue Integration in Synchronization Framework}
+\label{fig:vis_methodology}
+\end{figure}
+ 
+
+
+\subsection{Dataset and Experimental Setup}
+ 
+\subsubsection{Dataset Selection}
+\sloppy
+We utilized the University of Rochester Multi-Modal Music Performance Dataset (URMP) \cite{li2018creating}, which is specifically designed for research in musical performance analysis. The URMP dataset contains high-quality audio and video recordings of musical ensembles, featuring various instrument combinations and ensemble sizes, ranging from duets to quintets. Key features of the dataset include:
+
+\begin{itemize}
+    \item \textbf{Synchronized Audio and Video:} Each performance includes synchronized multi-camera video recordings and high-fidelity audio tracks.
+    \item \textbf{Instrument Diversity:} The dataset covers a wide range of instruments, including strings, woodwinds, brass, and percussion.
+    \item \textbf{Multiple Takes and Annotations:} Performances include multiple takes and come with annotations such as musical scores and MIDI data.
+\end{itemize}
+\fussy
+
+
+\subsubsection{Rationale for Dataset Choice}
+
+The URMP dataset is well-suited for our research due to its:
+
+\begin{itemize}
+    \item \textbf{High-Quality Recordings:} Ensures that both audio and visual data are clear and suitable for detailed analysis.
+    \item \textbf{Controlled Environment:} Recordings are made in controlled settings, reducing variability due to lighting and background noise.
+    \item \textbf{Availability of Annotations:} Provides ground truth data for audio beats and synchronization points, facilitating accurate evaluation.
+\end{itemize}
+
+\subsubsection{Experimental Setup}
+
+From the URMP dataset, we selected a subset of performances that meet the following criteria:
+\begin{itemize}
+    \item \textbf{Ensemble Size:} We included duets, trios, quartets, and quintets. Analyzing performances of different ensemble sizes is important because it allows us to evaluate the scalability of our synchronization and motion analysis models. Smaller ensembles may exhibit more distinct individual movements, whereas larger groups often show complex interdependent dynamics that challenge synchronization algorithms.
+    \item \textbf{Variety of Instruments:} We ensured representation of different instrument families. This diversity is crucial for understanding how the model performs across varied movement patterns and timbral characteristics, as different instruments typically require distinct physical gestures and produce different acoustic cues.
+    \item \textbf{Presence of Expressive Movements:} We prioritized performances where musicians exhibit noticeable body movements correlated with musical expression. Such data provide deep insights into the relationship between visual cues and musical expression, allowing us to assess how effectively the integration of visual and audio features can enhance synchronization models.
+\end{itemize}
+
+These varied analyses are important because they allow us to understand not only the overall performance of the system, but also its sensitivity to different musical contexts and physical setups. For example, by comparing ensemble sizes and instrument types, we can identify whether certain configurations lead to more robust or more challenging synchronization, and thereby refine our models accordingly.
+
+
+
+\subsection{Data Preprocessing}
+\subsubsection{Temporal Alignment of Audio and MIDI}
+
+Accurate determination of the temporal locations of audio beats is critical for understanding musical phrases, and in our experiment these beats serve as the ground truth. To extract these beats, we employ an audio–MIDI alignment technique based on Dynamic Time Warping (DTW) \cite{raffel2016optimizing}. First, the MIDI file is converted into a synthesized audio signal that reflects the intended timing and structure of the score. Both the real audio recording and the synthesized audio are then processed to extract feature sequences (e.g., onset-strength envelopes, chroma vectors, or other relevant features).
+
+DTW is a dynamic programming algorithm that finds an optimal non-linear alignment between two time series. It operates by constructing a cost matrix in which each entry encodes the distance (or dissimilarity) between the feature vectors of the two signals at given time frames. The algorithm then searches for the minimal cumulative cost path through this matrix, effectively “warping” the time axes to align similar musical events despite differences in tempo or timing variations. Once DTW has established the best match between the real audio and the synthesized audio, we obtain a precise mapping of each time index in the MIDI to the corresponding time index in the real audio. By combining this mapping with the beat annotations derived from the MIDI, we accurately transfer those beat times onto the recorded audio.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.9\textwidth]{images/visual/midi-to-audio.png}
+\caption{A screenshot illustrating the DTW-based audio--MIDI alignment process. The top two panels display waveforms of the two audio signals (the real recording and the synthesized MIDI), while the lower spectrogram-like plots represent their feature sequences. The vertical red lines indicate the final time alignments found by DTW, ensuring that musically corresponding events match across the two signals. Figure adapted from an open-source DTW app \cite{dtw-app}, available at \url{https://github.com/aheidt/dtw-app}.}
+\label{fig:DTW_explanation}
+\end{figure}
+
+Figure~\ref{fig:DTW_explanation} shows an example of such a DTW alignment procedure. In the top waveforms, we see the two audio signals being matched. The lower panels visualize the feature sequences (e.g., a time–frequency representation). The vertical red lines highlight the positions at which DTW has matched corresponding musical events, thus synchronizing the recorded performance with its MIDI transcription. This alignment allows us to use the beat information extracted from the MIDI to precisely annotate beat times in the real audio recording.
+
+By applying this DTW-based alignment across our entire dataset, we ensure that the beat locations from the MIDI file reflect the actual timing in the real audio, even in the presence of local tempo fluctuations or expressive timing variations.
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.6\textwidth]{images/visual/MIDIAUdio.png}
+\caption{Example of the Midi and Audio representations (left and right panel respectively) used for their alignment to determine the beats\label{fig:MIDIAUdio}}
+\end{figure}
+
+To ensure accurate synchronization between audio and visual data, we performed temporal alignment using the following steps:
+
+\begin{itemize}
+    \item \textbf{Frame Rate Standardization:} Adjusted all video recordings to a standard frame rate (e.g., 30 frames per second) to maintain consistency.
+    \item \textbf{Audio Sampling Rate:} Ensured that audio files have a consistent sampling rate (e.g., 44.1 kHz).
+    \item \textbf{Synchronization Using Clapperboard Signals:} We utilized synchronization cues (e.g., clapperboard or hand claps) present in the recordings to align audio and video tracks precisely. For instance, we started each recording session by capturing a visible \textit{clap} in the video—either with a clapperboard or a clear hand clap—while the microphones simultaneously recorded its sharp transient. In post-production, we matched the exact video frame where the clapperboard’s jaws fully closed (or hands made contact) to the corresponding spike in the audio waveform. This ensures that both audio and video timelines begin at the same instant, providing sub-frame accuracy.
+
+    \item \textbf{Verification of Alignment:} We manually cross-checked synchronization by visually inspecting waveform peaks corresponding to visible events in the video (e.g., instrument attacks). It took around a week to do.
+\end{itemize}
+
+\subsubsection{Audio Beat Extraction}
+
+We extracted the ground truth audio beats to serve as a reference for evaluating visual beat predictions. The process involved:
+
+\begin{itemize}
+    \item \textbf{MIDI Alignment:} Used MIDI files provided with the dataset to align with the audio recordings. Applied Dynamic Time Warping (DTW) algorithms \cite{raffel2016optimizing} to synchronize MIDI and audio data.
+    
+    \item \textbf{Beat Detection:} Extracted beat times from the aligned MIDI data, ensuring high temporal accuracy.
+\end{itemize}
+ 
+
+\subsection{Conversion of Video to Motion Signals}
+
+We employed two primary methods to convert video data into motion signals that represent the musicians' movements over time:
+
+\subsubsection{Motiongram Technique}
+
+\textbf{Concept of Motiongrams:} A Motiongram is a spatiotemporal visualization of motion in a video sequence, developed by Jensenius \cite{jensenius2006using} described in Section: \ref{subsubsection motiongram}. It captures movement by computing the average pixel intensity changes across frames, resulting in a 2D image that represents motion over time as shown in Fig: \ref{fig:Motiongrams}.
+
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.6\columnwidth]{images/visual/motiongrammerge}
+\caption{ A visualization of the three signals generated from motiongram data of a video (a), \textit{X}: Horizontal motion ,\textit{Y}: Vertical motion, \textit{Z}: Quantity of motion (b) The three \textit{X}, \textit{Y} and \textit{Z} motion signals with the time instances of the audio beat superimposed on them for understanding visually see beats beats and visual motion\label{fig:Motiongrams}}
+\end{figure}
+
+\textbf{Advantages of Motiongrams:}
+
+\begin{itemize}
+    \item \textbf{Computational Efficiency:} The computational complexity is relatively simple computations suitable for real-time processing.
+    \item \textbf{Global Movement Representation:} Motiongram can capturing the collective movement without requiring individual tracking of musicians.
+\end{itemize}
+
+\textbf{Limitations:}
+
+\begin{itemize}
+    \item \textbf{Lack of Individual Movement Data:} Motiongrams does not distinguish between movements of different musicians.
+    \item \textbf{Sensitivity to Background Movements:} May be affected by camera movements or background elements.
+\end{itemize}
+
+\subsubsection{Pose Estimation Technique}
+
+\textbf{Concept of Pose Estimation:} Pose estimation involves detecting and tracking human body keypoints (e.g., joints) in video frames, providing detailed information about individual movements. We employed OpenPose \cite{cao2019openpose} as explained in Section \ref{subsubsection Pose Estimation Techniques}, a real-time multi-person 2D pose estimation algorithm.   
+
+\textbf{Advantages of Pose Estimation:}
+
+\begin{itemize}
+    \item \textbf{Individual Movement Tracking:} Provides detailed movement data for each musician, enabling analysis of leader-follower dynamics.
+    \item \textbf{Robustness to Background Movements:} Focuses on detected human figures, reducing sensitivity to irrelevant motion.
+\end{itemize}
+
+\textbf{Limitations:}
+
+\begin{itemize}
+    \item \textbf{Computational Complexity:} Pose estimation is more computationally intensive than motiongram generation.
+    \item \textbf{Occlusions and Detection Errors:} Accuracy may be affected by occlusions, overlapping musicians, or detection errors in complex scenes.
+\end{itemize}
+
+\subsection{Signal Processing and Feature Extraction}
+
+After obtaining motion signals from both methods, we applied signal processing techniques to extract features corresponding to musical beats and rhythms.
+
+\begin{figure}[h!]
+\centering
+\begin{tikzpicture}[node distance=1cm, font=\small]
+
+% Nodes
+\node (start) [draw, rectangle, rounded corners, text width=8cm, align=center] {Start};
+\node (motion) [below of=start, draw, rectangle, text width=8cm, align=center] {Extract Motion Signals from Video};
+\node (filtering) [below of=motion, draw, rectangle, text width=8cm, align=center] {Apply Smoothing and Filtering (Okada Filter)};
+\node (reduction) [below of=filtering, draw, rectangle, text width=8cm, align=center] {Apply Dimensionality Reduction (PCA, FastICA)};
+\node (peak) [below of=reduction, draw, rectangle, text width=8cm, align=center] {Detect Peaks and Valleys (for Beat Detection)};
+\node (evaluation) [below of=peak, draw, rectangle, text width=8cm, align=center] {Evaluate Performance (Compare with Audio Beats)};
+\node (end) [below of=evaluation, draw, rectangle, rounded corners, text width=8cm, align=center] {End};
+
+% Arrows
+\draw[->] (start) -- (motion);
+\draw[->] (motion) -- (filtering);
+\draw[->] (filtering) -- (reduction);
+\draw[->] (reduction) -- (peak);
+\draw[->] (peak) -- (evaluation);
+\draw[->] (evaluation) -- (end);
+
+\end{tikzpicture}
+\caption{Signal Processing and Feature Extraction Flowchart}
+\label{fig:signal_processing}
+\end{figure}
+
+
+\subsubsection{Smoothing and Filtering} To reduce noise and enhance relevant patterns in the motion signals, we applied the Okada filter \cite{okada2016computationally}, a computationally efficient smoothing filter designed to preserve peaks.Here, $x_{t}$ refers \textit{signal value(x)} at time t and $x_{t-1}$ and $x_{t+1}$ are at the previous and next time points respectively. $\alpha$ is a weighting factor and is typically set to be 100.
+
+
+\begin{equation}
+x_{t} \leftarrow x_{t} +\frac{ x_{t-1}+ x_{t+1}-2 x_{t}}{ 2(1+e^{-\alpha (x_{t}-x_{t-1})(x_{t}-x_{t+1})})}
+\label{eq:OkadaFilter}
+\end{equation}	 
+
+\subsubsection{Matrix Decomposition}
+
+We considered each signal as a dimension. We use a matrix decomposition algorithm, we converted multiple signals into a single dimension. This one dimensional signal showed a high correlation with the audio beats (ground truth). We investigated five different dimensional reduction algorithms\cite{rahaman2016complexity}. These included :
+\begin{itemize}
+   \item Incremental principal components analysis (IPCA)
+   \item Principal component analysis (PCA)
+   \item Kernel Principal component analysis (KPCA)
+   \item Dimensionality reduction using truncated SVD (aka LSA)
+   \item FastICA: a fast algorithm for Independent Component Analysis
+\end{itemize}
+
+
+The multi-collinearity was handled by removing the redundant features. In Figure \ref{decompositionMerge}, the five algorithms for matrix decomposition  were used for both motiongram and pose estimation output. The motiongrams horizontal(x-value), vertical image plane values(y-value) and quantity of motion(QOM-Value) were decomposed together. During these performances, multiple musicians were interacting with each other. The body key points of each musician were considered as individual independent oscillators generating a signal. For example, in a quartet performance, four average motion signals were treated as four different dimensions. Matrix factorization techniques were used to combine the movement data as a single oscillator for phase prediction.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/visual/decompositionMerge.png}
+\caption{1D signals generated after dimensional reduction of the motion signals with five different algorithms(a) Three dimensions(X,Y,QoM) of motiongram were reduced to one-dimensional signal (b)Reduced one-dimensional signals obtained from multiple musicians' pose estimated motion \label{decompositionMerge}}
+\end{figure}
+
+
+
+\textbf{Peak and Valley Detection:} To identify potential beats, we performed peak and valley detection on the processed motion signals using standard peak detection algorithms (e.g., SciPy's \texttt{find\_peaks}) with specified prominence and distance thresholds as shown in Fig: \ref{decomposition_peak}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.8\textwidth]{images/visual/peakdetectionmerge}
+\caption{Detecting (a)Peaks and (b) Valleys for getting the beats from motion  
+\label{decomposition_peak}}
+\end{figure}
+
+
+
+
+\subsection{Comparison with Ground Truth Beats}
+
+To evaluate the effectiveness of visual beat prediction, we compared the detected visual beats with the ground truth audio beats. The evaluation involved:
+
+\begin{itemize}
+    \item \textbf{Synchronization Metrics:} We defined metrics to assess the alignment between visual and audio beats.
+    \item \textbf{Precision and Recall:} Measured the number of correct visual beats detected within specified time windows of the audio beats.
+    \item \textbf{F1-Score:} Combined precision and recall into a single metric to assess overall performance.
+\end{itemize}
+
+\section{Results and Analysis}
+
+This section presents the experimental results obtained from applying the methodologies described in Section \ref{Methodology_visual} to the selected dataset. The analysis focuses on evaluating the effectiveness of incorporating visual cues into the synchronization framework for human-robot musical ensembles. We compare the performance of the Motiongram and Pose Estimation techniques in predicting musical beats from visual data and analyze how different factors, such as instrument type and ensemble size, influence the results. The evaluation employs quantitative metrics and qualitative assessments to provide a comprehensive understanding of the methods' capabilities and limitations.
+
+\subsection{Evaluation Metrics}
+
+To assess the performance of the visual beat prediction methods, we employed several evaluation metrics that quantify the alignment between predicted visual beats and ground truth audio beats:
+
+\textbf{Precision (P):} Measures the proportion of predicted visual beats that correctly correspond to actual audio beats.
+
+\begin{equation}
+    P = \frac{True \ Positives}{True \ Positives + False \ Positives}
+\end{equation}
+
+\textbf{Recall (R):} Measures the proportion of actual audio beats that were correctly predicted by the visual methods.
+
+\begin{equation}
+    R = \frac{True \ Positives}{True \ Positives + False \ Negatives}
+\end{equation}
+
+\textbf{F1-Score:} The harmonic mean of precision and recall, providing a single metric that balances both.
+
+\begin{equation}
+    F_1 = 2 \times \frac{P \times R}{P + R}
+\end{equation}
+
+\textbf{Mean Absolute Error (MAE):} Measures the average absolute difference between the predicted visual beat times and the actual audio beat times.
+
+\begin{equation}
+    MAE = \frac{1}{N} \sum_{i=1}^{N} |t_{pred_i} - t_{audio_i}|
+\end{equation}
+
+\textbf{Beat Tracking Accuracy (Beat Acc):} Evaluates the proportion of correct beat predictions within specified tolerance windows (e.g., $\pm$50 ms, $\pm$100 ms).
+
+\begin{equation}
+    Beat \ Acc = \frac{Number \ of \ Correct \ Beats}{Total \ Number \ of \ Beats}
+\end{equation}
+
+\subsection{Experimental Setup}
+
+\textbf{Test Dataset:} We applied the visual beat prediction methods to a test set consisting of 12 performances from the URMP dataset that would cover the combination of all kinds of instruments, which included:
+
+\begin{itemize}
+    \item \textbf{Ensemble Types:} Duets, trios, quartets, and quintets.
+    \item \textbf{Instruments:} A mix of string, woodwind, brass, and percussion instruments.
+    \item \textbf{Performance Duration:} Segments ranging from 30 seconds to 2 minutes depending on the performances.
+\end{itemize}
+
+\textbf{Implementation Details:}
+
+\begin{itemize}
+    \item \textbf{Frame Rate and Sampling:} Video frames were processed at 30 frames per second. Motion signals were sampled accordingly.
+    \item \textbf{Parameter Tuning:} Peak detection thresholds, filtering parameters, and dimensionality reduction settings were tuned using a validation set.
+    \item \textbf{Computational Resources:} Experiments were conducted on a workstation with an Intel Core i7 processor and NVIDIA GTX 1080 GPU to facilitate real-time processing capabilities.
+\end{itemize}
+
+\subsection{Quantitative Results}
+
+\subsubsection{Overall Performance Comparison}
+
+The overall performance of the Motiongram and Pose Estimation methods across all test performances is summarized in Table~\ref{tab:overall}.
+
+\begin{table}[h]
+    \centering
+
+    \resizebox{\textwidth}{!}{%
+    \begin{tabular}{|l|c|c|c|c|c|c|}
+        \hline
+        \textbf{Method} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{MAE} & \textbf{Beat Acc} & \textbf{Beat Acc} \\
+        & \textbf{(\%)} & \textbf{(\%)} & \textbf{(\%)} & \textbf{(ms)} & \textbf{($\pm$50 ms) (\%)} & \textbf{($\pm$100 ms) (\%)} \\
+        \hline
+        Motiongram & 72.5 & 68.3 & 70.3 & 85 & 65.2 & 80.7 \\
+        Pose Estimation & 78.1 & 74.6 & 76.3 & 72 & 71.5 & 86.9 \\
+        \hline
+    \end{tabular}%
+    }
+    \caption{Overall Performance Metrics for Visual Beat Prediction Methods}
+    \label{tab:overall}
+\end{table}
+
+\textbf{Analysis:}
+
+\begin{itemize}
+    \item \textbf{Precision and Recall:} Pose Estimation outperformed Motiongram in both precision and recall, indicating more accurate and consistent beat predictions.
+    \item \textbf{F1-Score:} The higher F1-Score for Pose Estimation reflects a better balance between precision and recall.
+    \item \textbf{MAE:} The lower MAE for Pose Estimation suggests that predicted beats are, on average, closer in time to the actual audio beats.
+    \item \textbf{Beat Tracking Accuracy:} Pose Estimation achieved higher accuracy within both $\pm$50 ms and $\pm$100 ms tolerance windows.
+\end{itemize}
+
+\subsubsection{Performance by Ensemble Size}
+
+We analyzed how ensemble size affects the performance of the visual beat prediction methods, as shown in Table~\ref{tab:ensemble} and shown in Fig \ref{fig:visual result}.
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{|l|l|c|c|}
+        \hline
+        \textbf{Ensemble Size} & \textbf{Method} & \textbf{F1-Score (\%)} & \textbf{Beat Acc ($\pm$100 ms) (\%)} \\
+        \hline
+        Duets & Motiongram & 74.1 & 85.3 \\
+              & Pose Estimation & 77.8 & 88.6 \\
+        \hline
+        Trios & Motiongram & 69.5 & 78.2 \\
+              & Pose Estimation & 75.2 & 84.5 \\
+        \hline
+        Quartets & Motiongram & 68.0 & 79.1 \\
+                 & Pose Estimation & 76.1 & 85.7 \\
+        \hline
+        Quintets & Motiongram & 65.4 & 77.5 \\
+                 & Pose Estimation & 76.0 & 86.2 \\
+        \hline
+    \end{tabular}
+    \caption{Performance Metrics by Ensemble Size}
+    \label{tab:ensemble}
+\end{table}
+
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.7\columnwidth]{images/visual/ResultFull3.png}
+\caption{ The evaluation procedure was carried out on 12 performances as shown in Table \ref{tab:urmp_performances_test} to find Fig (a): Quantity of Exact Matches: the ground truth audio phase matched with predicted phase from videos Fig (b): Quantity of Close matches: acceptable lag of the audio phase that is 100ms second apart from the predicted video phase. \label{fig:visual result}}
+\end{figure}
+
+
+\begin{table}[ht]
+\centering
+\caption{Selected URMP Performances and Their Corresponding Ensemble Sizes}
+\label{tab:urmp_performances_test}
+\begin{tabular}{|c|c|}
+\hline
+\textbf{Performance (File)} & \textbf{Ensemble Type} \\ \hline
+1, 2, 5                   & Duet         \\ \hline
+12, 13, 14                & Trio         \\ \hline
+24, 25, 26                & Quartet      \\ \hline
+40, 41, 43                & Quintet      \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\section{Analysis} \label{section:vis_analysis}
+
+As the ensemble size increased (as shown in Table \ref{tab:urmp_performances_test} and Table \ref{tab:ensemble}), both the Motiongram and Pose Estimation methods showed a slight decline in performance. This reduction in accuracy can be attributed to the complexity introduced by a greater number of musicians and the interactions between their movements. However, Pose estimation demonstrated a notable robustness, maintaining relatively consistent performance across varying ensemble sizes, which indicates its scalability. In contrast, the Motiongram method’s performance was more sensitive to ensemble size, decreasing significantly as the number of musicians increased. This decline was likely due to the blending of individual movements in the global motion representation, which hindered its ability to distinguish individual patterns effectively. Nevertheless, Motiongram performed better for instruments with larger movements, such as string players.
+
+\subsection{Qualitative Analysis}
+
+To provide a deeper understanding of the results, qualitative analysis was conducted on selected examples from the test performances.
+
+\subsubsection{Case Study: String Trio Performance}
+
+In a performance of the piece ``Hark the Herald Angels" featuring violin, viola, and cello, with a duration of two minutes, Motiongram and Pose Estimation produced different levels of accuracy in capturing beat information. Motiongram effectively captured collective bowing movements, which led to reasonably accurate beat predictions. However, Pose Estimation offered more precise beat detection by tracking each musician's individual bowing motion, particularly during passages where one instrument led with expressive gestures. Pose Estimation facilitated leader identification, enabling the system to recognize the first violinist as the tempo leader during solo passages due to the prominence of their movements.
+
+\subsubsection{Case Study: Wind Ensemble Performance}
+
+A wind ensemble performance of ``Miserere Mei Deus," lasting 1.5 minutes and featuring flute, oboe, clarinet, and bassoon, highlighted the limitations of the Motiongram method with minimal motion instruments. Due to the relatively subtle movements of wind players, Motiongram struggled to produce accurate beat predictions, resulting in a lower signal-to-noise ratio in the motion signals. In contrast, Pose Estimation captured finer details such as breathing patterns and finger motions, enabling it to deliver more accurate beat predictions even with the subtlety of wind instrument performance.
+
+\subsection{Comparison with Audio-Only Approaches}
+
+To assess the relative performance of visual beat prediction methods, we compared them with an audio-only beat-tracking algorithm, specifically the BeatTracker from the Essentia library. The results, presented in Table~\ref{tab:audio_comparison}, show that the audio-only method achieved the highest accuracy, as expected, since it directly processes sound signals. However, in cases where the audio signal is noisy or contains overlapping frequencies, the visual methods offered valuable complementary information. This finding underscores the potential for multimodal approaches in challenging acoustic environments.
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|c|c|}
+        \hline
+        \textbf{Method} & \textbf{F1-Score (\%)} & \textbf{MAE (ms)} \\
+        \hline
+        Audio-Only & 82.7 & 65 \\
+        Pose Estimation & 76.3 & 72 \\
+        Motiongram & 70.3 & 85 \\
+        \hline
+    \end{tabular}
+    \caption{Comparison with Audio-Only Beat Tracking}
+    \label{tab:audio_comparison}
+\end{table}
+
+\subsection{Summary of Findings}
+
+In summary, Pose Estimation demonstrated superior performance in visual beat prediction, particularly in its ability to track individual musicians' movements, which is crucial for accurate synchronization in ensemble settings. Although the Motiongram method is computationally efficient, its effectiveness is limited in larger ensembles due to its inability to distinguish individual movements effectively. Both visual methods, however, provide valuable supplementary information that can complement audio-based synchronization techniques, especially in acoustically challenging environments. These findings suggest that while audio-based methods remain highly effective, integrating visual data can enhance robustness and adaptability in scenarios where audio alone is insufficient.
+
+\section{Discussion}
+
+The incorporation of visual cues into synchronization frameworks for human-robot musical ensembles represents a significant advancement in achieving naturalistic and expressive collaboration between human and robotic musicians. This section discusses the implications of the experimental results presented in Section \ref{section:vis_analysis}, exploring how the integration of visual cues enhances synchronization, the advantages and challenges of multimodal approaches, and the potential for implementation within the Cyborg Philharmonic framework. We also examine the limitations identified in the study and propose strategies to address them. The discussion contextualizes the findings within the broader landscape of human-robot interaction in musical settings, highlighting the contributions to the field and outlining directions for future research.
+
+\subsection{Integration into the Cyborg Philharmonic Framework}
+
+The Cyborg Philharmonic framework, introduced in earlier chapters, aims to create a cohesive platform for human-robot musical collaboration by leveraging advanced synchronization techniques. The integration of visual cues into this framework offers several key benefits that enhance the overall performance and interaction dynamics.
+
+\subsubsection{Enhancing Synchronization Accuracy}
+
+The experimental results demonstrated that incorporating visual cues through Pose Estimation significantly improves the accuracy of beat prediction compared to audio-only approaches. By integrating visual information, the framework can:
+
+\begin{itemize}
+    \item \textbf{Reduce Latency:} Visual cues allow for anticipatory synchronization by detecting preparatory movements before auditory events occur, thereby reducing reaction times.
+    \item \textbf{Improve Temporal Precision:} The combination of audio and visual data enables more precise alignment of beats, enhancing temporal accuracy.
+\end{itemize}
+
+These improvements align with the goals of the Cyborg Philharmonic framework to achieve tight synchronization and seamless integration of robotic musicians into ensembles.
+
+\subsubsection{Facilitating Expressive Interaction}
+
+Visual cues are integral to the expressive communication among musicians. By incorporating visual analysis, the framework can:
+
+\begin{itemize}
+    \item \textbf{Interpret Expressive Gestures:} Recognize nuances in body movements that convey emotional intent, allowing robotic musicians to adjust dynamics and articulation accordingly.
+    \item \textbf{Respond to Non-Verbal Signals:} Detect cues such as nods or gestures that indicate tempo changes or expressive shifts, enabling more responsive interaction.
+\end{itemize}
+
+This capability enhances the robot's ability to participate in the expressive dimensions of performance, contributing to more engaging and authentic musical experiences.
+
+\subsubsection{Supporting Leader Identification}
+
+Dynamic leader identification is crucial for adaptive synchronization. The integration of visual cues enables:
+
+\begin{itemize}
+    \item \textbf{Detection of Leadership Roles:} By analyzing individual movements, the system can identify which musician is leading at any given moment based on the prominence and deliberate nature of their gestures \cite{dausilio2012leadership}.
+    \item \textbf{Adaptation to Leadership Changes:} The robot can adjust its synchronization strategy in real-time as leadership roles shift within the ensemble.
+\end{itemize}
+
+This functionality enhances the robot's adaptability and supports the collaborative nature of ensemble performance.
+
+\subsubsection{Implementation Considerations}
+
+Integrating visual cue analysis into the Cyborg Philharmonic framework involves addressing several practical considerations:
+
+\begin{itemize}
+    \item \textbf{Computational Resources:} Ensuring that the system has sufficient processing power to handle real-time visual analysis, possibly through hardware acceleration.
+    \item \textbf{System Architecture:} Modifying the framework to incorporate modules for visual data acquisition, processing, and integration with existing audio processing components.
+    \item \textbf{Latency Management:} Minimizing processing delays to maintain real-time responsiveness, which may involve optimizing algorithms and leveraging efficient data pipelines.
+\end{itemize}
+
+By carefully designing the system architecture and optimizing performance, the integration can be achieved without compromising the real-time requirements of live performance.
+
+\subsection{Advantages of Multimodal Approaches}
+
+The integration of visual cues into synchronization frameworks represents a shift towards multimodal approaches that leverage multiple sensory inputs. This strategy offers several advantages over single-modality methods.
+
+\subsubsection{Complementary Information}
+
+Audio and visual modalities provide complementary information that enhances overall perception and interpretation:
+
+\begin{itemize}
+    \item \textbf{Redundancy for Robustness:} If one modality is compromised (e.g., due to noise or occlusion), the other can compensate, increasing system resilience.
+    \item \textbf{Enhanced Feature Extraction:} Certain features are more salient in one modality than the other; for example, subtle timing cues may be more evident visually, while pitch information is auditory.
+\end{itemize}
+
+Baltrušaitis et al. \cite{baltrusaitis2018multimodal} emphasize that multimodal fusion can capture complex interactions and improve model performance across various tasks.
+
+\subsubsection{Improved Human-Robot Interaction}
+
+Multimodal systems align more closely with human perceptual processes, which naturally integrate multiple senses:
+
+\begin{itemize}
+    \item \textbf{Natural Communication:} Robots that perceive and respond to both audio and visual cues interact in ways that are more intuitive for human musicians.
+    \item \textbf{Social Presence:} Incorporating visual responsiveness enhances the robot's social presence, making it a more engaging and relatable collaborator \cite{knight2015expressive}.
+\end{itemize}
+
+\subsubsection{Increased Accuracy and Reliability}
+
+By combining modalities, synchronization models can achieve higher accuracy and reliability:
+
+\begin{itemize}
+    \item \textbf{Cross-Validation:} Discrepancies between modalities can be detected and resolved, reducing errors.
+    \item \textbf{Error Reduction:} Multimodal inputs can reduce the impact of modality-specific noise or inaccuracies.
+\end{itemize}
+
+Ngiam et al. \cite{ngiam2011multimodal} demonstrated that multimodal deep learning models outperform unimodal counterparts by leveraging shared representations.
+
+\subsubsection{Enabling Advanced Capabilities}
+
+Multimodal approaches open avenues for advanced functionalities:
+
+\begin{itemize}
+    \item \textbf{Emotion Recognition:} Analyzing facial expressions and body language to interpret emotional states, enhancing expressive synchronization.
+    \item \textbf{Gesture Interpretation:} Recognizing specific gestures that convey instructions or cues, enabling more complex interactions.
+\end{itemize}
+
+These capabilities contribute to richer and more nuanced human-robot collaboration.
+
+\subsection{Challenges and Limitations}
+
+Integrating visual cues into our synchronization framework is a multifaceted endeavor that extends well beyond the inherent benefits described earlier. One critical challenge lies in the computational complexity of processing high-dimensional visual data in real time. Even when sophisticated algorithms such as those used in pose estimation are employed, the continuous analysis of video streams demands significant processing power, which may necessitate the use of GPU acceleration or specialized hardware. Additionally, the scalability issue becomes pronounced as ensemble sizes grow; while a small duet may allow for clear separation of individual movements, larger ensembles introduce overlapping actions and more intricate interdependencies, thereby increasing both the computational load and the complexity of modeling synchronization accurately. Environmental variables, such as variations in lighting and camera angles, can further compromise the quality of visual input. Poor lighting may reduce image clarity and lead to erroneous keypoint detections, while occlusions—caused by overlapping musicians or suboptimal camera placements—can obscure essential movement details. Furthermore, privacy and ethical considerations emerge as non-trivial challenges when handling sensitive visual data, demanding robust measures for consent, anonymization, and secure data storage. The complexity of integrating these heterogeneous data streams also adds another layer of difficulty; it is essential to maintain precise temporal alignment between audio and visual modalities, as any misalignment could undermine the reliability of the synchronization process.
+
+\subsection{Strategies to Address Challenges}
+
+To tackle these challenges, a multi-pronged approach is essential. On the computational side, the adoption of optimized algorithms that can operate efficiently on reduced-resolution data or employ approximate methods when exact precision is not required can help mitigate processing delays. Leveraging parallel processing frameworks and implementing GPU-based acceleration are practical steps toward achieving the low-latency performance demanded by real-time applications. Moreover, designing adaptive machine learning models that can be fine-tuned through transfer learning allows the system to generalize across a wide range of individual movement styles and instrument-specific characteristics without requiring exhaustive retraining for every new performance scenario. In terms of environmental control, setting up a performance space with consistent lighting and strategically positioning multiple cameras to capture diverse angles can significantly enhance the quality of the visual data. For effective integration of audio and visual modalities, advanced data fusion techniques—such as deep learning architectures equipped with attention mechanisms—can learn joint representations that capture the most salient features from each modality, ensuring robust synchronization even in the presence of noise or temporal misalignment. Lastly, rigorous adherence to data privacy protocols, including secure data storage and clear consent processes, is indispensable for ethically deploying such systems. Together, these strategies not only address the immediate technical challenges but also pave the way for more robust, scalable, and ethically sound multimodal synchronization systems.
+
+
+\section{Conclusion}
+
+The research presented in this chapter has demonstrated the significant potential of integrating visual cues into synchronization frameworks for human-robot musical ensembles. However, several limitations were identified that warrant further investigation. One of the primary challenges encountered was the computational complexity associated with real-time visual processing, particularly with models like pose estimation and optical flow, which demand substantial processing power and can introduce latency. While the Motiongram and Pose Estimation methods provided valuable insights into capturing visual information, they still fall short in scenarios with overlapping body movements or occlusions, where tracking individual musicians becomes challenging.
+
+Another key limitation is the reliance on controlled datasets, such as the URMP dataset, which do not fully capture the variability and unpredictability inherent in live performance settings. This constraint suggests a need for more robust and adaptive models that can generalize across diverse environments and ensemble configurations. Furthermore, the integration of visual cues in this study focused primarily on rhythmic synchronization, leaving the exploration of more nuanced aspects of musical interaction, such as expressive intent and emotional communication, for future research.
+
+The findings indicate that while the incorporation of visual information significantly enhances synchronization, the current models lack the capability to fully exploit the multimodal nature of musical performance. These limitations and challenges set the stage for Chapter \ref{ch-6}, where the focus will shift to developing a comprehensive multimodal synchronization framework. This new framework aims to integrate auditory, visual, and potentially other sensory modalities to achieve a more holistic and seamless human-robot musical interaction. By leveraging advanced phase synchronization models, such as Kuramoto and Swarmlator, Chapter \ref{ch-6} will delve into the complexities of multimodal synchronization, examining how these models can be adapted and optimized for real-time ensemble performance. The goal is to push beyond the boundaries of audio-visual synchronization and explore the full potential of a multimodal approach, providing a foundation for the next generation of human-robot collaborative performances.
