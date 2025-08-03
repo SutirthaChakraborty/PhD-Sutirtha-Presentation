@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chapter 6: Multimodal Synchronization - PhD Thesis</title>
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- MathJax Configuration -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            tags: 'ams'
+        },
+        svg: {
+            fontCache: 'global',
+            displayAlign: 'center',
+            displayIndent: '0em'
+        },
+        startup: {
+            ready: () => {
+                MathJax.startup.defaultReady();
+                console.log('MathJax loaded for Chapter 6');
+            }
+        }
+    };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <div class="progress-container">
@@ -107,13 +133,68 @@
             <p>The multimodal synchronization framework builds upon established oscillator theory while incorporating novel extensions for sensory fusion:</p>
 
             <div class="equation">
-                θ̇ᵢ = ωᵢ + Σⱼ Kⱼ(t) · fⱼ(θⱼ - θᵢ, mⱼ)
+                $$\dot{\theta}_i = \omega_i + \sum_{j} K_j(t) \cdot f_j(\theta_j - \theta_i, m_j)$$
                 <div style="font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">
-                    Where: θᵢ = phase of oscillator i, ωᵢ = natural frequency, Kⱼ(t) = adaptive coupling strength, mⱼ = modal weights
+                    Where: $\theta_i$ = phase of oscillator i, $\omega_i$ = natural frequency, $K_j(t)$ = adaptive coupling strength, $m_j$ = modal weights
                 </div>
             </div>
 
             <p>This foundation enables the integration of heterogeneous sensory information while maintaining the theoretical rigor necessary for stable synchronization behavior.</p>
+        </div>
+
+        <!-- Interactive Kuramoto Simulator -->
+        <div class="card interactive-demo" id="kuramoto-simulator">
+            <h2>🎵 Interactive Kuramoto Model Simulator</h2>
+            <p><strong>Explore how musical performers synchronize like coupled oscillators!</strong></p>
+            <p>Think of each musician as a "musical clock" - they all want to keep their own tempo, but they also listen to others and gradually adjust to match.</p>
+            
+            <div class="simulator-container">
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Number of Musicians: <span id="kuramoto-count">3</span></label>
+                        <input type="range" id="kuramoto-oscillators" min="2" max="8" value="3">
+                    </div>
+                    <div class="control-group">
+                        <label>Synchronization Strength: <span id="kuramoto-coupling">0.5</span></label>
+                        <input type="range" id="kuramoto-coupling-slider" min="0" max="1" step="0.1" value="0.5">
+                        <small>How much musicians influence each other</small>
+                    </div>
+                    <div class="control-group">
+                        <button id="kuramoto-start" class="sim-button">Start Ensemble</button>
+                        <button id="kuramoto-reset" class="sim-button">Reset</button>
+                        <button id="kuramoto-add-disturbance" class="sim-button">Add Tempo Change</button>
+                    </div>
+                </div>
+                
+                <div class="visualization">
+                    <div class="viz-section">
+                        <h4>🎼 Musician Phases (Musical Beats)</h4>
+                        <canvas id="kuramoto-canvas" width="600" height="300"></canvas>
+                        <p class="explanation">Each colored dot represents a musician. Watch how they gradually align their timing!</p>
+                    </div>
+                    
+                    <div class="viz-section">
+                        <h4>📊 Synchronization Over Time</h4>
+                        <canvas id="kuramoto-sync-chart" width="600" height="200"></canvas>
+                        <p class="explanation">This shows how well synchronized the ensemble is (1.0 = perfect sync, 0.0 = completely out of sync)</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="equation-explanation">
+                <h4>🔬 The Math Behind It</h4>
+                <p>Each musician follows this simple rule:</p>
+                $$\dot{\theta}_i = \omega_i + \frac{K}{N} \sum_{j=1}^{N} \sin(\theta_j - \theta_i)$$
+                <div class="math-explanation">
+                    <p><strong>In plain English:</strong></p>
+                    <ul>
+                        <li>$\theta_i$ = Where musician i is in their beat cycle (like the position of a clock hand)</li>
+                        <li>$\omega_i$ = Musician i's natural tempo preference</li>
+                        <li>$K$ = How much musicians listen to each other</li>
+                        <li>The $\sin$ part = The "pull" to synchronize with other musicians</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div class="card" id="kuramoto-model">
@@ -149,9 +230,9 @@
             <p>The extended Kuramoto model incorporates multiple coupling terms representing different sensory modalities:</p>
 
             <div class="equation">
-                θ̇ᵢ = ωᵢ + K_audio Σⱼ sin(θⱼ^audio - θᵢ^audio) + K_visual Σⱼ sin(θⱼ^visual - θᵢ^visual) + K_leader L(t) · sin(θ_leader - θᵢ)
+                $$\dot{\theta}_i = \omega_i + K_{\text{audio}} \sum_{j} \sin(\theta_j^{\text{audio}} - \theta_i^{\text{audio}}) + K_{\text{visual}} \sum_{j} \sin(\theta_j^{\text{visual}} - \theta_i^{\text{visual}}) + K_{\text{leader}} L(t) \cdot \sin(\theta_{\text{leader}} - \theta_i)$$
                 <div style="font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">
-                    Where: K_audio, K_visual, K_leader = modal coupling strengths, L(t) = leadership probability from LeaderSTeM
+                    Where: $K_{\text{audio}}, K_{\text{visual}}, K_{\text{leader}}$ = modal coupling strengths, $L(t)$ = leadership probability from LeaderSTeM
                 </div>
             </div>
 
@@ -242,6 +323,78 @@
             </ul>
         </div>
 
+        <!-- Interactive Swarmalator Simulator -->
+        <div class="card interactive-demo" id="swarmalator-simulator">
+            <h2>🕺 Interactive Swarmalator Simulator</h2>
+            <p><strong>See how musicians synchronize in both time AND space!</strong></p>
+            <p>Imagine musicians in an orchestra - they not only need to play in time together, but their physical positions also matter. Musicians sitting closer together can hear and see each other better!</p>
+            
+            <div class="simulator-container">
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Number of Musicians: <span id="swarm-count">4</span></label>
+                        <input type="range" id="swarm-oscillators" min="3" max="10" value="4">
+                    </div>
+                    <div class="control-group">
+                        <label>Time Sync Strength: <span id="swarm-sync">0.3</span></label>
+                        <input type="range" id="swarm-sync-slider" min="0" max="1" step="0.1" value="0.3">
+                        <small>How much musicians sync their timing</small>
+                    </div>
+                    <div class="control-group">
+                        <label>Space Sync Strength: <span id="swarm-space">0.2</span></label>
+                        <input type="range" id="swarm-space-slider" min="0" max="1" step="0.1" value="0.2">
+                        <small>How much position affects synchronization</small>
+                    </div>
+                    <div class="control-group">
+                        <button id="swarm-start" class="sim-button">Start Performance</button>
+                        <button id="swarm-reset" class="sim-button">Reset</button>
+                        <button id="swarm-scatter" class="sim-button">Scatter Musicians</button>
+                    </div>
+                </div>
+                
+                <div class="visualization">
+                    <div class="viz-section">
+                        <h4>🎭 Stage View (Musicians' Positions and Timing)</h4>
+                        <canvas id="swarm-canvas" width="600" height="400"></canvas>
+                        <p class="explanation">Circle size = how "in sync" each musician is. Color = their current beat phase. Watch them move and sync!</p>
+                    </div>
+                    
+                    <div class="viz-section">
+                        <h4>📈 Performance Metrics</h4>
+                        <canvas id="swarm-metrics" width="600" height="200"></canvas>
+                        <p class="explanation">Green = Time Synchronization, Blue = Spatial Clustering</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="equation-explanation">
+                <h4>🔬 The Math Behind Swarmalators</h4>
+                <p>Each musician follows two rules - one for timing, one for position:</p>
+                
+                <div class="math-equations">
+                    <div class="eq-section">
+                        <h5>⏰ Timing Rule:</h5>
+                        $$\dot{\theta}_i = \omega_i + \frac{K}{N} \sum_{j=1}^{N} \sin(\theta_j - \theta_i) \cdot G(|\mathbf{x}_i - \mathbf{x}_j|)$$
+                    </div>
+                    
+                    <div class="eq-section">
+                        <h5>📍 Position Rule:</h5>
+                        $$\dot{\mathbf{x}}_i = \frac{J}{N} \sum_{j=1}^{N} \sin(\theta_i - \theta_j) \cdot \nabla G(|\mathbf{x}_i - \mathbf{x}_j|)$$
+                    </div>
+                </div>
+                
+                <div class="math-explanation">
+                    <p><strong>In plain English:</strong></p>
+                    <ul>
+                        <li>$\mathbf{x}_i$ = Position of musician i on stage</li>
+                        <li>$G(|\mathbf{x}_i - \mathbf{x}_j|)$ = How distance affects synchronization (closer = stronger influence)</li>
+                        <li>$J$ = How much position changes based on timing sync</li>
+                        <li><strong>Cool fact:</strong> Musicians with similar timing tend to move closer together!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <div class="card" id="swarmalators">
             <h2>Swarmalator Framework for Spatial-Temporal Synchronization</h2>
             
@@ -257,11 +410,11 @@
             <p>Swarmalators extend oscillator dynamics by incorporating spatial position and movement:</p>
 
             <div class="equation">
-                θ̇ᵢ = ωᵢ + (K/N) Σⱼ sin(θⱼ - θᵢ) · G(|xᵢ - xⱼ|)
-                <br><br>
-                ẋᵢ = (J/N) Σⱼ sin(θᵢ - θⱼ) · ∇G(|xᵢ - xⱼ|)
+                $$\dot{\theta}_i = \omega_i + \frac{K}{N} \sum_{j=1}^{N} \sin(\theta_j - \theta_i) \cdot G(|\mathbf{x}_i - \mathbf{x}_j|)$$
+                
+                $$\dot{\mathbf{x}}_i = \frac{J}{N} \sum_{j=1}^{N} \sin(\theta_i - \theta_j) \cdot \nabla G(|\mathbf{x}_i - \mathbf{x}_j|)$$
                 <div style="font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">
-                    Where: xᵢ = spatial position, G(|xᵢ - xⱼ|) = spatial coupling function, J = spatial coupling strength
+                    Where: $\mathbf{x}_i$ = spatial position, $G(|\mathbf{x}_i - \mathbf{x}_j|)$ = spatial coupling function, $J$ = spatial coupling strength
                 </div>
             </div>
 
@@ -669,7 +822,709 @@
                     this.style.backgroundColor = '#f8fafc';
                 });
             });
+
+            // Initialize interactive simulators
+            initKuramotoSimulator();
+            initSwarmalatorSimulator();
+            initModelComparison();
         });
+
+        // Kuramoto Simulator Implementation
+        function initKuramotoSimulator() {
+            const canvas = document.getElementById('kuramoto-canvas');
+            const syncChart = document.getElementById('kuramoto-sync-chart');
+            if (!canvas || !syncChart) return;
+
+            const ctx = canvas.getContext('2d');
+            const syncCtx = syncChart.getContext('2d');
+            
+            let oscillators = [];
+            let syncHistory = [];
+            let animationId = null;
+            let time = 0;
+            let isRunning = false;
+
+            class KuramotoOscillator {
+                constructor(id) {
+                    this.id = id;
+                    this.phase = Math.random() * 2 * Math.PI;
+                    this.frequency = 0.8 + Math.random() * 0.4; // Natural frequency variation
+                    this.color = `hsl(${id * 360 / 8}, 70%, 50%)`;
+                    this.x = 50 + id * 70;
+                    this.y = 150;
+                }
+
+                update(coupling, oscillators) {
+                    if (!isRunning) return;
+                    
+                    let couplingSum = 0;
+                    oscillators.forEach(osc => {
+                        if (osc.id !== this.id) {
+                            couplingSum += Math.sin(osc.phase - this.phase);
+                        }
+                    });
+                    
+                    const dt = 0.02;
+                    this.phase += dt * (this.frequency + coupling * couplingSum / oscillators.length);
+                    this.phase = this.phase % (2 * Math.PI);
+                }
+
+                draw(ctx) {
+                    const radius = 30;
+                    const centerX = this.x;
+                    const centerY = this.y;
+                    
+                    // Draw circle
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                    ctx.strokeStyle = this.color;
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                    
+                    // Draw phase indicator
+                    const dotX = centerX + Math.cos(this.phase) * (radius - 5);
+                    const dotY = centerY + Math.sin(this.phase) * (radius - 5);
+                    
+                    ctx.beginPath();
+                    ctx.arc(dotX, dotY, 6, 0, 2 * Math.PI);
+                    ctx.fillStyle = this.color;
+                    ctx.fill();
+                    
+                    // Label
+                    ctx.fillStyle = '#333';
+                    ctx.font = '12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`M${this.id + 1}`, centerX, centerY + radius + 20);
+                }
+            }
+
+            function calculateSyncParameter(oscillators) {
+                let realSum = 0, imagSum = 0;
+                oscillators.forEach(osc => {
+                    realSum += Math.cos(osc.phase);
+                    imagSum += Math.sin(osc.phase);
+                });
+                return Math.sqrt(realSum * realSum + imagSum * imagSum) / oscillators.length;
+            }
+
+            function animate() {
+                if (!isRunning) return;
+                
+                const coupling = parseFloat(document.getElementById('kuramoto-coupling-slider').value);
+                
+                // Update oscillators
+                oscillators.forEach(osc => osc.update(coupling, oscillators));
+                
+                // Clear and draw
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                oscillators.forEach(osc => osc.draw(ctx));
+                
+                // Update sync chart
+                const syncParam = calculateSyncParameter(oscillators);
+                syncHistory.push(syncParam);
+                if (syncHistory.length > 300) syncHistory.shift();
+                
+                syncCtx.clearRect(0, 0, syncChart.width, syncChart.height);
+                syncCtx.strokeStyle = '#0ea5e9';
+                syncCtx.lineWidth = 2;
+                syncCtx.beginPath();
+                
+                syncHistory.forEach((value, index) => {
+                    const x = (index / syncHistory.length) * syncChart.width;
+                    const y = syncChart.height - (value * syncChart.height);
+                    if (index === 0) {
+                        syncCtx.moveTo(x, y);
+                    } else {
+                        syncCtx.lineTo(x, y);
+                    }
+                });
+                syncCtx.stroke();
+                
+                time += 0.02;
+                animationId = requestAnimationFrame(animate);
+            }
+
+            // Control handlers
+            document.getElementById('kuramoto-oscillators').addEventListener('input', (e) => {
+                const count = parseInt(e.target.value);
+                document.getElementById('kuramoto-count').textContent = count;
+                
+                oscillators = [];
+                for (let i = 0; i < count; i++) {
+                    oscillators.push(new KuramotoOscillator(i));
+                }
+            });
+
+            document.getElementById('kuramoto-coupling-slider').addEventListener('input', (e) => {
+                document.getElementById('kuramoto-coupling').textContent = e.target.value;
+            });
+
+            document.getElementById('kuramoto-start').addEventListener('click', () => {
+                isRunning = !isRunning;
+                document.getElementById('kuramoto-start').textContent = isRunning ? 'Stop Ensemble' : 'Start Ensemble';
+                if (isRunning) {
+                    animate();
+                }
+            });
+
+            document.getElementById('kuramoto-reset').addEventListener('click', () => {
+                isRunning = false;
+                document.getElementById('kuramoto-start').textContent = 'Start Ensemble';
+                syncHistory = [];
+                time = 0;
+                
+                oscillators.forEach(osc => {
+                    osc.phase = Math.random() * 2 * Math.PI;
+                });
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                syncCtx.clearRect(0, 0, syncChart.width, syncChart.height);
+                oscillators.forEach(osc => osc.draw(ctx));
+            });
+
+            document.getElementById('kuramoto-add-disturbance').addEventListener('click', () => {
+                if (oscillators.length > 0) {
+                    const randomOsc = oscillators[Math.floor(Math.random() * oscillators.length)];
+                    randomOsc.frequency *= 1.5; // Temporary tempo increase
+                    setTimeout(() => {
+                        randomOsc.frequency /= 1.5;
+                    }, 2000);
+                }
+            });
+
+            // Initialize
+            const initialCount = 3;
+            for (let i = 0; i < initialCount; i++) {
+                oscillators.push(new KuramotoOscillator(i));
+            }
+            oscillators.forEach(osc => osc.draw(ctx));
+        }
+
+        // Swarmalator Simulator Implementation
+        function initSwarmalatorSimulator() {
+            const canvas = document.getElementById('swarm-canvas');
+            const metricsChart = document.getElementById('swarm-metrics');
+            if (!canvas || !metricsChart) return;
+
+            const ctx = canvas.getContext('2d');
+            const metricsCtx = metricsChart.getContext('2d');
+            
+            let swarmalators = [];
+            let syncHistory = [];
+            let spatialHistory = [];
+            let animationId = null;
+            let isRunning = false;
+
+            class Swarmalator {
+                constructor(id) {
+                    this.id = id;
+                    this.phase = Math.random() * 2 * Math.PI;
+                    this.frequency = 0.8 + Math.random() * 0.4;
+                    this.x = 100 + Math.random() * 400;
+                    this.y = 100 + Math.random() * 200;
+                    this.vx = 0;
+                    this.vy = 0;
+                    this.color = `hsl(${id * 360 / 10}, 70%, 50%)`;
+                }
+
+                update(K, J, swarmalators) {
+                    if (!isRunning) return;
+                    
+                    let phaseCoupling = 0;
+                    let spatialForceX = 0;
+                    let spatialForceY = 0;
+                    
+                    swarmalators.forEach(other => {
+                        if (other.id === this.id) return;
+                        
+                        const dx = other.x - this.x;
+                        const dy = other.y - this.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (dist > 0) {
+                            // Phase coupling (weakened by distance)
+                            const G = Math.exp(-dist / 100); // Spatial coupling function
+                            phaseCoupling += Math.sin(other.phase - this.phase) * G;
+                            
+                            // Spatial coupling (influenced by phase similarity)
+                            const phaseDiff = Math.sin(this.phase - other.phase);
+                            const force = phaseDiff * G / dist;
+                            spatialForceX += force * dx;
+                            spatialForceY += force * dy;
+                        }
+                    });
+                    
+                    const dt = 0.02;
+                    
+                    // Update phase
+                    this.phase += dt * (this.frequency + K * phaseCoupling / swarmalators.length);
+                    this.phase = this.phase % (2 * Math.PI);
+                    
+                    // Update position
+                    this.vx += J * spatialForceX / swarmalators.length * dt;
+                    this.vy += J * spatialForceY / swarmalators.length * dt;
+                    
+                    // Damping
+                    this.vx *= 0.98;
+                    this.vy *= 0.98;
+                    
+                    this.x += this.vx * dt * 10;
+                    this.y += this.vy * dt * 10;
+                    
+                    // Boundary conditions
+                    if (this.x < 20) { this.x = 20; this.vx = 0; }
+                    if (this.x > canvas.width - 20) { this.x = canvas.width - 20; this.vx = 0; }
+                    if (this.y < 20) { this.y = 20; this.vy = 0; }
+                    if (this.y > canvas.height - 20) { this.y = canvas.height - 20; this.vy = 0; }
+                }
+
+                draw(ctx) {
+                    // Color based on phase
+                    const hue = (this.phase / (2 * Math.PI)) * 360;
+                    const phaseColor = `hsl(${hue}, 70%, 50%)`;
+                    
+                    // Size based on sync (larger = more synchronized)
+                    const avgPhase = swarmalators.reduce((sum, s) => sum + s.phase, 0) / swarmalators.length;
+                    const phaseDiff = Math.abs(this.phase - avgPhase);
+                    const syncLevel = 1 - (phaseDiff / Math.PI);
+                    const radius = 8 + syncLevel * 12;
+                    
+                    // Draw circle
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, radius, 0, 2 * Math.PI);
+                    ctx.fillStyle = phaseColor;
+                    ctx.fill();
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                    
+                    // Draw phase indicator
+                    const dotX = this.x + Math.cos(this.phase) * (radius - 2);
+                    const dotY = this.y + Math.sin(this.phase) * (radius - 2);
+                    ctx.beginPath();
+                    ctx.arc(dotX, dotY, 3, 0, 2 * Math.PI);
+                    ctx.fillStyle = '#fff';
+                    ctx.fill();
+                    
+                    // Label
+                    ctx.fillStyle = '#333';
+                    ctx.font = '10px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(`${this.id + 1}`, this.x, this.y - radius - 5);
+                }
+            }
+
+            function calculateMetrics(swarmalators) {
+                // Phase synchronization
+                let realSum = 0, imagSum = 0;
+                swarmalators.forEach(s => {
+                    realSum += Math.cos(s.phase);
+                    imagSum += Math.sin(s.phase);
+                });
+                const phaseSync = Math.sqrt(realSum * realSum + imagSum * imagSum) / swarmalators.length;
+                
+                // Spatial clustering
+                let totalDist = 0;
+                let count = 0;
+                for (let i = 0; i < swarmalators.length; i++) {
+                    for (let j = i + 1; j < swarmalators.length; j++) {
+                        const dx = swarmalators[i].x - swarmalators[j].x;
+                        const dy = swarmalators[i].y - swarmalators[j].y;
+                        totalDist += Math.sqrt(dx * dx + dy * dy);
+                        count++;
+                    }
+                }
+                const avgDist = totalDist / count;
+                const spatialCluster = Math.max(0, 1 - avgDist / 200); // Normalize
+                
+                return { phaseSync, spatialCluster };
+            }
+
+            function animate() {
+                if (!isRunning) return;
+                
+                const K = parseFloat(document.getElementById('swarm-sync-slider').value);
+                const J = parseFloat(document.getElementById('swarm-space-slider').value);
+                
+                // Update swarmalators
+                swarmalators.forEach(s => s.update(K, J, swarmalators));
+                
+                // Clear and draw
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                // Draw connections between close swarmalators
+                ctx.strokeStyle = 'rgba(0,0,0,0.1)';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < swarmalators.length; i++) {
+                    for (let j = i + 1; j < swarmalators.length; j++) {
+                        const dx = swarmalators[i].x - swarmalators[j].x;
+                        const dy = swarmalators[i].y - swarmalators[j].y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+                        if (dist < 100) {
+                            ctx.beginPath();
+                            ctx.moveTo(swarmalators[i].x, swarmalators[i].y);
+                            ctx.lineTo(swarmalators[j].x, swarmalators[j].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+                
+                swarmalators.forEach(s => s.draw(ctx));
+                
+                // Update metrics chart
+                const metrics = calculateMetrics(swarmalators);
+                syncHistory.push(metrics.phaseSync);
+                spatialHistory.push(metrics.spatialCluster);
+                
+                if (syncHistory.length > 200) {
+                    syncHistory.shift();
+                    spatialHistory.shift();
+                }
+                
+                metricsCtx.clearRect(0, 0, metricsChart.width, metricsChart.height);
+                
+                // Draw phase sync
+                metricsCtx.strokeStyle = '#22c55e';
+                metricsCtx.lineWidth = 2;
+                metricsCtx.beginPath();
+                syncHistory.forEach((value, index) => {
+                    const x = (index / syncHistory.length) * metricsChart.width;
+                    const y = metricsChart.height - (value * metricsChart.height);
+                    if (index === 0) metricsCtx.moveTo(x, y);
+                    else metricsCtx.lineTo(x, y);
+                });
+                metricsCtx.stroke();
+                
+                // Draw spatial clustering
+                metricsCtx.strokeStyle = '#3b82f6';
+                metricsCtx.lineWidth = 2;
+                metricsCtx.beginPath();
+                spatialHistory.forEach((value, index) => {
+                    const x = (index / spatialHistory.length) * metricsChart.width;
+                    const y = metricsChart.height - (value * metricsChart.height);
+                    if (index === 0) metricsCtx.moveTo(x, y);
+                    else metricsCtx.lineTo(x, y);
+                });
+                metricsCtx.stroke();
+                
+                animationId = requestAnimationFrame(animate);
+            }
+
+            // Control handlers
+            document.getElementById('swarm-oscillators').addEventListener('input', (e) => {
+                const count = parseInt(e.target.value);
+                document.getElementById('swarm-count').textContent = count;
+                
+                swarmalators = [];
+                for (let i = 0; i < count; i++) {
+                    swarmalators.push(new Swarmalator(i));
+                }
+            });
+
+            document.getElementById('swarm-sync-slider').addEventListener('input', (e) => {
+                document.getElementById('swarm-sync').textContent = e.target.value;
+            });
+
+            document.getElementById('swarm-space-slider').addEventListener('input', (e) => {
+                document.getElementById('swarm-space').textContent = e.target.value;
+            });
+
+            document.getElementById('swarm-start').addEventListener('click', () => {
+                isRunning = !isRunning;
+                document.getElementById('swarm-start').textContent = isRunning ? 'Stop Performance' : 'Start Performance';
+                if (isRunning) {
+                    animate();
+                }
+            });
+
+            document.getElementById('swarm-reset').addEventListener('click', () => {
+                isRunning = false;
+                document.getElementById('swarm-start').textContent = 'Start Performance';
+                syncHistory = [];
+                spatialHistory = [];
+                
+                swarmalators.forEach(s => {
+                    s.phase = Math.random() * 2 * Math.PI;
+                    s.x = 100 + Math.random() * 400;
+                    s.y = 100 + Math.random() * 200;
+                    s.vx = s.vy = 0;
+                });
+                
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                metricsCtx.clearRect(0, 0, metricsChart.width, metricsChart.height);
+                swarmalators.forEach(s => s.draw(ctx));
+            });
+
+            document.getElementById('swarm-scatter').addEventListener('click', () => {
+                swarmalators.forEach(s => {
+                    s.x = 50 + Math.random() * (canvas.width - 100);
+                    s.y = 50 + Math.random() * (canvas.height - 100);
+                    s.vx = (Math.random() - 0.5) * 2;
+                    s.vy = (Math.random() - 0.5) * 2;
+                });
+            });
+
+            // Initialize
+            const initialCount = 4;
+            for (let i = 0; i < initialCount; i++) {
+                swarmalators.push(new Swarmalator(i));
+            }
+            swarmalators.forEach(s => s.draw(ctx));
+        }
+
+        // Model Comparison Implementation
+        function initModelComparison() {
+            // Placeholder for comparison tool - would include side-by-side comparison
+            // of Kuramoto vs Swarmalator models under different scenarios
+            console.log('Model comparison initialized');
+        }
     </script>
+    
+    <style>
+        /* Interactive Demo Styles */
+        .interactive-demo {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border: 2px solid #0ea5e9;
+            margin: 2rem 0;
+        }
+        
+        .simulator-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .control-group label {
+            font-weight: bold;
+            color: #374151;
+        }
+        
+        .control-group small {
+            color: #6b7280;
+            font-style: italic;
+        }
+        
+        .control-group input[type="range"] {
+            width: 100%;
+            margin: 0.5rem 0;
+        }
+        
+        .sim-button {
+            background: #0ea5e9;
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .sim-button:hover {
+            background: #0284c7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(14, 165, 233, 0.3);
+        }
+        
+        .visualization {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .viz-section {
+            text-align: center;
+        }
+        
+        .viz-section h4 {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+        
+        .viz-section canvas {
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .explanation {
+            margin-top: 0.5rem;
+            color: #6b7280;
+            font-style: italic;
+            font-size: 0.9rem;
+        }
+        
+        .equation-explanation {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .equation-explanation h4 {
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+        
+        .math-explanation {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+        }
+        
+        .math-explanation ul {
+            margin: 0.5rem 0;
+        }
+        
+        .math-explanation li {
+            margin: 0.3rem 0;
+            color: #4b5563;
+        }
+        
+        .math-equations {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .eq-section {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            border-left: 4px solid #0ea5e9;
+        }
+        
+        .eq-section h5 {
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        
+        .comparison-container {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .comparison-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .scenario-btn {
+            background: #f3f4f6;
+            border: 2px solid #d1d5db;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .scenario-btn.active {
+            background: #0ea5e9;
+            color: white;
+            border-color: #0ea5e9;
+        }
+        
+        .scenario-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-viz {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .model-section {
+            text-align: center;
+            background: #f9fafb;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .model-section h4 {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+        
+        .model-section canvas {
+            border: 1px solid #e5e7eb;
+            border-radius: 4px;
+            background: white;
+        }
+        
+        .metrics {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+        
+        .metrics div {
+            background: white;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            border-left: 3px solid #0ea5e9;
+        }
+        
+        .comparison-explanation {
+            background: #f0f9ff;
+            border: 1px solid #0ea5e9;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .comparison-explanation h4 {
+            color: #1e40af;
+            margin-bottom: 1rem;
+        }
+        
+        @media (max-width: 768px) {
+            .controls {
+                grid-template-columns: 1fr;
+            }
+            
+            .math-equations {
+                grid-template-columns: 1fr;
+            }
+            
+            .comparison-viz {
+                grid-template-columns: 1fr;
+            }
+            
+            .viz-section canvas {
+                width: 100%;
+                height: auto;
+            }
+        }
+    </style>
 </body>
 </html>

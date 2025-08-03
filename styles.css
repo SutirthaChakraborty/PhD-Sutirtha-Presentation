@@ -662,3 +662,259 @@ table.academic tbody tr:nth-child(even) {
     background: var(--primary-color);
     transform: translateY(-2px);
 }
+
+/* Enhanced Mathematical Equation Styling */
+.equation-container {
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 2px solid #e2e8f0;
+    border-left: 6px solid var(--secondary-color);
+    border-radius: 12px;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.equation-container:hover {
+    border-color: var(--primary-color);
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.2);
+    transform: translateY(-2px);
+}
+
+.equation-container::before {
+    content: "🔢";
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: var(--card-bg);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 1.2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.equation-caption {
+    font-style: italic;
+    color: #64748b;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    background: rgba(59, 130, 246, 0.05);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    display: inline-block;
+}
+
+/* MathJax equation styling */
+.MathJax {
+    font-size: 1.2rem !important;
+}
+
+.MathJax_Display {
+    margin: 1rem 0 !important;
+}
+
+mjx-container[jax="CHTML"][display="true"] {
+    margin: 1.5rem 0 !important;
+}
+
+mjx-container[jax="CHTML"] {
+    color: var(--text-color) !important;
+}
+
+/* Interactive equation elements */
+.equation-interactive {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.equation-interactive:hover {
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+    color: white;
+    transform: scale(1.02);
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.3);
+}
+
+.equation-interactive::after {
+    content: "Click to interact";
+    position: absolute;
+    bottom: -8px;
+    right: 15px;
+    background: var(--accent-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.equation-interactive:hover::after {
+    opacity: 1;
+}
+
+/* Inline mathematical expressions */
+.math-inline {
+    background: rgba(59, 130, 246, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Times New Roman', serif;
+    font-weight: 500;
+    color: var(--primary-color);
+    font-size: 1.05em;
+}
+
+/* Mathematical variable highlighting */
+.math-var {
+    color: #dc2626;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.math-operator {
+    color: #059669;
+    font-weight: 700;
+}
+
+.math-function {
+    color: #7c3aed;
+    font-weight: 600;
+}
+
+/* Legacy equation styling for backward compatibility */
+.equation {
+    background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+    border: 2px solid #d1d5db;
+    border-left: 6px solid var(--secondary-color);
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin: 1.5rem 0;
+    text-align: center;
+    font-family: 'Times New Roman', serif;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.equation:hover {
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+/* Equation explanation boxes */
+.equation-explanation {
+    background: rgba(248, 250, 252, 0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+    color: #475569;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.equation-explanation strong {
+    color: var(--primary-color);
+}
+
+/* Mathematical symbols and notation */
+.math-symbol {
+    font-family: 'Times New Roman', serif;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--secondary-color);
+}
+
+/* Equation numbering */
+.equation-number {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary-color);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Mathematical proof and derivation boxes */
+.proof-box {
+    background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+    border: 2px solid #22c55e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+}
+
+.proof-box h4 {
+    color: #15803d;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.proof-step {
+    margin: 0.8rem 0;
+    padding-left: 1rem;
+    border-left: 3px solid #22c55e;
+}
+
+/* Theorem and definition boxes */
+.theorem-box {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    border: 2px solid #f59e0b;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.theorem-box::before {
+    content: "Theorem";
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: #f59e0b;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.definition-box {
+    background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+    border: 2px solid #8b5cf6;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    position: relative;
+}
+
+.definition-box::before {
+    content: "Definition";
+    position: absolute;
+    top: -12px;
+    left: 20px;
+    background: #8b5cf6;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}

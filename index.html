@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Human-Robot Musical Synchronization - PhD Thesis</title>
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- MathJax Configuration -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            tags: 'ams'
+        },
+        svg: {
+            fontCache: 'global',
+            displayAlign: 'center',
+            displayIndent: '0em'
+        },
+        startup: {
+            ready: () => {
+                MathJax.startup.defaultReady();
+                console.log('MathJax is loaded and ready to render equations');
+            }
+        }
+    };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <div class="progress-container">
@@ -161,9 +187,9 @@
             </div>
 
             <h3>Mathematical Foundation</h3>
-            <div class="equation">
-                θ̇ᵢ = ωᵢ + (K/N) Σⱼ sin(θⱼ - θᵢ)
-                <div style="font-size: 0.9rem; margin-top: 0.5rem; font-style: italic;">
+            <div class="equation-container">
+                $$\dot{\theta}_i = \omega_i + \frac{K}{N} \sum_{j=1}^{N} \sin(\theta_j - \theta_i)$$
+                <div class="equation-caption">
                     Kuramoto Model for Oscillator Synchronization
                 </div>
             </div>
