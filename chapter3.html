@@ -352,7 +352,7 @@
                     <p>Ensemble performances require coordination between <strong>Musicians</strong> and <strong>Other Musicians</strong>. Visual feedback plays a significant role here, as musicians rely on sight to maintain temporal alignment and respond to visual cues, especially in the absence of direct auditory feedback.</p>
                 </div>
                 
-                <div class="framework-card" style="background: linear-gradient(135deg, #dcfce7, #22c55e); color: #166534;"></div>
+                <div class="framework-card" style="background: linear-gradient(135deg, #dcfce7, #22c55e); color: #166534;">
                     <h4>🏠 Acoustic Environment (Room)</h4>
                     <p>The <strong>Room</strong> modifies the sound produced by each instrument acoustically before it reaches the listener. This acoustically modified feedback allows musicians to understand how their sound interacts with the environment, which is crucial in large ensemble settings where spatial arrangement affects acoustics.</p>
                 </div>
@@ -381,7 +381,7 @@
                         <label>Number of Musicians: <span id="musicianCount">4</span></label>
                         <input type="range" id="musicianSlider" min="2" max="8" value="4">
                     </div>
-                    <div class="parameter-control"></div>
+                    <div class="parameter-control">
                         <label>Connection Strength: <span id="connectionStrength">0.5</span></label>
                         <input type="range" id="connectionSlider" min="0.1" max="1" step="0.1" value="0.5">
                     </div>
@@ -543,7 +543,7 @@
                     <h4>🎯 LSTM Model Performance (a)</h4>
                     <p>The graph shows BPM against number of samples. The grey line represents Aubio library output, while the blue line denotes the LSTM model prediction. The LSTM model closely follows the Aubio output, demonstrating capability to predict the leader's beat over time and adapt to varying tempos.</p>
                 </div>
-                <div class="framework-card"></div>
+                <div class="framework-card" style="background: linear-gradient(135deg, #dcfce7, #22c55e); color: #166534;">
                     <h4>🔄 Kuramoto Phase Synchronization (b)</h4>
                     <p>Shows phase values (in radians) against samples. The blue line represents "Song Phase" from actual audio, while orange represents "Kuramoto Phase" from the oscillator model. Close alignment demonstrates effective phase synchronization with real-time adjustments.</p>
                 </div>
@@ -566,7 +566,7 @@
             <div class="framework-grid">
                 <div class="framework-card" style="background: linear-gradient(135deg, #fef3c7, #fbbf24); color: #92400e;">
                     <h4>📈 Data Characteristics</h4>
-                    <ul></ul>
+                    <ul>
                         <li><strong>Format:</strong> Stereo WAV, 44.1 kHz, 16-bit</li>
                         <li><strong>Tracks:</strong> 150 songs with average length of 3-4 minutes</li>
                         <li><strong>Sources:</strong> Four stems per track - vocals, drums, bass, other</li>
@@ -590,7 +590,7 @@
             <div class="framework-grid">
                 <div class="framework-card" style="background: linear-gradient(135deg, #dcfce7, #22c55e); color: #166534;">
                     <h4>📊 Data Characteristics</h4>
-                    <ul></ul>
+                    <ul>
                         <li><strong>Format:</strong> Audio (44.1 kHz, 16-bit, mono) and Video (HD, 30 FPS)</li>
                         <li><strong>Performances:</strong> 44 pieces with synchronized audio-visual recordings</li>
                         <li><strong>Instruments:</strong> Violin, cello, flute, clarinet, trumpet, and more</li>
@@ -598,7 +598,7 @@
                         <li><strong>Ensemble Types:</strong> Solo, duo, trio, and quartet configurations</li>
                     </ul>
                 </div>
-                <div class="framework-card" style="background: linear-gradient(135deg, #fce7f3, #ec4899); color: #be185d;"></div>
+                <div class="framework-card" style="background: linear-gradient(135deg, #fce7f3, #ec4899); color: #be185d;">
                     <h4>🎯 Research Applications</h4>
                     <p>Facilitates investigation into how visual cues—such as body movements, gestures, and facial expressions—correlate with musical timing and expression. This multimodal aspect is vital for the Cyborg Philharmonic framework.</p>
                 </div>
@@ -643,7 +643,7 @@
             </div>
 
             <h3>📊 Phase Synchronization in Multi-Instrument Ensembles</h3>
-            <div class="image-container"></div>
+            <div class="image-container">
                 <img src="images/nature/Figure4.jpg" alt="Multi-instrument Phase Synchronization" style="max-width: 100%; height: 500px; object-fit: contain;">
                 <div class="image-caption">Phase synchronization for a multi-instrument composition with dynamic leader changes. (a) A visualization of woodwind instruments (Flute, Oboe, Clarinet, Bassoon) indicating leader transitions over time. (b) Song Phase vs. Kuramoto Phase, demonstrating close alignment between the audio signal's phase and the oscillator's predictions.</div>
             </div>
